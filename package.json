@@ -2,6 +2,7 @@
   "dependencies": {
     "@discordjs/voice": "^0.7.2",
     "bufferutil": "^4.0.5",
+    "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
     "erlpack": "^0.1.3",
     "utf-8-validate": "^5.0.7",
@@ -11,7 +12,6 @@
   "version": "0.0.1",
   "description": "A Node.js discord musicbot",
   "main": "index.js",
-  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
