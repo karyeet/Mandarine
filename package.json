@@ -29,5 +29,8 @@
   "bugs": {
     "url": "https://github.com/karyeet/Mandarine/issues"
   },
-  "homepage": "https://github.com/karyeet/Mandarine#readme"
+  "homepage": "https://github.com/karyeet/Mandarine#readme",
+  "devDependencies": {
+    "eslint": "^8.2.0"
+  }
 }
