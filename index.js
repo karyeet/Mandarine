@@ -29,6 +29,9 @@ client.once("ready", () => {
 client.login(process.env.token);
 
 function checkCommand(content) {
+	if (!content[0] == ">") {
+		return false;
+	}
 	const splitContent = content.slice(1).split(" ");
 
 	const command = splitContent[0].toLowerCase();

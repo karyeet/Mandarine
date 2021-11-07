@@ -9,9 +9,9 @@ create one per stream
 
 
 */
-const { queue, audioPlayers } = require("../general.js");
+const { queue, audioPlayers, playNext, searchSC } = require("../general.js");
 
-const { createAudioResource, AudioPlayerStatus } = require("@discordjs/voice");
+const { AudioPlayerStatus } = require("@discordjs/voice");
 
 const playdl = require("play-dl");
 
@@ -33,15 +33,34 @@ async function play(message, args) {
 	}
 	// check for args
 	if (args) {
-		const ytRegexMatch = args.match(ytRegex);
-		// check for youtube link
-		if (ytRegexMatch) {
-			console.log(ytRegexMatch[1]);
-			queue[message.guild.id].push(ytRegexMatch[1]);
+		const validate = await playdl.validate(args);
+		console.log(validate);
+		if (validate == "search") {
+			const data = await playdl.search(args, { "limit":1, "source":{ "youtube":"video" } });
+			queue[message.guild.id].push(data[0].url);
 		}
-		else {
-
-			// search youtube
+		else if (validate == "sp_track") {
+			// get spotify song data so we can search on soundcloud
+			const spotifyData = await playdl.spotify(args);
+			if (spotifyData.type == "track") {
+				// search soundcloud
+				const data = await searchSC(spotifyData.name);
+				// add first result to queue
+				queue[message.guild.id].push(data.collection[0].permalink_url);
+			}
+		}
+		else if (validate == "dz_track") {
+			// get deezer song data so we can search on soundcloud
+			const deezerData = await playdl.deezer(args);
+			if (deezerData.type == "track") {
+				// search soundcloud
+				const data = await searchSC(deezerData.name);
+				// add first result to queue
+				queue[message.guild.id].push(data.collection[0].permalink_url);
+			}
+		}
+		else if (validate) {
+			queue[message.guild.id].push(args);
 		}
 	}
 
@@ -52,9 +71,7 @@ async function play(message, args) {
 
 
 	if (audioPlayers[message.guildId].state.status == AudioPlayerStatus.Idle && queue[message.guild.id][0]) {
-		const ytStream = await playdl.stream("https://www.youtube.com/watch?v=" + queue[message.guild.id][0]);
-		const audioResource = createAudioResource(ytStream.stream, ytStream.type);
-		audioPlayers[message.guildId].play(audioResource);
+		playNext(message);
 	}
 
 }

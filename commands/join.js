@@ -9,16 +9,13 @@ If so then join members current voice channel
 
 */
 
-const { audioPlayers, queue } = require("../general.js");
-
-const playdl = require("play-dl");
+const { audioPlayers, queue, playNext } = require("../general.js");
 
 const {
 	joinVoiceChannel,
 	createAudioPlayer,
 	NoSubscriberBehavior,
-	AudioPlayerStatus,
-	createAudioResource } = require("@discordjs/voice");
+	AudioPlayerStatus } = require("@discordjs/voice");
 
 // Checks if user who called upon the join command is in a voice channel. If not returns false otherwise joins channel
 function join(message) {
@@ -51,9 +48,7 @@ function join(message) {
 	audioPlayer.on(AudioPlayerStatus.Idle, async () => {
 		queue[message.guild.id].shift();
 		if (queue[message.guild.id] && queue[message.guild.id][0]) {
-			const ytStream = await playdl.stream("https://www.youtube.com/watch?v=" + queue[message.guild.id][0]);
-			const audioResource = createAudioResource(ytStream.stream, ytStream.type);
-			audioPlayers[message.guildId].play(audioResource);
+			playNext(message);
 		}
 	});
 
