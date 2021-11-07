@@ -1,12 +1,14 @@
+// Contains functions & tables used by multiple scripts in the project
+
 const playdl = require("play-dl");
 const { createAudioResource } = require("@discordjs/voice");
 
 const https = require("https");
 
-const queue = {
-	"guilid":["youtube-link1", "youtube-link2"] };
+// "guilid": ["youtube-link1", "youtube-link2"]
+const queue = { };
 
-/* "guilid": audioPlayer*/
+// "guilid": audioPlayer
 const audioPlayers = { };
 
 let SC_clientId;
@@ -17,7 +19,7 @@ async function playNext(message) {
 	// get type of stream to see if we need to attach listeners
 	const streamType = await playdl.validate(queue[message.guild.id][0]);
 	if (streamType == "yt_video" || streamType == "so_track") {
-
+		// attach listeners to playdl for "proper  functionality"
 		playdl.attachListeners(audioPlayers[message.guildId], playdlStream);
 
 	}
