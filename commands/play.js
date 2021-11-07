@@ -9,7 +9,7 @@ create one per stream
 
 
 */
-const { queue, audioPlayers, playNext, searchSC } = require("../general.js");
+const { queue, audioPlayers, playNext } = require("../general.js");
 
 const { AudioPlayerStatus } = require("@discordjs/voice");
 
@@ -21,7 +21,31 @@ const unpause = require("./unpause.js");
 // eslint-disable-next-line
 const ytRegex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
 
-async function play(message, args) {
+function AddSCdataToQueue(message, data) {
+	queue[message.guild.id].push({
+		"title":		data.name,
+		"url": 			data.url,
+		"author": 		data.publisher.artist || data[0].user.name,
+		"durationInSec":data.durationInSec,
+		"thumbURL": 	data.thumbnail,
+		"type": 		"so_track",
+	});
+	message.react("👍");
+}
+
+function addYTdataToQueue(message, data) {
+	queue[message.guild.id].push({
+		"title":		data.title,
+		"url": 			data.url,
+		"author": 		data.channel.name,
+		"durationInSec":data.durationInSec,
+		"thumbURL": 	data.thumbnail.url,
+		"type": 		"yt_track",
+	});
+	message.react("👍");
+}
+
+async function play(message, args, command) {
 	// If already in a voice channel or able to join
 	if (!message.guild.me.voice.channelId) {
 		// const voiceConnection =
@@ -32,21 +56,39 @@ async function play(message, args) {
 
 	}
 	// check for args
+	console.log(args);
 	if (args) {
 		const validate = await playdl.validate(args);
 		console.log(validate);
 		if (validate == "search") {
-			const data = await playdl.search(args, { "limit":1, "source":{ "youtube":"video" } });
-			queue[message.guild.id].push(data[0].url);
+			if (command == "music") {
+				// search soundcloud
+				const data = await playdl.search(args, { "limit":1, "source":{ "soundcloud":"tracks" } });
+				// add first result to queue
+				AddSCdataToQueue(message, data[0]);
+			}
+			else {
+				// search youtube
+				const data = await playdl.search(args, { "limit":1, "source":{ "youtube":"video" } });
+				// add first result to queue
+				addYTdataToQueue(message, data[0]);
+			}
+		}
+		else if (validate == "so_track") {
+			// get soundcloud track info
+			const data = await playdl.soundcloud(args);
+			// add result to queue
+			AddSCdataToQueue(message, data);
 		}
 		else if (validate == "sp_track") {
 			// get spotify song data so we can search on soundcloud
 			const spotifyData = await playdl.spotify(args);
 			if (spotifyData.type == "track") {
 				// search soundcloud
-				const data = await searchSC(spotifyData.name);
+				const data = await playdl.search(args, { "limit":1, "source":{ "soundcloud":"tracks" } });
 				// add first result to queue
-				queue[message.guild.id].push(data.collection[0].permalink_url);
+				AddSCdataToQueue(message, data[0]);
+
 			}
 		}
 		else if (validate == "dz_track") {
@@ -54,13 +96,19 @@ async function play(message, args) {
 			const deezerData = await playdl.deezer(args);
 			if (deezerData.type == "track") {
 				// search soundcloud
-				const data = await searchSC(deezerData.name);
+				const data = await playdl.search(args, { "limit":1, "source":{ "soundcloud":"tracks" } });
 				// add first result to queue
-				queue[message.guild.id].push(data.collection[0].permalink_url);
+				AddSCdataToQueue(message, data[0]);
 			}
 		}
-		else if (validate) {
-			queue[message.guild.id].push(args);
+		else if (validate == "yt_video") {
+			// get youtube video info
+			const data = await playdl.video_basic_info(args);
+			// add result to queue
+			addYTdataToQueue(message, data.video_details);
+		}
+		else {
+			message.react("⁉️");
 		}
 	}
 
@@ -70,6 +118,7 @@ async function play(message, args) {
 	}
 
 
+	console.log(audioPlayers[message.guildId].state.status == AudioPlayerStatus.Idle);
 	if (audioPlayers[message.guildId].state.status == AudioPlayerStatus.Idle && queue[message.guild.id][0]) {
 		playNext(message);
 	}

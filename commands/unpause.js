@@ -15,8 +15,10 @@ const { audioPlayers } = require("../general.js");
 
 function unpause(message) {
 	if (!(message.guild.me.voice.channelId) && !(message.member.voice.channelId == message.guild.me.voice.channelId)) {
+		message.react("👎");
 		return false;
 	}
+	message.react("👍");
 	audioPlayers[message.guild.id].unpause();
 }
 

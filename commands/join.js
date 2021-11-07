@@ -27,6 +27,7 @@ function join(message) {
 	// If user is not in channel if() returns false
 	if (!voice.channelId) {
 		message.reply("You are not in a voice chanel");
+		message.react("👎");
 		return false;
 	}
 	/* if (message.channel.guild.me.voice.channelId) {
@@ -57,7 +58,7 @@ function join(message) {
 
 	// voiceConnection will play from this audioPlayer
 	connection.subscribe(audioPlayer);
-
+	message.react("👍");
 	return { connection, audioPlayer };
 
 }

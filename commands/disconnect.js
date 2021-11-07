@@ -15,12 +15,14 @@ function disconnect(message) {
 	console.log(message.guild.me.voice.channelId);
 	console.log(message.member.voice.channelId == message.guild.me.voice.channelId);
 	if (!message.guild.me.voice.channelId || !(message.member.voice.channelId == message.guild.me.voice.channelId)) {
-		message.reply("We are not in the same voice channel");
+		message.react("👎");
+		// message.reply("We are not in the same voice channel");
 		return false;
 	}
 
 	queue[message.guildId] == [];
 	audioPlayers[message.guildId] == null;
+	message.react("👍");
 	return getVoiceConnection(message.guildId).destroy();
 
 }

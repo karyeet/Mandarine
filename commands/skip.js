@@ -12,25 +12,26 @@ If queue is empty do not call play
 
 */
 
-const { queue, audioPlayers } = require("../general.js");
+const { audioPlayers } = require("../general.js");
 
-const play = require("./play.js");
+// const play = require("./play.js");
 
 /*
 Function checks if bot is in the voice channel AND if user who called upon skip is in the same channel.
-It then shifts the audioPlayer to next in queue. Next it stops what is in current queue and then calls upon play function in play.js
+It stops what is in current queue, the listener in join.js skips, and then calls upon play function in play.js
 */
 function skip(message) {
 	if (!(message.guild.me.voice.channelId) && !(message.member.voice.channelId == message.guild.me.voice.channelId)) {
+		message.react("👎");
 		return false;
 	}
 
 	const audioPlayer = audioPlayers[message.guild.id];
-
-	queue[message.guild.id].shift();
+	// the listener in join.js will automatically shift when the audio is stopped
+	message.react("👍");
 	audioPlayer.stop();
-
-	play(message);
+	// We dont need to call play because the listener will call it when the audio is stopped
+	// play(message);
 
 }
 
