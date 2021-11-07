@@ -1,6 +1,6 @@
 /*
 
-Check if already in a discord voicechannel in members guild
+Check if already in a discord voicechannel in members guild -- not doing
 voicechannel = voicestate
 
 Check if member is in a voice channel
@@ -9,18 +9,62 @@ If so then join members current voice channel
 
 */
 
-// const { client } = require("./index.js");
+const { audioPlayers, queue } = require("../general.js");
 
-function run(message) {
+const playdl = require("play-dl");
+
+const {
+	joinVoiceChannel,
+	createAudioPlayer,
+	NoSubscriberBehavior,
+	AudioPlayerStatus,
+	createAudioResource } = require("@discordjs/voice");
+
+// Checks if user who called upon the join command is in a voice channel. If not returns false otherwise joins channel
+function join(message) {
 	const voice = message.member.voice;
 
-	if (!voice.channelID) {
+	// create queue for guild
+	queue[message.guildId] = [];
+
+	// If user is not in channel if() returns false
+	if (!voice.channelId) {
 		message.reply("You are not in a voice chanel");
 		return false;
 	}
+	/* if (message.channel.guild.me.voice.channelId) {
+		message.reply("I am already in a voice channel!");
+	}*/
 
-	return voice.channel.join();
+	// Otherwise join users channel
+	const connection = joinVoiceChannel({
+		channelId: voice.channelId,
+		guildId: voice.channel.guildId,
+		adapterCreator: voice.channel.guild.voiceAdapterCreator });
+	// and create audioPlayer
+	const audioPlayer = createAudioPlayer({
+		behaviors: {
+			noSubscriber: NoSubscriberBehavior.Pause,
+		},
+	});
+
+	audioPlayer.on(AudioPlayerStatus.Idle, async () => {
+		queue[message.guild.id].shift();
+		if (queue[message.guild.id] && queue[message.guild.id][0]) {
+			const ytStream = await playdl.stream("https://www.youtube.com/watch?v=" + queue[message.guild.id][0]);
+			const audioResource = createAudioResource(ytStream.stream, ytStream.type);
+			audioPlayers[message.guildId].play(audioResource);
+		}
+	});
+
+	// Add audio player to guild:audioplayer table
+	audioPlayers[message.guildId] = audioPlayer;
+
+	// voiceConnection will play from this audioPlayer
+	connection.subscribe(audioPlayer);
+
+	return { connection, audioPlayer };
 
 }
 
-exports = run;
+module.exports = join;

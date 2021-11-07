@@ -4,16 +4,20 @@ require("dotenv").config();
 const { Intents, Client } = require("discord.js");
 
 // Intents: Guilds, VoiceStates, GuildMesssages
-const intents = [Intents.FLAGS.GUILDS, Intents.GUILD_VOICE_STATES, Intents.GUILD_MESSAGES];
+const intents = [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES];
 
 // Create Client with discord commando
 const client = new Client({ intents });
 
+
 const DIY_COMMANDO = {
-	"join": require("./join.js"),
-	"play": require("./play.js"),
-	"pause": require("./pause.js"),
-	"resume": require("./resume.js"),
+	"join": require("./commands/join.js"),
+	"disconnect": require("./commands/disconnect.js"),
+	"play": require("./commands/play.js"),
+	"pause": require("./commands/pause.js"),
+	"resume": require("./commands/unpause.js"),
+	"unpause": require("./commands/unpause.js"),
+	"skip": require("./commands/skip.js"),
 };
 DIY_COMMANDO["join"];
 
@@ -27,7 +31,7 @@ client.login(process.env.token);
 function checkCommand(content) {
 	const splitContent = content.slice(1).split(" ");
 
-	const command = splitContent[0];
+	const command = splitContent[0].toLowerCase();
 	splitContent.shift();
 	const args = splitContent.join(" ");
 
@@ -35,12 +39,12 @@ function checkCommand(content) {
 }
 
 client.on("messageCreate", (msg) => {
-	const { command, args } = checkCommand(msg);
+	const { command, args } = checkCommand(msg.content);
 
 	if (DIY_COMMANDO[command]) {
-		DIY_COMMANDO[command](args);
+		DIY_COMMANDO[command](msg, args);
 	}
 
 });
 
-exports = { client };
+module.exports = { client };
