@@ -36,7 +36,7 @@ async function playNext(message) {
 	console.log("created audioresource");
 	audioPlayers[message.guildId].play(audioResource);
 	console.log("playing resource");
-	message.guild.me.setNickname(queue[message.guild.id][0].title);
+	message.guild.me.setNickname(queue[message.guild.id][0].title.substring(0, 31));
 }
 
 // set SC client id every start so it doesnt expire

@@ -21,7 +21,12 @@ defaultEmbed.setDefault();
 }]*/
 
 function secondsToTime(seconds) {
-	return Math.floor(seconds / 60) + ":" + seconds % 60;
+	if ((seconds % 60) < 10) {
+		return Math.floor(seconds / 60) + ":0" + seconds % 60;
+	}
+	else {
+		return Math.floor(seconds / 60) + ":" + seconds % 60;
+	}
 }
 
 function songAdded(queueInfo) {
