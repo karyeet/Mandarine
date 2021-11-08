@@ -73,9 +73,16 @@ async function play(message, args, command) {
 		if (validate == "search") {
 			if (command == "music") {
 				// search soundcloud
-				const data = await playdl.search(args, { "limit":1, "source":{ "soundcloud":"tracks" } });
-				// add first result to queue
-				AddSCdataToQueue(message, data[0]);
+				const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
+				for (let i = 0; i < data.length; i++) {
+					// loop through so we can get rid of pro results
+					if (Number(data[i].durationInSec) > 30) {
+						// add first result to queue
+						AddSCdataToQueue(message, data[0]);
+						break;
+					}
+				}
+
 			}
 			else {
 				// search youtube
@@ -95,9 +102,15 @@ async function play(message, args, command) {
 			const spotifyData = await playdl.spotify(args);
 			if (spotifyData.type == "track") {
 				// search soundcloud
-				const data = await playdl.search(args, { "limit":1, "source":{ "soundcloud":"tracks" } });
-				// add first result to queue
-				AddSCdataToQueue(message, data[0]);
+				const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
+				for (let i = 0; i < data.length; i++) {
+					// loop through so we can get rid of pro results
+					if (Number(data[i].durationInSec) > 30) {
+						// add first result to queue
+						AddSCdataToQueue(message, data[0]);
+						break;
+					}
+				}
 
 			}
 		}
