@@ -5,6 +5,8 @@ const { createAudioResource } = require("@discordjs/voice");
 
 const https = require("https");
 
+// const { client } = require("./index.js");
+
 /* "guilid": [{
 	title: "Megolovania",
 	url: "https://www.youtube.com/watch?v=WibFGyDMmYA"
@@ -34,6 +36,7 @@ async function playNext(message) {
 	console.log("created audioresource");
 	audioPlayers[message.guildId].play(audioResource);
 	console.log("playing resource");
+	message.guild.me.setNickname(queue[message.guild.id][0].title);
 }
 
 // set SC client id every start so it doesnt expire

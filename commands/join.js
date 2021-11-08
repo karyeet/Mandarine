@@ -51,6 +51,9 @@ function join(message) {
 		if (queue[message.guild.id] && queue[message.guild.id][0]) {
 			playNext(message);
 		}
+		else {
+			message.guild.me.setNickname(message.guild.me.user.username);
+		}
 	});
 
 	// Add audio player to guild:audioplayer table

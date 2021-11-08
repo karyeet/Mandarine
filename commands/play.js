@@ -11,6 +11,8 @@ create one per stream
 */
 const { queue, audioPlayers, playNext } = require("../general.js");
 
+const { songAdded } = require("../presetEmbeds.js");
+
 const { AudioPlayerStatus } = require("@discordjs/voice");
 
 const playdl = require("play-dl");
@@ -19,30 +21,38 @@ const join = require("./join.js");
 const unpause = require("./unpause.js");
 
 // eslint-disable-next-line
-const ytRegex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
+// const ytRegex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
 
 function AddSCdataToQueue(message, data) {
-	queue[message.guild.id].push({
+	const queueData = {
 		"title":		data.name,
 		"url": 			data.url,
 		"author": 		data.publisher.artist || data[0].user.name,
 		"durationInSec":data.durationInSec,
 		"thumbURL": 	data.thumbnail,
 		"type": 		"so_track",
-	});
+		"requester":	message.author,
+		"channel": 		message.channel,
+	};
+	queue[message.guild.id].push(queueData);
 	message.react("👍");
+	message.reply({ embeds:[songAdded(queueData)] });
 }
 
 function addYTdataToQueue(message, data) {
-	queue[message.guild.id].push({
+	const queueData = {
 		"title":		data.title,
 		"url": 			data.url,
 		"author": 		data.channel.name,
 		"durationInSec":data.durationInSec,
 		"thumbURL": 	data.thumbnail.url,
 		"type": 		"yt_track",
-	});
+		"requester":	message.author,
+		"channel": 		message.channel,
+	};
+	queue[message.guild.id].push(queueData);
 	message.react("👍");
+	message.reply({ embeds:[songAdded(queueData)] });
 }
 
 async function play(message, args, command) {
