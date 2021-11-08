@@ -9,7 +9,7 @@ create one per stream
 
 
 */
-const { queue, audioPlayers, playNext } = require("../general.js");
+const { queue, audioPlayers, playNext, reactions } = require("../general.js");
 
 const { songAdded } = require("../presetEmbeds.js");
 
@@ -35,7 +35,7 @@ function AddSCdataToQueue(message, data) {
 		"channel": 		message.channel,
 	};
 	queue[message.guild.id].push(queueData);
-	message.react("👍");
+	message.react(reactions.positive);
 	message.reply({ embeds:[songAdded(queueData)] });
 }
 
@@ -51,7 +51,7 @@ function addYTdataToQueue(message, data) {
 		"channel": 		message.channel,
 	};
 	queue[message.guild.id].push(queueData);
-	message.react("👍");
+	message.react(reactions.positive);
 	message.reply({ embeds:[songAdded(queueData)] });
 }
 
@@ -131,7 +131,7 @@ async function play(message, args, command) {
 			addYTdataToQueue(message, data.video_details);
 		}
 		else {
-			message.react("⁉️");
+			message.react(reactions.confused);
 		}
 	}
 

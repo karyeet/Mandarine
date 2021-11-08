@@ -9,19 +9,24 @@ const intents = [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents
 // Create Client with discord commando
 const client = new Client({ intents });
 
-
+// table of command names and their corresponding files/functions
 const DIY_COMMANDO = {
 	"join": require("./commands/join.js"),
+
 	"disconnect": require("./commands/disconnect.js"),
 	"leave": require("./commands/disconnect.js"),
+
 	"play": require("./commands/play.js"),
 	"music": require("./commands/play.js"),
+
 	"pause": require("./commands/pause.js"),
+
 	"resume": require("./commands/unpause.js"),
-	"skip": require("./commands/skip.js"),
 	"unpause": require("./commands/unpause.js"),
+
+	"skip": require("./commands/skip.js"),
+
 };
-DIY_COMMANDO["join"];
 
 client.once("ready", () => {
 	console.log("Ready!");
@@ -30,6 +35,7 @@ client.once("ready", () => {
 // Login
 client.login(process.env.token);
 
+// check if prefix is ">", and if so return the command back
 function checkCommand(content) {
 	if (!(content[0] == ">")) {
 		return false;
@@ -44,8 +50,11 @@ function checkCommand(content) {
 }
 
 client.on("messageCreate", (msg) => {
+	// check if the message is a command and parse args
 	const { command, args } = checkCommand(msg.content);
 
+	// Check the command against the command table, and then run it
+	// We pass the command arg to the command function for different functionalities, ex. if ">music" is used instead of ">play" we use soundcloud exclusively
 	if (DIY_COMMANDO[command]) {
 		DIY_COMMANDO[command](msg, args, command);
 	}

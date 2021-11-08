@@ -9,7 +9,7 @@ If so then join members current voice channel
 
 */
 
-const { audioPlayers, queue, playNext } = require("../general.js");
+const { audioPlayers, queue, playNext, reactions } = require("../general.js");
 
 const {
 	joinVoiceChannel,
@@ -27,7 +27,7 @@ function join(message) {
 	// If user is not in channel if() returns false
 	if (!voice.channelId) {
 		message.reply("You are not in a voice chanel");
-		message.react("👎");
+		message.react(reactions.negative);
 		return false;
 	}
 	/* if (message.channel.guild.me.voice.channelId) {
@@ -61,7 +61,7 @@ function join(message) {
 
 	// voiceConnection will play from this audioPlayer
 	connection.subscribe(audioPlayer);
-	message.react("👍");
+	message.react(reactions.positive);
 	return { connection, audioPlayer };
 
 }

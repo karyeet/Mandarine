@@ -3,9 +3,11 @@
 const playdl = require("play-dl");
 const { createAudioResource } = require("@discordjs/voice");
 
-const https = require("https");
-
-// const { client } = require("./index.js");
+const reactions = {
+	"positive":"🍊",
+	"negative":"👎",
+	"confused":"⁉️",
+};
 
 /* "guilid": [{
 	title: "Megolovania",
@@ -21,6 +23,7 @@ const queue = {};
 const audioPlayers = {};
 
 async function playNext(message) {
+	// create playdl stream
 	const playdlStream = await playdl.stream(queue[message.guild.id][0].url);
 
 	// get type of stream to see if we need to attach listeners
@@ -31,7 +34,7 @@ async function playNext(message) {
 		console.log("attached listeners");
 
 	}
-
+	// create and play the audio resource for the current playdl stream
 	const audioResource = createAudioResource(playdlStream.stream, playdlStream.type);
 	console.log("created audioresource");
 	audioPlayers[message.guildId].play(audioResource);
@@ -54,22 +57,4 @@ async function setScClientId() {
 
 setScClientId();
 
-// search sc i made cause i didnt realize playdl has it
-function searchSC(args) {
-	const url = "https://api-v2.soundcloud.com/search?client_id=" + SC_clientId + "&limit=1&q=";
-	const sc_promise = new Promise((resolve) => {
-		https.get(url + encodeURIComponent(args), (res) => {
-			res.setEncoding("utf8");
-			const data = [];
-			res.on("data", (chunk) => {
-				data.push(chunk);
-			});
-			res.once("end", () => {
-				resolve(JSON.parse(data.join("")));
-			});
-		});
-	});
-	return sc_promise;
-}
-
-module.exports = { queue, audioPlayers, playNext, searchSC };
+module.exports = { queue, audioPlayers, playNext, reactions };

@@ -10,14 +10,14 @@ If pause returns false, respond An error occured while pausing
 
 */
 
-const { audioPlayers } = require("../general.js");
+const { audioPlayers, reactions } = require("../general.js");
 
 function pause(message) {
 	if (!(message.guild.me.voice.channelId) && !(message.member.voice.channelId == message.guild.me.voice.channelId)) {
-		message.react("👎");
+		message.react(reactions.negative);
 		return false;
 	}
-	message.react("👍");
+	message.react(reactions.positive);
 	audioPlayers[message.guild.id].pause();
 }
 

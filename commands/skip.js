@@ -12,7 +12,7 @@ If queue is empty do not call play
 
 */
 
-const { audioPlayers } = require("../general.js");
+const { audioPlayers, reactions } = require("../general.js");
 
 // const play = require("./play.js");
 
@@ -22,13 +22,13 @@ It stops what is in current queue, the listener in join.js skips, and then calls
 */
 function skip(message) {
 	if (!(message.guild.me.voice.channelId) && !(message.member.voice.channelId == message.guild.me.voice.channelId)) {
-		message.react("👎");
+		message.react(reactions.negative);
 		return false;
 	}
 
 	const audioPlayer = audioPlayers[message.guild.id];
 	// the listener in join.js will automatically shift when the audio is stopped
-	message.react("👍");
+	message.react(reactions.positive);
 	audioPlayer.stop();
 	// We dont need to call play because the listener will call it when the audio is stopped
 	// play(message);
