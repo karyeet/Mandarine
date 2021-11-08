@@ -27,7 +27,7 @@ function AddSCdataToQueue(message, data) {
 	const queueData = {
 		"title":		data.name,
 		"url": 			data.url,
-		"author": 		data.publisher.artist || data[0].user.name,
+		"author": 		data.publisher.artist || data.user.name,
 		"durationInSec":data.durationInSec,
 		"thumbURL": 	data.thumbnail,
 		"type": 		"so_track",
@@ -78,7 +78,7 @@ async function play(message, args, command) {
 					// loop through so we can get rid of pro results
 					if (Number(data[i].durationInSec) > 30) {
 						// add first result to queue
-						AddSCdataToQueue(message, data[0]);
+						AddSCdataToQueue(message, data[i]);
 						break;
 					}
 				}
@@ -107,7 +107,7 @@ async function play(message, args, command) {
 					// loop through so we can get rid of pro results
 					if (Number(data[i].durationInSec) > 30) {
 						// add first result to queue
-						AddSCdataToQueue(message, data[0]);
+						AddSCdataToQueue(message, data[i]);
 						break;
 					}
 				}
