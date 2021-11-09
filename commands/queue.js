@@ -55,7 +55,8 @@ function queueFunc(message, args) {
 	}
 
 	page = pageCheck(message.guild.id, page);
-
+	message.react(reactions.positive);
+	
 	// if there is more than one page create next and back button
 	if (CalcQueuePages(queue[message.guild.id].length) > 1) {
 
