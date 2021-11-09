@@ -45,6 +45,7 @@ function nowPlaying(queueInfo) {
 	const nowPlayingEmbed = new mEmbeds(queueInfo.requester);
 	nowPlayingEmbed.setTitle("Now Playing");
 	nowPlayingEmbed.setDesc("[" + queueInfo.title + "](" + queueInfo.url + ")");
+	nowPlayingEmbed.setThumb(queueInfo.thumbURL);
 	nowPlayingEmbed.addField("Author", queueInfo.author, true);
 	nowPlayingEmbed.addField("Length", secondsToTime(queueInfo.durationInSec), true);
 	return nowPlayingEmbed.embed.embed;
@@ -59,6 +60,7 @@ function queueGen(user, guildQueue, page) {
 	const queueEmbed = new mEmbeds(user);
 	queueEmbed.setTitle("Queue, Page: " + page + "/" + CalcQueuePages(guildQueue.length));
 	queueEmbed.setDesc("**Currently Playing**: [" + guildQueue[0].title + "](" + guildQueue[0].url + ")");
+	queueEmbed.setThumb(guildQueue[0].thumbURL);
 	queueEmbed.addField("Author", guildQueue[0].author, true);
 	queueEmbed.addField("Length", secondsToTime(guildQueue[0].durationInSec), true);
 	// if maxItemsPerPage = 7
