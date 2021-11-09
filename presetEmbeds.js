@@ -50,7 +50,7 @@ function nowPlaying(queueInfo) {
 	return nowPlayingEmbed.embed.embed;
 }
 
-const maxItemsPerPage = 7;
+const maxItemsPerPage = 4;
 function CalcQueuePages(queueLength) {
 	return Math.ceil((queueLength - 1) / maxItemsPerPage);
 }
@@ -61,7 +61,7 @@ function queueGen(user, guildQueue, page) {
 	queueEmbed.setDesc("**Currently Playing**: [" + guildQueue[0].title + "](" + guildQueue[0].url + ")");
 	queueEmbed.addField("Author", guildQueue[0].author, true);
 	queueEmbed.addField("Length", secondsToTime(guildQueue[0].durationInSec), true);
-
+	// if maxItemsPerPage = 7
 	// each page will be 9 fields, minimum page is 0, nowplaying fields are 0-1, queue fields are 2-9, for a total of 7 queue items
 	// set i to ((page-1) * 7) + 1, while i is less than or equal to (page-1) * 7 + 7 and i is less than the guildqueue length, add a field
 	// so this will loop through 1-7, 8-14
