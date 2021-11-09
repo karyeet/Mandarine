@@ -97,7 +97,7 @@ function queueFunc(message, args) {
 		// otherwise send the queue without buttons and delete after 60 seconds
 		message.reply({ embeds:[queueGen(message.member.user, queue[message.guild.id], page)] })
 			.then(msg => {
-				setTimeout(() => msg.delete(), 60000);
+				setTimeout(() => msg.delete(), 30000);
 			});
 	}
 
