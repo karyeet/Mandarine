@@ -28,6 +28,8 @@ const DIY_COMMANDO = {
 
 	"queue": require("./commands/queue.js"),
 
+	"remove": require("./commands/remove.js"),
+
 };
 
 client.once("ready", () => {
