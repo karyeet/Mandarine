@@ -23,6 +23,7 @@ function disconnect(message) {
 	queue[message.guildId] == [];
 	audioPlayers[message.guildId] == null;
 	message.react(reactions.positive);
+	message.guild.me.setNickname(message.guild.me.user.username);
 	return getVoiceConnection(message.guildId).destroy();
 
 }
