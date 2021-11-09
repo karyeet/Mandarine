@@ -50,9 +50,9 @@ function nowPlaying(queueInfo) {
 	return nowPlayingEmbed.embed.embed;
 }
 
-const maxFieldsPerPage = 1;
+const maxItemsPerPage = 7;
 function CalcQueuePages(queueLength) {
-	return Math.ceil((queueLength - 1) / maxFieldsPerPage);
+	return Math.ceil((queueLength - 1) / maxItemsPerPage);
 }
 
 function queueGen(user, guildQueue, page) {
@@ -62,10 +62,10 @@ function queueGen(user, guildQueue, page) {
 	queueEmbed.addField("Author", guildQueue[0].author, true);
 	queueEmbed.addField("Length", secondsToTime(guildQueue[0].durationInSec), true);
 
-	// each page will be 17 fields, minimum page is 0, nowplaying fields are 0-1, queue fields are 2-16, for a total of 15 queue items
-	// set i to page * 14, while i is less than or equal to page*14+14 and i is less than the guildqueue length, add a field
-	// so this will loop through 0-14, 15-
-	for (let i = (page - 1) * maxFieldsPerPage + 1; i <= ((page - 1) * maxFieldsPerPage) + maxFieldsPerPage && i < guildQueue.length; i++) {
+	// each page will be 9 fields, minimum page is 0, nowplaying fields are 0-1, queue fields are 2-9, for a total of 7 queue items
+	// set i to ((page-1) * 7) + 1, while i is less than or equal to (page-1) * 7 + 7 and i is less than the guildqueue length, add a field
+	// so this will loop through 1-7, 8-14
+	for (let i = (page - 1) * maxItemsPerPage + 1; i <= ((page - 1) * maxItemsPerPage) + maxItemsPerPage && i < guildQueue.length; i++) {
 		queueEmbed.addField("#" + i, "[" + guildQueue[i].title + "](" + guildQueue[i].url + ") || " + secondsToTime(guildQueue[i].durationInSec), false);
 	}
 
