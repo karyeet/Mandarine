@@ -50,7 +50,7 @@ function nowPlaying(queueInfo) {
 	return nowPlayingEmbed.embed.embed;
 }
 
-const maxFieldsPerPage = 2;
+const maxFieldsPerPage = 1;
 function CalcQueuePages(queueLength) {
 	return Math.ceil((queueLength - 1) / maxFieldsPerPage);
 }
