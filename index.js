@@ -26,11 +26,13 @@ const DIY_COMMANDO = {
 
 	"skip": require("./commands/skip.js"),
 
+	"queue": require("./commands/queue.js"),
+
 };
 
 client.once("ready", () => {
 	console.log("Ready!");
-	client.user.setActivity("Prefix: /", { type: "WATCHING" });
+	client.user.setActivity("Prefix: >", { type: "WATCHING" });
 });
 
 // Login
@@ -38,7 +40,7 @@ client.login(process.env.token);
 
 // check if prefix is ">", and if so return the command back
 function checkCommand(content) {
-	if (!(content[0] == "/")) {
+	if (!(content[0] == ">")) {
 		return false;
 	}
 	const splitContent = content.slice(1).split(" ");

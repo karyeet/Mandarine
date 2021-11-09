@@ -36,7 +36,11 @@ function AddSCdataToQueue(message, data) {
 	};
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
-	message.reply({ embeds:[songAdded(queueData)] });
+	// send embed and delete after 60 seconds
+	message.reply({ embeds:[songAdded(queueData)] })
+		.then(msg => {
+			setTimeout(() => msg.delete(), 60000);
+		});
 }
 
 function addYTdataToQueue(message, data) {
@@ -52,7 +56,11 @@ function addYTdataToQueue(message, data) {
 	};
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
-	message.reply({ embeds:[songAdded(queueData)] });
+	// send embed and delete after 60 seconds
+	message.reply({ embeds:[songAdded(queueData)] })
+		.then(msg => {
+			setTimeout(() => msg.delete(), 60000);
+		});
 }
 
 async function play(message, args, command) {
