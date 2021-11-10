@@ -34,7 +34,7 @@ function songAdded(queueInfo) {
 	songAddedEmbed.setTitle("Added to Queue");
 	songAddedEmbed.setDesc("[" + queueInfo.title + "](" + queueInfo.url + ")");
 	songAddedEmbed.setThumb(queueInfo.thumbURL);
-	songAddedEmbed.addField("Author", queueInfo.author, true);
+	songAddedEmbed.addField("Artist", queueInfo.author, true);
 	songAddedEmbed.addField("Length", secondsToTime(queueInfo.durationInSec), true);
 	return songAddedEmbed.embed.embed;
 }
@@ -46,7 +46,7 @@ function nowPlaying(queueInfo) {
 	nowPlayingEmbed.setTitle("Now Playing");
 	nowPlayingEmbed.setDesc("[" + queueInfo.title + "](" + queueInfo.url + ")");
 	nowPlayingEmbed.setThumb(queueInfo.thumbURL);
-	nowPlayingEmbed.addField("Author", queueInfo.author, true);
+	nowPlayingEmbed.addField("Artist", queueInfo.author, true);
 	nowPlayingEmbed.addField("Length", secondsToTime(queueInfo.durationInSec), true);
 	return nowPlayingEmbed.embed.embed;
 }
@@ -61,7 +61,7 @@ function queueGen(user, guildQueue, page) {
 	queueEmbed.setTitle("Queue, Page: " + page + "/" + CalcQueuePages(guildQueue.length));
 	queueEmbed.setDesc("**Currently Playing**: [" + guildQueue[0].title + "](" + guildQueue[0].url + ")");
 	queueEmbed.setThumb(guildQueue[0].thumbURL);
-	queueEmbed.addField("Author", guildQueue[0].author, true);
+	queueEmbed.addField("Artist", guildQueue[0].author, true);
 	queueEmbed.addField("Length", secondsToTime(guildQueue[0].durationInSec), true);
 	// if maxItemsPerPage = 7
 	// each page will be 9 fields, minimum page is 0, nowplaying fields are 0-1, queue fields are 2-9, for a total of 7 queue items
