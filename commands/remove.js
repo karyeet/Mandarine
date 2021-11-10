@@ -8,6 +8,10 @@ remove item from queue
 const { reactions, queue } = require("../general.js");
 
 function remove(message, args) {
+	if (!(message.guild.me.voice.channelId) || !(message.member.voice.channelId == message.guild.me.voice.channelId)) {
+		message.react(reactions.negative);
+		return false;
+	}
 	// set index to remove to number(args)
 	const indexToRemove = Number(args);
 	// if args cannot be a number or does not exist, dont do anything

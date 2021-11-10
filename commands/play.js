@@ -75,10 +75,8 @@ async function play(message, args, command) {
 		await join(message);
 		// const voiceConnection = getVoiceConnection(message.channel.guild.id);
 
-
 	}
-
-	if (!message.member.voice || !message.member.voice.channelId) {
+	else if (!(message.member.voice.channelId == message.guild.me.voice.channelId)) {
 		message.react(reactions.negative);
 		return false;
 	}

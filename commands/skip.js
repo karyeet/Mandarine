@@ -21,7 +21,7 @@ Function checks if bot is in the voice channel AND if user who called upon skip 
 It stops what is in current queue, the listener in join.js skips, and then calls upon play function in play.js
 */
 function skip(message) {
-	if (!(message.guild.me.voice.channelId) && !(message.member.voice.channelId == message.guild.me.voice.channelId)) {
+	if (!(message.guild.me.voice.channelId) || !(message.member.voice.channelId == message.guild.me.voice.channelId)) {
 		message.react(reactions.negative);
 		return false;
 	}
