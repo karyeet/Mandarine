@@ -26,7 +26,10 @@ function join(message) {
 
 	// If user is not in channel if() returns false
 	if (!voice.channelId) {
-		message.reply("You are not in a voice chanel");
+		message.reply("You are not in a voice chanel")
+			.then((msg) => {
+				setTimeout(() => {msg.delete();}, 10_000);
+			});
 		message.react(reactions.negative);
 		return false;
 	}

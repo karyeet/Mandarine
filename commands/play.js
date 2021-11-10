@@ -72,13 +72,13 @@ async function play(message, args, command) {
 	if (!message.guild.me.voice.channelId) {
 		// const voiceConnection =
 		// const { audioPlayer } =
-		join(message);
+		await join(message);
 		// const voiceConnection = getVoiceConnection(message.channel.guild.id);
 
 
 	}
 
-	if (!message.member.voice || !message.member.voice.channelId || message.guild.me.voice.channelId != message.member.voice.channelId) {
+	if (!message.member.voice || !message.member.voice.channelId) {
 		message.react(reactions.negative);
 		return false;
 	}
