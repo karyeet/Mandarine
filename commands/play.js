@@ -24,10 +24,14 @@ const unpause = require("./unpause.js");
 // const ytRegex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
 
 function AddSCdataToQueue(message, data) {
+	let artist = false;
+	if (data.publisher && data.publisher.artist) {
+		artist = data.publisher.artist;
+	}
 	const queueData = {
 		"title":		data.name,
 		"url": 			data.url,
-		"author": 		data.publisher.artist || data.user.name,
+		"author": 		artist || data.user.name,
 		"durationInSec":data.durationInSec,
 		"thumbURL": 	data.thumbnail,
 		"type": 		"so_track",
@@ -73,6 +77,12 @@ async function play(message, args, command) {
 
 
 	}
+
+	if (!message.member.voice || !message.member.voice.channelId || message.guild.me.voice.channelId != message.member.voice.channelId) {
+		message.react(reactions.negative);
+		return false;
+	}
+
 	// check for args
 	console.log(args);
 	if (args) {
