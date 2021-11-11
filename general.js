@@ -34,8 +34,8 @@ async function playNext(message) {
 		console.log("attached listeners");
 
 	}
-	// create and play the audio resource for the current playdl stream
-	const audioResource = createAudioResource(playdlStream.stream, playdlStream.type);
+	// create and play the audio resource for the current playdl stream // need to check docs for play-dl and input type
+	const audioResource = createAudioResource(playdlStream.stream, { inputType: playdlStream.type });
 	console.log("created audioresource");
 	audioPlayers[message.guildId].play(audioResource);
 	console.log("playing resource");
