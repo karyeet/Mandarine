@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@discordjs/opus": "^0.7.0",
-    "@discordjs/voice": "^0.7.2",
+    "@discordjs/voice": "^0.7.5",
     "bufferutil": "^4.0.5",
     "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
