@@ -90,44 +90,73 @@ async function play(message, args, command) {
 			if (command == "music") {
 				// search soundcloud
 				const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
-				for (let i = 0; i < data.length; i++) {
-					// loop through so we can get rid of pro results
-					if (Number(data[i].durationInSec) > 30) {
-						// add first result to queue
-						AddSCdataToQueue(message, data[i]);
-						break;
+				// if no result then return false
+				if (data && data[0]) {
+					for (let i = 0; i < data.length; i++) {
+						// loop through so we can get rid of pro results
+						if (Number(data[i].durationInSec) > 30) {
+							// add first result to queue
+							AddSCdataToQueue(message, data[i]);
+							break;
+						}
 					}
-				}
 
+				}
+				else {
+					message.react(reactions.warning);
+					return false;
+				}
 			}
 			else {
 				// search youtube
 				const data = await playdl.search(args, { "limit":1, "source":{ "youtube":"video" } });
-				// add first result to queue
-				addYTdataToQueue(message, data[0]);
+				// if result, add first result to queue
+				if (data && data[0]) {
+					addYTdataToQueue(message, data[0]);
+				}
+				else {
+					message.react(reactions.warning);
+					return false;
+				}
 			}
 		}
 		else if (validate == "so_track") {
 			// get soundcloud track info
 			const data = await playdl.soundcloud(args);
-			// add result to queue
-			AddSCdataToQueue(message, data);
+			// if result, add result to queue
+			if (data) {
+				AddSCdataToQueue(message, data);
+			}
+			else {
+				message.react(reactions.warning);
+				return false;
+			}
 		}
 		else if (validate == "sp_track") {
 			// get spotify song data so we can search on soundcloud
 			const spotifyData = await playdl.spotify(args);
-			if (spotifyData.type == "track") {
+			if (spotifyData && spotifyData.type == "track") {
 				// search soundcloud
 				const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
-				for (let i = 0; i < data.length; i++) {
-					// loop through so we can get rid of pro results
-					if (Number(data[i].durationInSec) > 30) {
-						// add first result to queue
-						AddSCdataToQueue(message, data[i]);
-						break;
+				// if no data then return false
+				if (data && data[0]) {
+					for (let i = 0; i < data.length; i++) {
+						// loop through so we can get rid of pro results
+						if (Number(data[i].durationInSec) > 30) {
+							// add first result to queue
+							AddSCdataToQueue(message, data[i]);
+							break;
+						}
 					}
 				}
-
+				else {
+					message.react(reactions.warning);
+					return false;
+				}
+			}
+			else {
+				message.react(reactions.confused);
+				return false;
 			}
 		}
 		else if (validate == "dz_track") {
@@ -136,18 +165,34 @@ async function play(message, args, command) {
 			if (deezerData.type == "track") {
 				// search soundcloud
 				const data = await playdl.search(args, { "limit":1, "source":{ "soundcloud":"tracks" } });
-				// add first result to queue
-				AddSCdataToQueue(message, data[0]);
+				// if data exists
+				if (data && data[0]) {
+					// add first result to queue
+					AddSCdataToQueue(message, data[0]);
+				}
+
+			}
+			else {
+				message.react(reactions.confused);
+				return false;
 			}
 		}
 		else if (validate == "yt_video") {
 			// get youtube video info
 			const data = await playdl.video_basic_info(args);
-			// add result to queue
-			addYTdataToQueue(message, data.video_details);
+			// add result to queue if data
+			if (data && data.video_details) {
+				addYTdataToQueue(message, data.video_details);
+			}
+			else {
+				message.react(reactions.warning);
+				return false;
+			}
+
 		}
 		else {
 			message.react(reactions.confused);
+			return false;
 		}
 	}
 
