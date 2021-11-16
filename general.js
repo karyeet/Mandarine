@@ -7,6 +7,7 @@ const reactions = {
 	"positive":"🍊",
 	"negative":"👎",
 	"confused":"⁉️",
+	"warning":"⚠️",
 };
 
 /* "guilid": [{
