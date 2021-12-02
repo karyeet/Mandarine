@@ -3,6 +3,8 @@ require("dotenv").config();
 
 const { Intents, Client } = require("discord.js");
 
+const { reactions } = require("./general.js");
+
 // Intents: Guilds, VoiceStates, GuildMesssages
 const intents = [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS];
 
@@ -54,14 +56,21 @@ function checkCommand(content) {
 	return { command, args };
 }
 
-client.on("messageCreate", (msg) => {
+client.on("messageCreate", (message) => {
 	// check if the message is a command and parse args
-	const { command, args } = checkCommand(msg.content);
+	const { command, args } = checkCommand(message.content);
 
 	// Check the command against the command table, and then run it
 	// We pass the command arg to the command function for different functionalities, ex. if ">music" is used instead of ">play" we use soundcloud exclusively
 	if (DIY_COMMANDO[command]) {
-		DIY_COMMANDO[command](msg, args, command);
+		try {
+			DIY_COMMANDO[command](message, args, command);
+		}
+		catch (error) {
+			message.react(reactions.warning);
+			message.reply("```" + error + "```");
+			console.log(error);
+		}
 	}
 
 });

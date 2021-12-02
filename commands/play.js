@@ -68,145 +68,152 @@ function addYTdataToQueue(message, data) {
 }
 
 async function play(message, args, command) {
+	try {
 	// If already in a voice channel or able to join
-	if (!message.guild.me.voice.channelId) {
+		if (!message.guild.me.voice.channelId) {
 		// const voiceConnection =
 		// const { audioPlayer } =
-		await join(message);
-		// const voiceConnection = getVoiceConnection(message.channel.guild.id);
-
-	}
-	else if (!(message.member.voice.channelId == message.guild.me.voice.channelId)) {
-		message.react(reactions.negative);
-		return false;
-	}
-
-	// check for args
-	console.log(args);
-	if (args) {
-		const validate = await playdl.validate(args);
-		console.log(validate);
-		if (validate == "search") {
-			if (command == "music") {
-				// search soundcloud
-				const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
-				// if no result then return false
-				if (data && data[0]) {
-					for (let i = 0; i < data.length; i++) {
-						// loop through so we can get rid of pro results
-						if (Number(data[i].durationInSec) > 30) {
-							// add first result to queue
-							AddSCdataToQueue(message, data[i]);
-							break;
-						}
-					}
-
-				}
-				else {
-					message.react(reactions.warning);
-					return false;
-				}
-			}
-			else {
-				// search youtube
-				const data = await playdl.search(args, { "limit":1, "source":{ "youtube":"video" } });
-				// if result, add first result to queue
-				if (data && data[0]) {
-					addYTdataToQueue(message, data[0]);
-				}
-				else {
-					message.react(reactions.warning);
-					return false;
-				}
-			}
-		}
-		else if (validate == "so_track") {
-			// get soundcloud track info
-			const data = await playdl.soundcloud(args);
-			// if result, add result to queue
-			if (data) {
-				AddSCdataToQueue(message, data);
-			}
-			else {
-				message.react(reactions.warning);
-				return false;
-			}
-		}
-		else if (validate == "sp_track") {
-			// get spotify song data so we can search on soundcloud
-			const spotifyData = await playdl.spotify(args);
-			if (spotifyData && spotifyData.type == "track") {
-				// search soundcloud
-				const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
-				// if no data then return false
-				if (data && data[0]) {
-					for (let i = 0; i < data.length; i++) {
-						// loop through so we can get rid of pro results
-						if (Number(data[i].durationInSec) > 30) {
-							// add first result to queue
-							AddSCdataToQueue(message, data[i]);
-							break;
-						}
-					}
-				}
-				else {
-					message.react(reactions.warning);
-					return false;
-				}
-			}
-			else {
-				message.react(reactions.confused);
-				return false;
-			}
-		}
-		else if (validate == "dz_track") {
-			// get deezer song data so we can search on soundcloud
-			const deezerData = await playdl.deezer(args);
-			if (deezerData.type == "track") {
-				// search soundcloud
-				const data = await playdl.search(args, { "limit":1, "source":{ "soundcloud":"tracks" } });
-				// if data exists
-				if (data && data[0]) {
-					// add first result to queue
-					AddSCdataToQueue(message, data[0]);
-				}
-
-			}
-			else {
-				message.react(reactions.confused);
-				return false;
-			}
-		}
-		else if (validate == "yt_video") {
-			// get youtube video info
-			const data = await playdl.video_basic_info(args);
-			// add result to queue if data
-			if (data && data.video_details) {
-				addYTdataToQueue(message, data.video_details);
-			}
-			else {
-				message.react(reactions.warning);
-				return false;
-			}
+			await join(message);
+			// const voiceConnection = getVoiceConnection(message.channel.guild.id);
 
 		}
-		else {
-			message.react(reactions.confused);
+		else if (!(message.member.voice.channelId == message.guild.me.voice.channelId)) {
+			message.react(reactions.negative);
 			return false;
 		}
+
+		// check for args
+		console.log(args);
+		if (args) {
+			const validate = await playdl.validate(args);
+			console.log(validate);
+			if (validate == "search") {
+				if (command == "music") {
+				// search soundcloud
+					const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
+					// if no result then return false
+					if (data && data[0]) {
+						for (let i = 0; i < data.length; i++) {
+						// loop through so we can get rid of pro results
+							if (Number(data[i].durationInSec) > 30) {
+							// add first result to queue
+								AddSCdataToQueue(message, data[i]);
+								break;
+							}
+						}
+
+					}
+					else {
+						message.react(reactions.warning);
+						return false;
+					}
+				}
+				else {
+				// search youtube
+					const data = await playdl.search(args, { "limit":1, "source":{ "youtube":"video" } });
+					// if result, add first result to queue
+					if (data && data[0]) {
+						addYTdataToQueue(message, data[0]);
+					}
+					else {
+						message.react(reactions.warning);
+						return false;
+					}
+				}
+			}
+			else if (validate == "so_track") {
+			// get soundcloud track info
+				const data = await playdl.soundcloud(args);
+				// if result, add result to queue
+				if (data) {
+					AddSCdataToQueue(message, data);
+				}
+				else {
+					message.react(reactions.warning);
+					return false;
+				}
+			}
+			else if (validate == "sp_track") {
+			// get spotify song data so we can search on soundcloud
+				const spotifyData = await playdl.spotify(args);
+				if (spotifyData && spotifyData.type == "track") {
+				// search soundcloud
+					const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
+					// if no data then return false
+					if (data && data[0]) {
+						for (let i = 0; i < data.length; i++) {
+						// loop through so we can get rid of pro results
+							if (Number(data[i].durationInSec) > 30) {
+							// add first result to queue
+								AddSCdataToQueue(message, data[i]);
+								break;
+							}
+						}
+					}
+					else {
+						message.react(reactions.warning);
+						return false;
+					}
+				}
+				else {
+					message.react(reactions.confused);
+					return false;
+				}
+			}
+			else if (validate == "dz_track") {
+			// get deezer song data so we can search on soundcloud
+				const deezerData = await playdl.deezer(args);
+				if (deezerData.type == "track") {
+				// search soundcloud
+					const data = await playdl.search(args, { "limit":1, "source":{ "soundcloud":"tracks" } });
+					// if data exists
+					if (data && data[0]) {
+					// add first result to queue
+						AddSCdataToQueue(message, data[0]);
+					}
+
+				}
+				else {
+					message.react(reactions.confused);
+					return false;
+				}
+			}
+			else if (validate == "yt_video") {
+			// get youtube video info
+				const data = await playdl.video_basic_info(args);
+				// add result to queue if data
+				if (data && data.video_details) {
+					addYTdataToQueue(message, data.video_details);
+				}
+				else {
+					message.react(reactions.warning);
+					return false;
+				}
+
+			}
+			else {
+				message.react(reactions.confused);
+				return false;
+			}
+		}
+
+		// if paused unpause
+		if (audioPlayers[message.guildId].state.status == AudioPlayerStatus.Paused) {
+			unpause(message);
+		}
+
+
+		console.log(audioPlayers[message.guildId].state.status == AudioPlayerStatus.Idle);
+		if (audioPlayers[message.guildId].state.status == AudioPlayerStatus.Idle && queue[message.guild.id][0]) {
+			playNext(message);
+		}
+
 	}
-
-	// if paused unpause
-	if (audioPlayers[message.guildId].state.status == AudioPlayerStatus.Paused) {
-		unpause(message);
+	catch (error) {
+		message.react(reactions.warning);
+		message.reply("```" + error + "```");
+		console.log(error);
 	}
-
-
-	console.log(audioPlayers[message.guildId].state.status == AudioPlayerStatus.Idle);
-	if (audioPlayers[message.guildId].state.status == AudioPlayerStatus.Idle && queue[message.guild.id][0]) {
-		playNext(message);
-	}
-
 }
 
 module.exports = play;
