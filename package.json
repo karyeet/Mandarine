@@ -8,13 +8,13 @@
     "erlpack": "^0.1.3",
     "ffmpeg-static": "^4.4.0",
     "libsodium-wrappers": "^0.7.9",
-    "play-dl": "^1.3.0",
+    "play-dl": "^1.4.4",
     "utf-8-validate": "^5.0.7",
     "ytdl-core": "^4.9.1",
     "zlib-sync": "^0.1.7"
   },
   "name": "mandarine",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A Node.js discord musicbot",
   "main": "index.js",
   "scripts": {
