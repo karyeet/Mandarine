@@ -24,23 +24,30 @@ const queue = {};
 const audioPlayers = {};
 
 async function playNext(message) {
+	try {
 	// create playdl stream
-	const playdlStream = await playdl.stream(queue[message.guild.id][0].url);
+		const playdlStream = await playdl.stream(queue[message.guild.id][0].url);
 
-	// get type of stream to see if we need to attach listeners
-	const streamType = await playdl.validate(queue[message.guild.id][0].url);
-	if (streamType == "yt_video" || streamType == "so_track") {
+		// get type of stream to see if we need to attach listeners
+		const streamType = await playdl.validate(queue[message.guild.id][0].url);
+		if (streamType == "yt_video" || streamType == "so_track") {
 		// attach listeners to playdl for "proper  functionality"
-		playdl.attachListeners(audioPlayers[message.guildId], playdlStream);
-		console.log("attached listeners");
+			playdl.attachListeners(audioPlayers[message.guildId], playdlStream);
+			console.log("attached listeners");
 
+		}
+		// create and play the audio resource for the current playdl stream // need to check docs for play-dl and input type
+		const audioResource = createAudioResource(playdlStream.stream, { inputType: playdlStream.type });
+		console.log("created audioresource");
+		audioPlayers[message.guildId].play(audioResource);
+		console.log("playing resource");
+		message.guild.me.setNickname(queue[message.guild.id][0].title.substring(0, 31));
 	}
-	// create and play the audio resource for the current playdl stream // need to check docs for play-dl and input type
-	const audioResource = createAudioResource(playdlStream.stream, { inputType: playdlStream.type });
-	console.log("created audioresource");
-	audioPlayers[message.guildId].play(audioResource);
-	console.log("playing resource");
-	message.guild.me.setNickname(queue[message.guild.id][0].title.substring(0, 31));
+	catch (error) {
+		message.react(reactions.warning);
+		message.reply("```" + error + "```");
+		console.log(error);
+	}
 }
 
 // set SC client id every start so it doesnt expire
