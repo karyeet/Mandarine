@@ -8,6 +8,8 @@ const reactions = {
 	"negative":"👎",
 	"confused":"⁉️",
 	"warning":"⚠️",
+	"repeat":"🔂",
+	"next_track":"⏭️",
 };
 
 /* "guilid": [{
@@ -19,6 +21,8 @@ const reactions = {
 	type: "yt_track"
 }]*/
 const queue = {};
+
+const guildsLooping = {};
 
 // "guilid": audioPlayer
 const audioPlayers = {};
@@ -67,4 +71,4 @@ setScClientId();
 // set sc id every 5 minutes
 setInterval(setScClientId, 5 * 60 * 1000);
 
-module.exports = { queue, audioPlayers, playNext, reactions };
+module.exports = { queue, audioPlayers, playNext, reactions, guildsLooping };

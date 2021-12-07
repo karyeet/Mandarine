@@ -32,6 +32,8 @@ const DIY_COMMANDO = {
 
 	"remove": require("./commands/remove.js"),
 
+	"loop": require("./commands/loop.js"),
+
 };
 
 client.once("ready", () => {
@@ -44,7 +46,7 @@ client.login(process.env.token);
 
 // check if prefix is ">", and if so return the command back
 function checkCommand(content) {
-	if (!(content[0] == ">")) {
+	if (!(content[0] == "$")) {
 		return false;
 	}
 	const splitContent = content.slice(1).split(" ");

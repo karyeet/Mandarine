@@ -9,7 +9,7 @@ If so then join members current voice channel
 
 */
 
-const { audioPlayers, queue, playNext, reactions } = require("../general.js");
+const { audioPlayers, queue, playNext, reactions, guildsLooping } = require("../general.js");
 
 const {
 	joinVoiceChannel,
@@ -23,6 +23,7 @@ function join(message) {
 
 	// create queue for guild
 	queue[message.guildId] = [];
+	guildsLooping[message.guildId] = false;
 
 	// If user is not in channel if() returns false
 	if (!voice.channelId) {
@@ -50,7 +51,10 @@ function join(message) {
 	});
 
 	audioPlayer.on(AudioPlayerStatus.Idle, async () => {
-		queue[message.guild.id].shift();
+		if (!guildsLooping[message.guildId]) {
+			queue[message.guild.id].shift();
+		}
+
 		if (queue[message.guild.id] && queue[message.guild.id][0]) {
 			playNext(message);
 		}
