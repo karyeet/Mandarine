@@ -74,7 +74,7 @@ async function setScClientId() {
 }
 
 setScClientId();
-// set sc id every 5 minutes
-setInterval(setScClientId, 5 * 60 * 1000);
+// set sc id every 10 minutes
+setInterval(setScClientId, 10 * 60 * 1000);
 
 module.exports = { queue, audioPlayers, playNext, reactions, guildsLooping };
