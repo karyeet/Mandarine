@@ -70,7 +70,7 @@ client.on("messageCreate", (message) => {
 		}
 		catch (error) {
 			message.react(reactions.warning);
-			message.reply("```" + error + "```");
+			message.reply("```index.js: " + error + "```");
 			console.log(error);
 		}
 	}

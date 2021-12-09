@@ -48,9 +48,15 @@ async function playNext(message) {
 		message.guild.me.setNickname(queue[message.guild.id][0].title.substring(0, 31));
 	}
 	catch (error) {
+		/* If an error happens while trying to play a song,
+		we must skip the song here in order to allow the bot to resume
+		this is because discordjs will not fire the idle event if it never starts streaming */
 		message.react(reactions.warning);
-		message.reply("```" + error + "```");
+		message.reply("```general.js: " + error + "```");
 		console.log(error);
+		console.log("Error while playing song, skipping song.");
+		queue[message.guild.id].shift();
+		playNext(message);
 	}
 }
 

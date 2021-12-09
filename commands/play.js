@@ -211,7 +211,7 @@ async function play(message, args, command) {
 	}
 	catch (error) {
 		message.react(reactions.warning);
-		message.reply("```" + error + "```");
+		message.reply("```play.js: " + error + "```");
 		console.log(error);
 	}
 }
