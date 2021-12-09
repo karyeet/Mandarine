@@ -1,5 +1,5 @@
 const { queueGen, CalcQueuePages } = require("../presetEmbeds");
-const { queue, reactions } = require("../general");
+const { queue, guildsMeta, reactions } = require("../general");
 const { MessageActionRow, MessageButton } = require("discord.js");
 
 function buttonGen(guildid, page) {
@@ -95,7 +95,7 @@ function queueFunc(message, args) {
 	}
 	else {
 		// otherwise send the queue without buttons and delete after 60 seconds
-		message.reply({ embeds:[queueGen(message.member.user, queue[message.guild.id], page)] })
+		message.reply({ embeds:[queueGen(message.member.user, page, queue[message.guild.id], guildsMeta[message.guild.id])] })
 			.then(msg => {
 				setTimeout(() => msg.delete(), 30000);
 			});
