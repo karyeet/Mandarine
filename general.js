@@ -22,7 +22,7 @@ const reactions = {
 }]*/
 const queue = {};
 
-const guildsLooping = {};
+const guildsMeta = {};
 
 // "guilid": audioPlayer
 const audioPlayers = {};
@@ -77,4 +77,4 @@ setScClientId();
 // set sc id every 10 minutes
 setInterval(setScClientId, 10 * 60 * 1000);
 
-module.exports = { queue, audioPlayers, playNext, reactions, guildsLooping };
+module.exports = { queue, audioPlayers, playNext, reactions, guildsMeta };
