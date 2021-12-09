@@ -53,7 +53,11 @@ function nowPlaying(queueInfo) {
 
 const maxItemsPerPage = 4;
 function CalcQueuePages(queueLength) {
-	return Math.ceil((queueLength - 1) / maxItemsPerPage);
+	let pages = Math.ceil((queueLength - 1) / maxItemsPerPage);
+	if (pages === 0) {
+		pages = 1;
+	}
+	return pages;
 }
 
 function queueGen(user, guildQueue, page) {
