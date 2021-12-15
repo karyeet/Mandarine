@@ -48,12 +48,13 @@ function AddSCdataToQueue(message, data) {
 }
 
 function addYTdataToQueue(message, data) {
+	console.log(data);
 	const queueData = {
 		"title":		data.title,
 		"url": 			data.url,
 		"author": 		data.channel.name,
 		"durationInSec":data.durationInSec,
-		"thumbURL": 	data.thumbnail.url,
+		"thumbURL": 	data.thumbnails[data.thumbnails.length - 1].url,
 		"type": 		"yt_track",
 		"requester":	message.author,
 		"channel": 		message.channel,
