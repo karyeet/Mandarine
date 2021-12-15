@@ -5,7 +5,7 @@
     "bufferutil": "^4.0.5",
     "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
-    "erlpack": "^0.1.3",
+    "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^4.4.0",
     "libsodium-wrappers": "^0.7.9",
     "play-dl": "^1.5.7",
