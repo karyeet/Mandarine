@@ -48,7 +48,6 @@ function AddSCdataToQueue(message, data) {
 }
 
 function addYTdataToQueue(message, data) {
-	console.log(data);
 	const queueData = {
 		"title":		data.title,
 		"url": 			data.url,
