@@ -1,0 +1,114 @@
+/*
+follow what someone is listening to in spotify
+this will override normal commands
+we will call play which will handle joining, this will simply add the songs to queue and keep the queue exclusive
+
+*/
+
+
+const { queue, guildsMeta, reactions } = require("../general.js");
+const join = require("./join.js");
+const play = require("./play.js");
+const skip = require("./skip.js");
+
+// const templateSpotifyURL = "https://open.spotify.com/track/";
+// https://open.spotify.com/track/1AzqpMy3yLYNITSOUrnL8i
+
+function getTrack(activities) {
+	const track = {};
+	for (let i = 0; i < activities.length;i++) {
+		if (activities[i].syncId) {
+			track.name = activities[i].details;
+			track.artist = activities[i].state;
+			track.id = activities[i].syncId;
+			return track;
+		}
+
+	}
+	// return false if we dont find an id
+	return false;
+}
+
+async function spotify(message, args) {
+
+	if (args == "stop" || args == "end" || args == "false") {
+		guildsMeta[message.guild.id].spotify = false;
+		message.react(reactions.positive);
+		return true;
+	}
+	// if we are already following someone in spotify
+	else if (guildsMeta[message.guild.id] && guildsMeta[message.guild.id].spotify) {
+		message.react(reactions.negative);
+	}
+
+	if (message.mentions && message.mentions.members && message.mentions.members.first()) {
+
+		// look for spotify activity
+		const targetMember = message.mentions.members.first();
+		console.log(targetMember.presence);
+		let spotifyTrack = getTrack(targetMember.presence.activities);
+		if (!spotifyTrack) {
+			// they are not listening to spotify
+			message.react(reactions.negative);
+			return false;
+		}
+		// else
+		const scapeGoatMessage = await message.reply("Listening along!");
+		// join in case we haven't
+		await join(message);
+		// reset the queue
+		skip(scapeGoatMessage);
+		console.log("listening along");
+		queue[message.guild.id] = [];
+		play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name}  topic`);
+		message.react(reactions.positive);
+		guildsMeta[message.guild.id].spotify = targetMember.id;
+
+		// if inactive spotify reaches 20 checks, we will terminate
+		let inactiveSpotify = 0;
+		const checkSpotify = setInterval(async () => {
+			if (guildsMeta[message.guild.id].spotify && inactiveSpotify < 20) {
+				// refetch watched member
+				const member = await message.guild.members.fetch(guildsMeta[message.guild.id].spotify);
+				const newTrack = getTrack(member.presence.activities);
+				// console.log(newTrack);
+				// manage inactive spotify counter
+				if (newTrack) {
+					// if there is a song
+					inactiveSpotify = 0;
+					if (newTrack.id != spotifyTrack.id) {
+						// if new song
+						spotifyTrack = newTrack;
+						// play
+						console.log("playing new spotify song");
+						await play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name}  topic`);
+						skip(scapeGoatMessage);
+					}
+				}
+				else {
+					// if no song
+					inactiveSpotify++;
+				}
+			}
+			else {
+				// stop checking if queue mode is no longer spotify
+				console.log("no longer listening along");
+				guildsMeta[message.guild.id].spotify = false;
+				clearInterval(checkSpotify);
+				scapeGoatMessage.delete();
+			}
+
+		}, 2000);
+
+	}
+	else {
+		// no member specified
+		message.react(reactions.negative);
+		return false;
+	}
+
+
+	return true;
+}
+
+module.exports = spotify;

@@ -3,16 +3,17 @@ require("dotenv").config();
 
 const { Intents, Client } = require("discord.js");
 
-const { reactions } = require("./general.js");
+const { reactions, guildsMeta } = require("./general.js");
 
 // Intents: Guilds, VoiceStates, GuildMesssages
-const intents = [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS];
+const intents = [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_PRESENCES];
 
 // Create Client with discord commando
 const client = new Client({ intents });
 
 // table of command names and their corresponding files/functions
 const DIY_COMMANDO = {
+
 	"join": require("./commands/join.js"),
 
 	"disconnect": require("./commands/disconnect.js"),
@@ -33,6 +34,8 @@ const DIY_COMMANDO = {
 	"remove": require("./commands/remove.js"),
 
 	"loop": require("./commands/loop.js"),
+
+	"spotify": require("./commands/spotify.js"),
 
 };
 
@@ -67,6 +70,10 @@ client.on("messageCreate", (message) => {
 	if (DIY_COMMANDO[command]) {
 		try {
 			DIY_COMMANDO[command](message, args, command);
+			// terminate spotify following if any commands are ran
+			if ((command != "queue" && command != "spotify") && guildsMeta[message.guild.id] && guildsMeta[message.guild.id].spotify) {
+				guildsMeta[message.guild.id].spotify = false;
+			}
 		}
 		catch (error) {
 			message.react(reactions.warning);

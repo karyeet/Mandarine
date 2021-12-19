@@ -73,6 +73,9 @@ function queueGen(user, page, guildQueue, guildMeta) {
 	if (guildMeta.volume != 1) {
 		queueEmbed.addField("Volume", guildMeta.volume, true);
 	}
+	if (guildMeta.spotify) {
+		queueEmbed.addField("Spotify", `<@${guildMeta.spotify}>`, true);
+	}
 	// if maxItemsPerPage = 7
 	// each page will be 9 fields, minimum page is 0, nowplaying fields are 0-1, queue fields are 2-9, for a total of 7 queue items
 	// set i to ((page-1) * 7) + 1, while i is less than or equal to (page-1) * 7 + 7 and i is less than the guildqueue length, add a field

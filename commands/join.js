@@ -29,6 +29,7 @@ function join(message) {
 	guildsMeta[message.guildId] = {
 		"looping": false,
 		"volume": 1,
+		"spotify": false,
 	};
 
 	// If user is not in channel if() returns false
