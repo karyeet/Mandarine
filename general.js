@@ -22,6 +22,12 @@ const reactions = {
 }]*/
 const queue = {};
 
+// guildMeta for information about guilds
+/*
+"looping": false,
+"volume": 1,
+"spotify": false, // when spotify is set, it will be the userid
+*/
 const guildsMeta = {};
 
 // "guilid": audioPlayer
@@ -29,7 +35,13 @@ const audioPlayers = {};
 
 async function playNext(message) {
 	try {
-	// create playdl stream
+
+		// if the queue item doesnt exist dont bother
+		if (!queue[message.guild.id] || !queue[message.guild.id][0] || !queue[message.guild.id][0].url) {
+			return false;
+		}
+
+		// create playdl stream
 		const playdlStream = await playdl.stream(queue[message.guild.id][0].url);
 
 		// get type of stream to see if we need to attach listeners
