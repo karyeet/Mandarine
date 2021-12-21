@@ -137,19 +137,13 @@ async function play(message, args, command) {
 			// get spotify song data so we can search on soundcloud
 				const spotifyData = await playdl.spotify(args);
 				if (spotifyData && spotifyData.type == "track") {
-					console.log("spotify log\n " + spotifyData);
-					// search soundcloud
-					const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
-					// if no data then return false
+					console.log("spotify log\n ");
+					console.log(spotifyData);
+					// search youtube
+					const data = await playdl.search(`${spotifyData.artists[0].name} - ${spotifyData.name} topic`, { "limit":1, "source":{ "youtube":"video" } });
+					// if result, add first result to queue
 					if (data && data[0]) {
-						for (let i = 0; i < data.length; i++) {
-						// loop through so we can get rid of pro results
-							if (Number(data[i].durationInSec) > 30) {
-							// add first result to queue
-								AddSCdataToQueue(message, data[i]);
-								break;
-							}
-						}
+						addYTdataToQueue(message, data[0]);
 					}
 					else {
 						message.react(reactions.warning);
