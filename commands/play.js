@@ -137,8 +137,6 @@ async function play(message, args, command) {
 			// get spotify song data so we can search on soundcloud
 				const spotifyData = await playdl.spotify(args);
 				if (spotifyData && spotifyData.type == "track") {
-					console.log("spotify log\n ");
-					console.log(spotifyData);
 					// search youtube
 					const data = await playdl.search(`${spotifyData.artists[0].name} - ${spotifyData.name} topic`, { "limit":1, "source":{ "youtube":"video" } });
 					// if result, add first result to queue
