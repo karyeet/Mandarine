@@ -4,6 +4,7 @@ A Node.js Discord music bot made using the latest versions of [Discord.js](https
 Manderine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
 
 ## Features:
+- [x] Spotify Listen Along
 - [x] Soundcloud streaming
 - [x] Youtube streaming
 - [x] Spotify & Deezer link support
@@ -15,6 +16,7 @@ Manderine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
 
 #### Planned Features:
 - [ ] Deezer streaming
+- [ ] Help command
 - [ ] Multi-threaded streaming
 - [ ] Prefix command & other customizations
 - [ ] Volume
