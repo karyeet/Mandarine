@@ -15,6 +15,7 @@ Manderine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
 - [x] Light weight & universal
 
 #### Planned Features:
+- [ ] Playlist support
 - [ ] Deezer streaming
 - [ ] Help command
 - [ ] Multi-threaded streaming
