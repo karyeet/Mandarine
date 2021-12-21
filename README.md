@@ -32,3 +32,5 @@ then [add the bot to your server](https://help.pebblehost.com/en/article/how-to-
 4. Open command prompt or terminal in the chosen directory
 5. Run `npm install`
 5. To start the bot run `node .` or `npm start`
+
+### Check out the [wiki](https://github.com/karyeet/Mandarine/wiki) for commands and more help.
