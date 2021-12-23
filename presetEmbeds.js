@@ -29,9 +29,14 @@ function secondsToTime(seconds) {
 	}
 }
 
-function songAdded(queueInfo) {
+function songAdded(queueInfo, index) {
 	const songAddedEmbed = new mEmbeds(queueInfo.requester);
-	songAddedEmbed.setTitle("Added to Queue");
+	if (index) {
+		songAddedEmbed.setTitle(`Added to Queue, #${index}`);
+	}
+	else {
+		songAddedEmbed.setTitle("Added to Queue");
+	}
 	songAddedEmbed.setDesc("[" + queueInfo.title + "](" + queueInfo.url + ")");
 	songAddedEmbed.setThumb(queueInfo.thumbURL);
 	songAddedEmbed.addField("Artist", queueInfo.author, true);
@@ -39,7 +44,7 @@ function songAdded(queueInfo) {
 	return songAddedEmbed.embed.embed;
 }
 
-// now playing
+// now playing, not used because we change bot nickname
 
 function nowPlaying(queueInfo) {
 	const nowPlayingEmbed = new mEmbeds(queueInfo.requester);

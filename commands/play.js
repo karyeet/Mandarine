@@ -41,7 +41,7 @@ function AddSCdataToQueue(message, data) {
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
 	// send embed and delete after 60 seconds
-	message.reply({ embeds:[songAdded(queueData)] })
+	message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 		.then(msg => {
 			setTimeout(() => msg.delete(), 60000);
 		});
@@ -61,7 +61,7 @@ function addYTdataToQueue(message, data) {
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
 	// send embed and delete after 60 seconds
-	message.reply({ embeds:[songAdded(queueData)] })
+	message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 		.then(msg => {
 			setTimeout(() => msg.delete(), 60000);
 		});
