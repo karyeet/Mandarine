@@ -61,7 +61,7 @@ function queueFunc(message, args) {
 	if (CalcQueuePages(queue[message.guild.id].length) > 1) {
 
 		// message, auto delete after 60 seconds, and setup interaction responses
-		message.reply({ components: [buttonGen(message.guild.id, page)], embeds:[queueGen(message.member.user, queue[message.guild.id], page)] })
+		message.reply({ components: [buttonGen(message.guild.id, page)], embeds:[queueGen(message.member.user, page, queue[message.guild.id], guildsMeta[message.guild.id])] })
 			.then(msg => {
 				// setTimeout(() => msg.delete(), 20000); not needed if we can delete message on interaction end
 				const filter = (interaction) => interaction.customId == "next" || interaction.customId == "back";
@@ -73,7 +73,7 @@ function queueFunc(message, args) {
 						// check page to make sure its not too high or low
 						page = pageCheck(msg.guild.id, page);
 						// edit the message with the new embed and buttons
-						buttonInteraction.update({ components: [buttonGen(message.guild.id, page)], embeds:[queueGen(message.member.user, queue[message.guild.id], page)] });
+						buttonInteraction.update({ components: [buttonGen(message.guild.id, page)], embeds:[queueGen(message.member.user, page, queue[message.guild.id], guildsMeta[message.guild.id])] });
 					}
 					else if (buttonInteraction.customId == "back") {
 						// on next button press, increment page
@@ -81,7 +81,7 @@ function queueFunc(message, args) {
 						// check page to make sure its not too high or low
 						page = pageCheck(msg.guild.id, page);
 						// edit the message with the new embed and buttons
-						buttonInteraction.update({ components: [buttonGen(message.guild.id, page)], embeds:[queueGen(message.member.user, queue[message.guild.id], page)] });
+						buttonInteraction.update({ components: [buttonGen(message.guild.id, page)], embeds:[queueGen(message.member.user, page, queue[message.guild.id], guildsMeta[message.guild.id])] });
 					}
 				});
 
