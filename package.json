@@ -13,7 +13,7 @@
     "zlib-sync": "^0.1.7"
   },
   "name": "mandarine",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A Node.js discord musicbot",
   "main": "index.js",
   "scripts": {
