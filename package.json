@@ -8,7 +8,7 @@
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^4.4.0",
     "libsodium-wrappers": "^0.7.9",
-    "play-dl": "^1.6.8",
+    "play-dl": "^1.7.3",
     "utf-8-validate": "^5.0.7",
     "zlib-sync": "^0.1.7"
   },
