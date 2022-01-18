@@ -6,7 +6,7 @@
     "discord.js": "^13.5.0",
     "dotenv": "^10.0.0",
     "erlpack": "github:discord/erlpack",
-    "ffmpeg-static": "^4.4.0",
+    "ffmpeg-static": "^4.4.1",
     "libsodium-wrappers": "^0.7.9",
     "play-dl": "^1.6.8",
     "utf-8-validate": "^5.0.7",
