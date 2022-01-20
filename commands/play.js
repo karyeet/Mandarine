@@ -69,8 +69,8 @@ function addYTdataToQueue(message, data) {
 
 async function play(message, args, command) {
 	try {
-	// If already in a voice channel or able to join
-		if (!message.guild.me.voice.channelId) {
+	// If not already in a voice channel or queue does not exist, (re)join
+		if (!message.guild.me.voice.channelId || !queue[message.guild.id]) {
 		// const voiceConnection =
 		// const { audioPlayer } =
 			await join(message);
