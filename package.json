@@ -4,7 +4,7 @@
     "@discordjs/voice": "^0.7.5",
     "bufferutil": "^4.0.6",
     "discord.js": "^13.6.0",
-    "dotenv": "^14.2.0",
+    "dotenv": "^14.3.0",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^4.4.1",
     "libsodium-wrappers": "^0.7.9",
