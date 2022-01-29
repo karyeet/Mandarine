@@ -14,6 +14,9 @@
   },
   "name": "mandarine",
   "version": "0.2.4",
+  "engines": {
+    "node": "16.x"
+  },
   "description": "A Node.js discord musicbot",
   "main": "index.js",
   "scripts": {
