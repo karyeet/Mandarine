@@ -1,3 +1,19 @@
+// bind to a port if available in env, for heroku, replit, etc..
+// set env variable dontBind to true if you want Mandarine not to bind.
+if (process.env.PORT && !process.env.dontBind) {
+
+	const http = require("http");
+
+	const requestListener = function(req, res) {
+		res.writeHead(200);
+		res.end("https://github.com/karyeet/Mandarine");
+	};
+
+	const server = http.createServer(requestListener);
+	server.listen(process.env.PORT);
+}
+
+
 // load token into enviroment
 require("dotenv").config();
 
