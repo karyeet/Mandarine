@@ -26,6 +26,14 @@ Manderine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
 Before anything, install [Node v16 LTS](https://nodejs.org/en/) 
 and [create a discord bot](https://discord.com/developers/applications)
 then [add the bot to your server](https://help.pebblehost.com/en/article/how-to-invite-your-bot-to-a-discord-server-1asdlyg/).
+
+In the discord developer dashboard, toggle on:
+- PRESENCE INTENT
+- SERVER MEMBERS INTENT
+- MESSAGE CONTENT INTENT
+
+then
+
 1. Download the Zip Archive
 2. Unzip archive to a directory of your choosing
 3. Create a file called .env in the directory and write `token=yourBotToken` to the file
