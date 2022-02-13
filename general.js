@@ -82,7 +82,7 @@ async function setScClientId() {
 			client_id : SC_clientId,
 		},
 	});
-	console.log("SC ID: " + SC_clientId);
+	//console.log("SC ID: " + SC_clientId);
 }
 
 setScClientId();
