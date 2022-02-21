@@ -21,6 +21,7 @@ Manderine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
 - [ ] Multi-threaded streaming
 - [ ] Prefix command & other customizations
 - [ ] Volume
+- [ ] Preload next song for seamless playing
 
 ## Deployment
 Before anything, install [Node v16 LTS](https://nodejs.org/en/) 
