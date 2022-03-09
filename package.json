@@ -9,7 +9,7 @@
     "ffmpeg-static": "^4.4.1",
     "libsodium-wrappers": "^0.7.9",
     "play-dl": "^1.8.7",
-    "utf-8-validate": "^5.0.8",
+    "utf-8-validate": "^5.0.9",
     "zlib-sync": "^0.1.7"
   },
   "name": "mandarine",
