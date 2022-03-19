@@ -6,7 +6,7 @@
     "discord.js": "^13.6.0",
     "dotenv": "^14.2.0",
     "erlpack": "github:discord/erlpack",
-    "ffmpeg-static": "^4.4.1",
+    "ffmpeg-static": "^5.0.0",
     "libsodium-wrappers": "^0.7.9",
     "play-dl": "^1.9.2",
     "utf-8-validate": "^5.0.8",
@@ -39,6 +39,6 @@
   },
   "homepage": "https://github.com/karyeet/Mandarine#readme",
   "devDependencies": {
-    "eslint": "^8.7.0"
+    "eslint": "^8.11.0"
   }
 }
