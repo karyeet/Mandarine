@@ -30,7 +30,7 @@ function AddSCdataToQueue(message, data) {
 	}
 	const queueData = {
 		"title":		data.name,
-		"url": 			data.url,
+		"url": 			data.permalink,
 		"author": 		artist || data.user.name,
 		"durationInSec":data.durationInSec,
 		"thumbURL": 	data.thumbnail,
