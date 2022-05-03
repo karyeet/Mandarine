@@ -43,20 +43,26 @@ async function playNext(message) {
 			return false;
 		}
 
-		// create playdl stream
+		// set resource out of scope
 		let audioResource;
+
+		console.log("Stream url: " + queue[message.guild.id][0].stream_url);
+		console.log("url: " + queue[message.guild.id][0].url);
+
 		// get type of stream to see if we need to attach listeners
-		const streamType = await playdl.validate(queue[message.guild.id][0].stream_url);
+		const streamType = await playdl.validate(queue[message.guild.id][0].url);
+		console.log("stream type " + streamType);
 		if (streamType == "yt_video" || streamType == "so_track") {
-		// attach listeners to playdl for "proper  functionality"
+		// create playdl stream
+			const audioStream = await playdl.stream(queue[message.guild.id][0].stream_url);
+			// attach listeners to playdl for "proper  functionality"
 			playdl.attachListeners(audioPlayers[message.guildId], audioStream);
 			console.log("attached listeners");
-			// create playdl stream
-			const audioStream = await playdl.stream(queue[message.guild.id][0].stream_url);
 			// create audio resource
 			audioResource = createAudioResource(audioStream.stream, { inputType: audioStream.type });
 		}
 		else if (streamType == "dz_track") {
+			console.log("recognized dz_track");
 			const audioStream = createReadStream(queue[message.guild.id][0].stream_url);
 			audioResource = createAudioResource(audioStream, { inputType: StreamType.Arbitrary });
 		}

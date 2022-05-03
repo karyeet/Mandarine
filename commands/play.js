@@ -73,7 +73,7 @@ function addYTdataToQueue(message, data) {
 function addDZdataToQueue(message, data) {
 	const queueData = {
 		"title":		data.title,
-		"url": 			null,
+		"url": 			data.link,
 		"author": 		data.artist.name,
 		"durationInSec":data.duration,
 		"thumbURL": 	data.album.cover_medium,
