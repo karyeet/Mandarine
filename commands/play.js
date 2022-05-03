@@ -16,6 +16,7 @@ const { songAdded } = require("../presetEmbeds.js");
 const { AudioPlayerStatus } = require("@discordjs/voice");
 
 const playdl = require("play-dl");
+const deezer = require("../deezer/meezer.js");
 
 const join = require("./join.js");
 const unpause = require("./unpause.js");
@@ -37,6 +38,7 @@ function AddSCdataToQueue(message, data) {
 		"type": 		"so_track",
 		"requester":	message.author,
 		"channel": 		message.channel,
+		"stream_url": 	data.permalink,
 	};
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
@@ -57,6 +59,28 @@ function addYTdataToQueue(message, data) {
 		"type": 		"yt_track",
 		"requester":	message.author,
 		"channel": 		message.channel,
+		"stream_url": 	data.url,
+	};
+	queue[message.guild.id].push(queueData);
+	message.react(reactions.positive);
+	// send embed and delete after 60 seconds
+	message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
+		.then(msg => {
+			setTimeout(() => msg.delete(), 60000);
+		});
+}
+
+function addDZdataToQueue(message, data) {
+	const queueData = {
+		"title":		data.title,
+		"url": 			null,
+		"author": 		data.artist.name,
+		"durationInSec":data.duration,
+		"thumbURL": 	data.album.cover_medium,
+		"type": 		"dz_track",
+		"requester":	message.author,
+		"channel": 		message.channel,
+		"stream_url": 	data.fileLocation,
 	};
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
@@ -90,18 +114,11 @@ async function play(message, args, command) {
 			if (validate == "search") {
 				if (command == "music") {
 				// search soundcloud
-					const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
+					const data = await deezer.searchTrack(args);
 					// if no result then return false
-					if (data && data[0]) {
-						for (let i = 0; i < data.length; i++) {
-						// loop through so we can get rid of pro results
-							if (Number(data[i].durationInSec) > 30) {
-							// add first result to queue
-								AddSCdataToQueue(message, data[i]);
-								break;
-							}
-						}
-
+					if (data && data.link) {
+						data.fileLocation = await deezer.DownloadTrack(data.link);
+						addDZdataToQueue(message, data);
 					}
 					else {
 						message.react(reactions.warning);

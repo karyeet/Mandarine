@@ -37,7 +37,14 @@ function songAdded(queueInfo, index) {
 	else {
 		songAddedEmbed.setTitle("Added to Queue");
 	}
-	songAddedEmbed.setDesc("[" + queueInfo.title + "](" + queueInfo.url + ")");
+
+	if (queueInfo.url) {
+		songAddedEmbed.setDesc("[" + queueInfo.title + "](" + queueInfo.url + ")");
+	}
+	else {
+		songAddedEmbed.setDesc(queueInfo.title);
+	}
+
 	songAddedEmbed.setThumb(queueInfo.thumbURL);
 	songAddedEmbed.addField("Artist", queueInfo.author, true);
 	songAddedEmbed.addField("Length", secondsToTime(queueInfo.durationInSec), true);
@@ -49,7 +56,14 @@ function songAdded(queueInfo, index) {
 function nowPlaying(queueInfo) {
 	const nowPlayingEmbed = new mEmbeds(queueInfo.requester);
 	nowPlayingEmbed.setTitle("Now Playing");
-	nowPlayingEmbed.setDesc("[" + queueInfo.title + "](" + queueInfo.url + ")");
+
+	if (queueInfo.url) {
+		nowPlayingEmbed.setDesc("[" + queueInfo.title + "](" + queueInfo.url + ")");
+	}
+	else {
+		nowPlayingEmbed.setDesc(queueInfo.title);
+	}
+
 	nowPlayingEmbed.setThumb(queueInfo.thumbURL);
 	nowPlayingEmbed.addField("Artist", queueInfo.author, true);
 	nowPlayingEmbed.addField("Length", secondsToTime(queueInfo.durationInSec), true);
@@ -68,7 +82,14 @@ function CalcQueuePages(queueLength) {
 function queueGen(user, page, guildQueue, guildMeta) {
 	const queueEmbed = new mEmbeds(user);
 	queueEmbed.setTitle("Queue, Page: " + page + "/" + CalcQueuePages(guildQueue.length));
-	queueEmbed.setDesc("**Currently Playing**: [" + guildQueue[0].title + "](" + guildQueue[0].url + ")");
+
+	if (queueEmbed.url) {
+		queueEmbed.setDesc("**Currently Playing**: [" + guildQueue[0].title + "](" + guildQueue[0].url + ")");
+	}
+	else {
+		queueEmbed.setDesc("**Currently Playing**: " + guildQueue[0].title);
+	}
+
 	queueEmbed.setThumb(guildQueue[0].thumbURL);
 	queueEmbed.addField("Artist", guildQueue[0].author, true);
 	queueEmbed.addField("Length", secondsToTime(guildQueue[0].durationInSec), true);
@@ -86,7 +107,15 @@ function queueGen(user, page, guildQueue, guildMeta) {
 	// set i to ((page-1) * 7) + 1, while i is less than or equal to (page-1) * 7 + 7 and i is less than the guildqueue length, add a field
 	// so this will loop through 1-7, 8-14
 	for (let i = (page - 1) * maxItemsPerPage + 1; i <= ((page - 1) * maxItemsPerPage) + maxItemsPerPage && i < guildQueue.length; i++) {
-		queueEmbed.addField("#" + i, "[" + guildQueue[i].title + "](" + guildQueue[i].url + ") || " + secondsToTime(guildQueue[i].durationInSec), false);
+
+		if (guildQueue[i].url) {
+			queueEmbed.addField("#" + i, "[" + guildQueue[i].title + "](" + guildQueue[i].url + ") || " + secondsToTime(guildQueue[i].durationInSec), false);
+		}
+		else {
+			queueEmbed.addField("#" + i, guildQueue[i].title + " || " + secondsToTime(guildQueue[i].durationInSec), false);
+		}
+
+
 	}
 
 	return queueEmbed.embed.embed;
