@@ -1,12 +1,13 @@
 const spawn = require("child_process").spawn;
 const https = require("https");
 const homedir = require("os").homedir();
+const { existsSync } = require("fs");
 
 function DownloadTrack(deezerTrack) {
 	const dlpromise = new Promise((resolve, reject) => {
 		const deemix = spawn("deemix", [deezerTrack], { "cwd": homedir });
 		let filename;
-		setTimeout(() => {
+		const killTimeout = setTimeout(() => {
 			deemix.kill("SIGINT");
 		}, 30_000);
 		deemix.stdout.on("data", (data) => {
@@ -21,6 +22,7 @@ function DownloadTrack(deezerTrack) {
 		});
 		deemix.on("close", (code) => {
 			console.log("deemix finished download with code " + code);
+			clearTimeout(killTimeout);
 			if (code == 0) {
 				// console.log(filename);
 				resolve(homedir + "/music/" + filename);
@@ -56,6 +58,20 @@ function searchTrack(query) {
 	});
 	return trackpromise;
 }
+function sanitizeFilename(text) {
+	// eslint-disable-next-line no-useless-escape
+	return text.replace(/[^. A-z0-9_-]/g, "_");
+}
+
+function trackExists(artist, title) {
+	console.log(artist);
+	console.log(title);
+	console.log(homedir + "/music/" + sanitizeFilename(artist + " - " + title) + ".mp3");
+	if (existsSync(homedir + "/music/" + sanitizeFilename(artist + " - " + title) + ".mp3")) {
+		return homedir + "/music/" + sanitizeFilename(artist + " - " + title) + ".mp3";
+	}
+	return false;
+}
 
 
-module.exports = { DownloadTrack, searchTrack };
+module.exports = { DownloadTrack, searchTrack, trackExists };

@@ -117,7 +117,8 @@ async function play(message, args, command) {
 					const data = await deezer.searchTrack(args);
 					// if no result then return false
 					if (data && data.link) {
-						data.fileLocation = await deezer.DownloadTrack(data.link);
+						// set to existing track or download the track
+						data.fileLocation = deezer.trackExists(data.artist.name, data.title) || await deezer.DownloadTrack(data.link);
 						addDZdataToQueue(message, data);
 					}
 					else {
