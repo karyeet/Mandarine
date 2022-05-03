@@ -6,6 +6,9 @@ function DownloadTrack(deezerTrack) {
 	const dlpromise = new Promise((resolve, reject) => {
 		const deemix = spawn("deemix", [deezerTrack], { "cwd": homedir });
 		let filename;
+		setTimeout(() => {
+			deemix.kill("SIGINT");
+		}, 30_000);
 		deemix.stdout.on("data", (data) => {
 			data = data.toString();
 			// console.log("data: "+ data);
