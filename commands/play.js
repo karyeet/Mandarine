@@ -20,7 +20,7 @@ const deezer = require("../deezer/meezer.js");
 
 const join = require("./join.js");
 const unpause = require("./unpause.js");
-
+const ytdl = require("ytdl-core");
 // eslint-disable-next-line
 // const ytRegex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
 
@@ -52,14 +52,14 @@ function AddSCdataToQueue(message, data) {
 function addYTdataToQueue(message, data) {
 	const queueData = {
 		"title":		data.title,
-		"url": 			data.url,
-		"author": 		data.channel.name,
-		"durationInSec":data.durationInSec,
+		"url": 			data.video_url,
+		"author": 		data.author.name,
+		"durationInSec":data.lengthSeconds,
 		"thumbURL": 	data.thumbnails[data.thumbnails.length - 1].url,
 		"type": 		"yt_track",
 		"requester":	message.author,
 		"channel": 		message.channel,
-		"stream_url": 	data.url,
+		"stream_url": 	data.video_url,
 	};
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
@@ -191,10 +191,10 @@ async function play(message, args, command) {
 			}
 			else if (validate == "yt_video") {
 			// get youtube video info
-				const data = await playdl.video_basic_info(args);
+				const data = await ytdl.getBasicInfo(args);
 				// add result to queue if data
-				if (data && data.video_details) {
-					addYTdataToQueue(message, data.video_details);
+				if (data && data.videoDetails) {
+					addYTdataToQueue(message, data.videoDetails);
 				}
 				else {
 					message.react(reactions.warning);
