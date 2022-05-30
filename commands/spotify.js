@@ -60,14 +60,14 @@ async function spotify(message, args) {
 		skip(scapeGoatMessage);
 		console.log("listening along");
 		queue[message.guild.id] = [];
-		play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name}  topic`);
+		play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name}`, "music");
 		message.react(reactions.positive);
 		guildsMeta[message.guild.id].spotify = targetMember.id;
 
-		// if inactive spotify reaches 20 checks, we will terminate
+		// if inactive spotify reaches 60 (seconds) checks, we will terminate
 		let inactiveSpotify = 0;
 		const checkSpotify = setInterval(async () => {
-			if (guildsMeta[message.guild.id].spotify && inactiveSpotify < 20) {
+			if (guildsMeta[message.guild.id].spotify && inactiveSpotify < 60) {
 				// refetch watched member
 				const member = await message.guild.members.fetch(guildsMeta[message.guild.id].spotify);
 				const newTrack = getTrack(member.presence.activities);
@@ -81,7 +81,7 @@ async function spotify(message, args) {
 						spotifyTrack = newTrack;
 						// play
 						console.log("playing new spotify song");
-						await play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name}  topic`);
+						await play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name}`, "music");
 						skip(scapeGoatMessage);
 					}
 				}
@@ -98,7 +98,7 @@ async function spotify(message, args) {
 				scapeGoatMessage.delete();
 			}
 
-		}, 2000);
+		}, 1000);
 
 	}
 	else {
