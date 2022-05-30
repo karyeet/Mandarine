@@ -3,6 +3,7 @@
 const playdl = require("play-dl");
 const { createAudioResource, StreamType } = require("@discordjs/voice");
 const { createReadStream } = require("fs");
+const ytdl = require("ytdl-core");
 
 const reactions = {
 	"positive":"🍊",
@@ -52,7 +53,7 @@ async function playNext(message) {
 		// get type of stream to see if we need to attach listeners
 		const streamType = await playdl.validate(queue[message.guild.id][0].url);
 		console.log("stream type " + streamType);
-		if (streamType == "yt_video" || streamType == "so_track") {
+		if (streamType == "so_track") {
 		// create playdl stream
 			const audioStream = await playdl.stream(queue[message.guild.id][0].stream_url);
 			// attach listeners to playdl for "proper  functionality"
@@ -64,6 +65,13 @@ async function playNext(message) {
 		else if (streamType == "dz_track") {
 			console.log("recognized dz_track");
 			const audioStream = createReadStream(queue[message.guild.id][0].stream_url);
+			audioResource = createAudioResource(audioStream, { inputType: StreamType.Arbitrary });
+		}
+		else if (streamType == "yt_video") {
+			const audioStream = ytdl(queue[message.guild.id][0].stream_url, {
+				quality:"highestaudio",
+				filter: "audioonly",
+			});
 			audioResource = createAudioResource(audioStream, { inputType: StreamType.Arbitrary });
 		}
 
