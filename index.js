@@ -39,6 +39,7 @@ const DIY_COMMANDO = {
 	"music": require("./commands/play.js"),
 
 	"pause": require("./commands/pause.js"),
+	"stop": require("./commands/pause.js"),
 
 	"resume": require("./commands/unpause.js"),
 	"unpause": require("./commands/unpause.js"),
