@@ -71,6 +71,7 @@ async function playNext(message) {
 			const audioStream = ytdl(queue[message.guild.id][0].stream_url, {
 				quality:"highestaudio",
 				filter: "audioonly",
+				highWaterMark: 1<<25,
 			});
 			audioResource = createAudioResource(audioStream, { inputType: StreamType.Arbitrary });
 		}
