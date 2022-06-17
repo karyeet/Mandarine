@@ -52,14 +52,14 @@ function AddSCdataToQueue(message, data) {
 function addYTdataToQueue(message, data) {
 	const queueData = {
 		"title":		data.title,
-		"url": 			data.video_url,
-		"author": 		data.author.name,
-		"durationInSec":data.lengthSeconds,
+		"url": 			(data.video_url || data.url),
+		"author": 		(data.author ? data.author.name : data.channel.name),
+		"durationInSec": (data.lengthSeconds || data.durationInSec),
 		"thumbURL": 	data.thumbnails[data.thumbnails.length - 1].url,
 		"type": 		"yt_track",
 		"requester":	message.author,
 		"channel": 		message.channel,
-		"stream_url": 	data.video_url,
+		"stream_url": 	(data.video_url || data.url),
 	};
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
@@ -69,6 +69,7 @@ function addYTdataToQueue(message, data) {
 			setTimeout(() => msg.delete(), 60000);
 		});
 }
+
 
 function addDZdataToQueue(message, data) {
 	const queueData = {
