@@ -88,7 +88,7 @@ async function play(message, args, command) {
 			const validate = await playdl.validate(args);
 			console.log(validate);
 			if (validate == "search") {
-				if (command == "music") {
+				if (command == "soundcloud") {
 				// search soundcloud
 					const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
 					// if no result then return false
