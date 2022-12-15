@@ -83,7 +83,7 @@ function queueGen(user, page, guildQueue, guildMeta) {
 	const queueEmbed = new mEmbeds(user);
 	queueEmbed.setTitle("Queue, Page: " + page + "/" + CalcQueuePages(guildQueue.length));
 
-	if (queueEmbed.url) {
+	if (guildQueue[0].url) {
 		queueEmbed.setDesc("**Currently Playing**: [" + guildQueue[0].title + "](" + guildQueue[0].url + ")");
 	}
 	else {
