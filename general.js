@@ -1,7 +1,9 @@
 // Contains functions & tables used by multiple scripts in the project
 
 const playdl = require("play-dl");
-const { createAudioResource } = require("@discordjs/voice");
+const { createAudioResource, StreamType } = require("@discordjs/voice");
+const { createReadStream } = require("fs");
+const ytdl = require("ytdl-core");
 
 const reactions = {
 	"positive":"🍊",
@@ -19,6 +21,7 @@ const reactions = {
 	length: "5:13",
 	thumbURL: "",
 	type: "yt_track"
+	stream_url: "https://www.youtube.com/watch?v=WibFGyDMmYA" or "/home/music/file.mp3"
 }]*/
 const queue = {};
 
@@ -36,24 +39,44 @@ const audioPlayers = {};
 async function playNext(message) {
 	try {
 
-		// if the queue item doesnt exist dont bother
-		if (!queue[message.guild.id] || !queue[message.guild.id][0] || !queue[message.guild.id][0].url) {
+		// if the queue item doesnt exist dont bother playing
+		if (!queue[message.guild.id] || !queue[message.guild.id][0] || !queue[message.guild.id][0].stream_url) {
 			return false;
 		}
 
-		// create playdl stream
-		const playdlStream = await playdl.stream(queue[message.guild.id][0].url);
+		// set resource out of scope
+		let audioResource;
+
+		console.log("Stream url: " + queue[message.guild.id][0].stream_url);
+		console.log("url: " + queue[message.guild.id][0].url);
 
 		// get type of stream to see if we need to attach listeners
-		const streamType = await playdl.validate(queue[message.guild.id][0].url);
-		if (streamType == "yt_video" || streamType == "so_track") {
-		// attach listeners to playdl for "proper  functionality"
-			playdl.attachListeners(audioPlayers[message.guildId], playdlStream);
+		const streamType = queue[message.guild.id][0].type;
+		console.log("stream type " + streamType);
+		if (streamType == "so_track") {
+		// create playdl stream
+			const audioStream = await playdl.stream(queue[message.guild.id][0].stream_url);
+			// attach listeners to playdl for "proper  functionality"
+			playdl.attachListeners(audioPlayers[message.guildId], audioStream);
 			console.log("attached listeners");
-
+			// create audio resource
+			audioResource = createAudioResource(audioStream.stream, { inputType: audioStream.type });
 		}
-		// create and play the audio resource for the current playdl stream // need to check docs for play-dl and input type
-		const audioResource = createAudioResource(playdlStream.stream, { inputType: playdlStream.type });
+		else if (streamType == "dz_track") {
+			console.log("recognized dz_track");
+			const audioStream = createReadStream(queue[message.guild.id][0].stream_url);
+			audioResource = createAudioResource(audioStream, { inputType: StreamType.Arbitrary });
+		}
+		else if (streamType == "yt_video") {
+			const audioStream = ytdl(queue[message.guild.id][0].stream_url, {
+				quality:"highestaudio",
+				filter: "audioonly",
+				highWaterMark: 1 << 25,
+			});
+			audioResource = createAudioResource(audioStream, { inputType: StreamType.Arbitrary });
+		}
+
+		// play the audio resource for the current playdl stream // need to check docs for play-dl and input type
 		console.log("created audioresource");
 		audioPlayers[message.guildId].play(audioResource);
 		console.log("playing resource");
