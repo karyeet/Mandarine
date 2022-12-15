@@ -102,7 +102,7 @@ function addToLibrary(artist, title, fileName) {
 		"artist": artist,
 		"search": fileName.replace(/\.mp3$/, ""),
 	};
-	fs.writeFileSync("./localLibrary.json", JSON.stringify(localLibrary));
+	fs.writeFileSync(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
 }
 
 console.log(pathToFiles);
