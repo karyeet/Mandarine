@@ -32,7 +32,7 @@ const DIY_COMMANDO = {
 	"leave": require("./commands/disconnect.js"),
 
 	"play": require("./commands/play.js"),
-	"soundcloud": require("./commands/play.js"),
+	"music": require("./commands/play.js"),
 
 	"pause": require("./commands/pause.js"),
 	"stop": require("./commands/pause.js"),
