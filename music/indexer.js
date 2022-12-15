@@ -62,7 +62,7 @@ fs.readdir(pathToFiles, async function(err, files) {
 		await addFile(fileName);
 		if (i == files.length - 1) {
 			console.log("write");
-			setTimeout(()=>{
+			setTimeout(() => {
 				write();
 			}, 3_000);
 		}
