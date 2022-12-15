@@ -45,7 +45,7 @@ async function requestTrack(query) {
 		const fusefilepath = path.join(pathToFiles, fuseResult[0].item.search + ".mp3");
 		return {
 			"path":fusefilepath,
-			"metadata":read(fusefilepath),
+			"metadata": await read(fusefilepath),
 		};
 	}
 	// otherwise perform deezer track fetch (no explicit else)
@@ -59,7 +59,7 @@ async function requestTrack(query) {
 	if (trackExists) {
 		console.log("track exist");
 		return {
-			"metadata":read(trackExists),
+			"metadata": await read(trackExists),
 			"path": trackExists,
 		};
 	}
