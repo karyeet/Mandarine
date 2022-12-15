@@ -49,7 +49,7 @@ function AddSCdataToQueue(message, data) {
 		});
 }
 
-function addYTdataToQueue(message, data) {
+function addYTdataToQueue(message, data, isPlayList) {
 	const queueData = {
 		"title":		data.title,
 		"url": 			(data.video_url || data.url),
@@ -64,10 +64,14 @@ function addYTdataToQueue(message, data) {
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
 	// send embed and delete after 60 seconds
-	message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
-		.then(msg => {
-			setTimeout(() => msg.delete(), 60000);
-		});
+	// dont send if playlist so we dont spam and get hit by ratelimit
+	if (!isPlayList) {
+		message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
+			.then(msg => {
+				setTimeout(() => msg.delete(), 60000);
+			});
+	}
+
 }
 
 
@@ -201,6 +205,45 @@ async function play(message, args, command) {
 				// add result to queue if data
 				if (data && data.videoDetails) {
 					addYTdataToQueue(message, data.videoDetails);
+				}
+				else {
+					message.react(reactions.warning);
+					return false;
+				}
+
+			}
+			else if (validate == "yt_playlist") {
+				// get youtube playlist info
+				const pldata = await playdl.playlist_info(args);
+
+				if (pldata) {
+					const videos = await pldata.all_videos();
+					if (videos) {
+						// add result to queue if data
+						let length = 0;
+						for (const i in videos) {
+							const video = videos[i];
+							length += video.durationInSec;
+							addYTdataToQueue(message, video, true);
+						}
+						// mock song data to create embed
+						const queueData = {
+							"title":		pldata.title,
+							"url": 			pldata.url || pldata.link,
+							"author": 		pldata.channel.name,
+							"durationInSec": length,
+							"thumbURL": 	videos[0].thumbnails[videos[0].thumbnails.length - 1].url,
+							"type": 		"yt_track",
+							"requester":	message.author,
+							"channel": 		message.channel,
+							"stream_url": 	pldata.url || pldata.link,
+						};
+						message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
+							.then(msg => {
+								setTimeout(() => msg.delete(), 60000);
+							});
+						// end of mock
+					}
 				}
 				else {
 					message.react(reactions.warning);
