@@ -25,7 +25,7 @@ const path = require("path");
 
 */
 
-fs.readdir(pathToFiles, async function(err, files) {
+/* fs.readdir(pathToFiles, async function(err, files) {
 	if (err) throw err;
 	console.log(files);
 	for (let i = 0; i < files.length; i++) {
@@ -50,7 +50,41 @@ fs.readdir(pathToFiles, async function(err, files) {
 		}
 
 	}
+});*/
+
+fs.readdir(pathToFiles, async function(err, files) {
+	if (err) throw err;
+	console.log(files);
+	for (let i = 0; i < files.length; i++) {
+		const fileName = files[i];
+		console.log(fileName);
+		// only support mp3
+		await addFile(fileName);
+		if (i == files.length - 1) {
+			console.log("write");
+			setTimeout(()=>{
+				write();
+			}, 3_000);
+		}
+	}
 });
+
+async function addFile(fileName) {
+	if (fileName.endsWith(".mp3")) {
+		if (!localLibrary[fileName]) {
+			read(path.join(pathToFiles, fileName), function(err, tags) {
+				if (err) throw err;
+				// console.log("tags");
+				localLibrary[fileName] = {
+					"title": tags.title,
+					"artist": tags.artist,
+					"search": fileName.replace(/\.mp3$/, ""),
+				};
+				return true;
+			});
+		}
+	}
+}
 
 function write() {
 	console.log(localLibrary);
