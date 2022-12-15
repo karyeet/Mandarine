@@ -21,7 +21,7 @@ function DownloadTrack(deezerTrack) {
 			// console.log("data: "+ data);
 			// eslint-disable-next-line no-useless-escape
 			const findFileName = data.match(/(Completed download of (\\)?(\/)?)(.* - .*$)/m);
-			console.log("data " + data);
+			// console.log("data " + data);
 			console.log("findfilename: " + findFileName);
 			if (findFileName) {
 				filename = findFileName[4];
