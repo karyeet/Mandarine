@@ -30,9 +30,9 @@ async function requestTrack(query) {
 	// get array of files and create new fuse object, only use search key
 	const fuse = new Fuse(Object.values(localLibrary),
 		{
-			"keys": ["search"],
+			"keys": ["search", "title"],
 			includeScore: true,
-			threshold: 0.2,
+			threshold: 0.4,
 		});
 	// perform search
 
