@@ -60,7 +60,7 @@ client.once("ready", () => {
 const config = require("./config.json");
 
 // Login
-client.login(config.tokenalt);
+client.login(config.token);
 
 // check if prefix is ">", and if so return the command back
 function checkCommand(content) {
