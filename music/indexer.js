@@ -12,6 +12,8 @@ const { read } = require("node-id3");
 const homedir = require("os").homedir();
 const pathToFiles = homedir + "/manderineFiles/";
 
+const path = require("path");
+
 /*
 
 {
@@ -32,7 +34,7 @@ fs.readdir(pathToFiles, async function(err, files) {
 		// only support mp3
 		if (fileName.endsWith(".mp3")) {
 			if (!localLibrary[fileName]) {
-				read("./files/" + fileName, function(err, tags) {
+				read(path.join(pathToFiles, fileName), function(err, tags) {
 					if (err) throw err;
 					console.log("tags");
 					localLibrary[fileName] = {
@@ -52,5 +54,5 @@ fs.readdir(pathToFiles, async function(err, files) {
 
 function write() {
 	console.log(localLibrary);
-	fs.writeFileSync("./localLibrary.json", JSON.stringify(localLibrary));
+	fs.writeFileSync(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
 }
