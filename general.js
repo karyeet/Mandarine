@@ -67,7 +67,7 @@ async function playNext(message) {
 			const audioStream = createReadStream(queue[message.guild.id][0].stream_url);
 			audioResource = createAudioResource(audioStream, { inputType: StreamType.Arbitrary });
 		}
-		else if (streamType == "yt_video") {
+		else if (streamType == "yt_video" || streamType == "yt_track") {
 			const audioStream = ytdl(queue[message.guild.id][0].stream_url, {
 				quality:"highestaudio",
 				filter: "audioonly",
