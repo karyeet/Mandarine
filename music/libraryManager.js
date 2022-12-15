@@ -71,7 +71,7 @@ async function requestTrack(query) {
 		console.log("trackdl");
 		addToLibrary(result.artist.name, result.title, trackDL.fileName);
 		return {
-			"metadata":read(trackDL.path),
+			"metadata":await read(trackDL.path),
 			"path": trackDL.path,
 		};
 	}
