@@ -4,7 +4,7 @@ const homedir = require("os").homedir();
 const { existsSync } = require("fs");
 const path = require("path");
 
-const pathToFiles = path.join(homedir, "/manderineFiles/");
+const pathToFiles = path.join(homedir, "/mandarineFiles/");
 
 
 // python3 -m deemix --portable -p ./ https://www.deezer.com/track/2047662387
