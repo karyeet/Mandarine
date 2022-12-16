@@ -214,9 +214,9 @@ async function play(message, args, command) {
 			}
 			else if (validate == "yt_playlist") {
 				// get youtube playlist info
-				const pldata = await playdl.playlist_info(args);
+				const pldata = await playdl.playlist_info(args, { incomplete : true });
 
-				if (pldata) {
+				if (pldata && pldata.videoCount > 0) {
 					const videos = await pldata.all_videos();
 					if (videos) {
 						// add result to queue if data
