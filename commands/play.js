@@ -16,10 +16,11 @@ const { songAdded } = require("../presetEmbeds.js");
 const { AudioPlayerStatus } = require("@discordjs/voice");
 
 const playdl = require("play-dl");
+const libmanger = require("../music/libraryManager.js");
 
 const join = require("./join.js");
 const unpause = require("./unpause.js");
-
+const ytdl = require("ytdl-core");
 // eslint-disable-next-line
 // const ytRegex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
 
@@ -37,6 +38,7 @@ function AddSCdataToQueue(message, data) {
 		"type": 		"so_track",
 		"requester":	message.author,
 		"channel": 		message.channel,
+		"stream_url": 	data.permalink,
 	};
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
@@ -47,21 +49,52 @@ function AddSCdataToQueue(message, data) {
 		});
 }
 
-function addYTdataToQueue(message, data) {
+function addYTdataToQueue(message, data, isPlayList) {
 	const queueData = {
 		"title":		data.title,
-		"url": 			data.url,
-		"author": 		data.channel.name,
-		"durationInSec":data.durationInSec,
+		"url": 			(data.video_url || data.url),
+		"author": 		(data.author ? data.author.name : data.channel.name),
+		"durationInSec": (data.lengthSeconds || data.durationInSec),
 		"thumbURL": 	data.thumbnails[data.thumbnails.length - 1].url,
 		"type": 		"yt_track",
 		"requester":	message.author,
 		"channel": 		message.channel,
+		"stream_url": 	(data.video_url || data.url),
 	};
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
 	// send embed and delete after 60 seconds
-	message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
+	// dont send if playlist so we dont spam and get hit by ratelimit
+	if (!isPlayList) {
+		message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
+			.then(msg => {
+				setTimeout(() => msg.delete(), 60000);
+			});
+	}
+
+}
+
+
+function addDZdataToQueue(message, data) {
+	// console.log(data);
+	const queueData = {
+		"title":		data.metadata.title,
+		"url": 			null,
+		"author": 		data.metadata.artist,
+		"durationInSec":(data.metadata.length / 1000),
+		"thumbURL": 	"attachment://thumb.jpg",
+		"type": 		"dz_track",
+		"requester":	message.author,
+		"channel": 		message.channel,
+		"stream_url": 	data.path,
+	};
+	queue[message.guild.id].push(queueData);
+	message.react(reactions.positive);
+	// send embed and delete after 60 seconds
+	message.reply(
+		{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
+			files:[{ "name":"thumb.jpg", "attachment":data.metadata.image.imageBuffer }],
+		})
 		.then(msg => {
 			setTimeout(() => msg.delete(), 60000);
 		});
@@ -88,20 +121,15 @@ async function play(message, args, command) {
 			const validate = await playdl.validate(args);
 			console.log(validate);
 			if (validate == "search") {
+				// console.log(command);
 				if (command == "music") {
-				// search soundcloud
-					const data = await playdl.search(args, { "limit":4, "source":{ "soundcloud":"tracks" } });
+				// search library
+					const data = await libmanger.requestTrack(args);
+					// console.log(data);
 					// if no result then return false
-					if (data && data[0]) {
-						for (let i = 0; i < data.length; i++) {
-						// loop through so we can get rid of pro results
-							if (Number(data[i].durationInSec) > 30) {
-							// add first result to queue
-								AddSCdataToQueue(message, data[i]);
-								break;
-							}
-						}
-
+					if (data && data.path) {
+						// set to existing track or download the track
+						addDZdataToQueue(message, data);
 					}
 					else {
 						message.react(reactions.warning);
@@ -173,10 +201,49 @@ async function play(message, args, command) {
 			}
 			else if (validate == "yt_video") {
 			// get youtube video info
-				const data = await playdl.video_basic_info(args);
+				const data = await ytdl.getBasicInfo(args);
 				// add result to queue if data
-				if (data && data.video_details) {
-					addYTdataToQueue(message, data.video_details);
+				if (data && data.videoDetails) {
+					addYTdataToQueue(message, data.videoDetails);
+				}
+				else {
+					message.react(reactions.warning);
+					return false;
+				}
+
+			}
+			else if (validate == "yt_playlist") {
+				// get youtube playlist info
+				const pldata = await playdl.playlist_info(args, { incomplete : true });
+
+				if (pldata && pldata.videoCount > 0) {
+					const videos = await pldata.all_videos();
+					if (videos) {
+						// add result to queue if data
+						let length = 0;
+						for (const i in videos) {
+							const video = videos[i];
+							length += video.durationInSec;
+							addYTdataToQueue(message, video, true);
+						}
+						// mock song data to create embed
+						const queueData = {
+							"title":		pldata.title,
+							"url": 			pldata.url || pldata.link,
+							"author": 		pldata.channel.name,
+							"durationInSec": length,
+							"thumbURL": 	videos[0].thumbnails[videos[0].thumbnails.length - 1].url,
+							"type": 		"yt_track",
+							"requester":	message.author,
+							"channel": 		message.channel,
+							"stream_url": 	pldata.url || pldata.link,
+						};
+						message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
+							.then(msg => {
+								setTimeout(() => msg.delete(), 60000);
+							});
+						// end of mock
+					}
 				}
 				else {
 					message.react(reactions.warning);

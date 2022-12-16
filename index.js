@@ -13,10 +13,6 @@ if (process.env.PORT && !process.env.dontBind) {
 	server.listen(process.env.PORT);
 }
 
-
-// load token into enviroment
-require("dotenv").config();
-
 const { Intents, Client } = require("discord.js");
 
 const { reactions, guildsMeta } = require("./general.js");
@@ -39,6 +35,7 @@ const DIY_COMMANDO = {
 	"music": require("./commands/play.js"),
 
 	"pause": require("./commands/pause.js"),
+	"stop": require("./commands/pause.js"),
 
 	"resume": require("./commands/unpause.js"),
 	"unpause": require("./commands/unpause.js"),
@@ -60,8 +57,10 @@ client.once("ready", () => {
 	client.user.setActivity("Prefix: >", { type: "WATCHING" });
 });
 
+const config = require("./config.json");
+
 // Login
-client.login(process.env.token);
+client.login(config.token);
 
 // check if prefix is ">", and if so return the command back
 function checkCommand(content) {
