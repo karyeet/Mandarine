@@ -1,7 +1,7 @@
 # Mandarine
 A Node.js Discord music bot made using the latest versions of [Discord.js](https://github.com/discordjs/discord.js/) & [play-dl](https://github.com/play-dl/play-dl)
 
-Manderine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
+Mandarine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
 
 ## Features:
 - [x] Spotify Listen Along
@@ -47,6 +47,6 @@ then
 
 To make use of the >music command, deemix must be installed via `python3 -m pip install deemix`
 
-To automatically add local tagged mp3s to the localLibrary.json, add the files to the music folder (`$home$/manderineFiles`) and run the indexer.js file found in `./music/indexer.js` using node.
+To automatically add local tagged mp3s to the localLibrary.json, add the files to the music folder (`$home$/mandarineFiles`) and run the indexer.js file found in `./music/indexer.js` using node.
 
 ### Check out the [wiki](https://github.com/karyeet/Mandarine/wiki) for commands and more help.

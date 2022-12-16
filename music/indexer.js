@@ -10,7 +10,7 @@ const localLibrary = require("./localLibrary.json");
 const { read } = require("node-id3");
 
 const homedir = require("os").homedir();
-const pathToFiles = homedir + "/manderineFiles/";
+const pathToFiles = homedir + "/mandarineFiles/";
 
 const path = require("path");
 

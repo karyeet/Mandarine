@@ -12,7 +12,7 @@ const { read } = require("node-id3");
 const meezer = require("./meezer.js");
 const path = require("path");
 
-const pathToFiles = path.join(homedir, "/manderineFiles/");
+const pathToFiles = path.join(homedir, "/mandarineFiles/");
 
 /*
 
