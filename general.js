@@ -12,6 +12,7 @@ const reactions = {
 	"warning":"⚠️",
 	"repeat":"🔂",
 	"next_track":"⏭️",
+	"speaking":"🗣️",
 };
 
 /* "guilid": [{
@@ -30,6 +31,7 @@ const queue = {};
 "looping": false,
 "volume": 1,
 "spotify": false, // when spotify is set, it will be the userid
+"summonMessage":message
 */
 const guildsMeta = {};
 
