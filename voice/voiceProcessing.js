@@ -7,6 +7,8 @@ const { guildsMeta, reactions } = require("../general.js");
 
 const { getVoiceConnection } = require("@discordjs/voice");
 
+const DIY_COMMANDO = require("../diy_commando.js");
+
 /*
 audioReceivers = {
 	channelid:{
@@ -42,6 +44,7 @@ async function hotwordDetected(context) {
 	}
 	else {
 		console.log(intentResult);
+		DIY_COMMANDO[intentResult](guildsMeta[voiceChannel.guild.id].notifyRecording);
 	}
 
 	// resume listening for hotword
