@@ -23,23 +23,13 @@ function emitHotword(hotword, userid, voiceChannel, emitter) {
 		"hotword": hotword,
 		"userid": userid,
 		"voiceChannel": voiceChannel,
+		"PCMprovider": emitter,
 	});
 }
 
 // eventemitter providing frames to that should be provided to porcupine
 function listenToPCM(PCMprovider, userid, voiceChannel) {
-	// if theres an old listener try to remove the event listener
-	if (userListeners[userid]) {
-		try {
-			userListeners[userid].removeListener("frame", processVoiceData);
-		}
-		catch (err) {
-			console.warn("[Error] while removing old listener for " + userid + "\n" + err);
-		}
-	}
-	// set to new audio stream in table
-	userListeners[userid] = PCMprovider;
-	// on new data send to porcupine
+
 	// create function within scope of userid for easy use with event emitter
 	function processVoiceData(audioFrame) {
 		if (!hotwordDetectors[userid]) {
@@ -65,6 +55,19 @@ function listenToPCM(PCMprovider, userid, voiceChannel) {
 		return 0;
 	}
 
+	// if theres an old listener try to remove the event listener
+	if (userListeners[userid]) {
+		try {
+			userListeners[userid].removeListener("frame", processVoiceData);
+		}
+		catch (err) {
+			console.warn("[Error] while removing old listener for " + userid + "\n" + err);
+		}
+	}
+	// set to new audio stream in table
+	userListeners[userid] = PCMprovider;
+
+	// on new data send to porcupine
 	PCMprovider.on("frame", processVoiceData);
 
 	// return PCMprovider
