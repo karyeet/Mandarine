@@ -1,5 +1,3 @@
-// https://github.com/Picovoice/porcupine/blob/115ed640c096737053a9c4f8cdbdd144743b0c55/demo/nodejs/mic.js
-
 const prism = require("prism-media");
 const { EventEmitter } = require("events");
 
