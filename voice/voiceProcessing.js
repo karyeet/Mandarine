@@ -1,6 +1,8 @@
 const { processOpusStream } = require("./convert");
 const { listenToPCM } = require("./porcupine");
 
+const { processRhinoVoiceData } = require("./rhino.js");
+
 const { guildsMeta, reactions } = require("../general.js");
 
 const { getVoiceConnection } = require("@discordjs/voice");
@@ -14,12 +16,39 @@ audioReceivers = {
 */
 const audioReceivers = {};
 
-function hotwordDetected(context) {
-	const { hotword, userid, voiceChannel } = context;
-	console.log("2." + hotword);
-	console.log(userid);
-	console.log(voiceChannel.id);
+/*
+hotwordDebounce:{channelid:true}
+*/
+const hotwordDebounce = {};
 
+
+async function hotwordDetected(context) {
+	const { userid, voiceChannel, PCMprovider } = context;
+	// set debounce for channel/guild
+	if (hotwordDebounce[voiceChannel.id]) {
+		return;
+	}
+	hotwordDebounce[voiceChannel.id] = true;
+	// stop sending audio frames to porcupine
+	PCMprovider.removeAllListeners("frame");
+	// start sending to rhino & to an array in case rhino is inconclusive
+	const voiceData = [];
+	PCMprovider.on("frame", (frame) => {
+		voiceData.push(frame);
+	});
+	const intentResult = await processRhinoVoiceData(PCMprovider);
+	if (!intentResult) {
+		console.log("unknown intent");
+	}
+	else {
+		console.log(intentResult);
+	}
+
+	// resume listening for hotword
+	console.log("resuming listening for hotword");
+	listenToPCM(PCMprovider, userid, voiceChannel);
+	// unset debounce
+	hotwordDebounce[voiceChannel.id] = false;
 }
 
 // pass along voice channel for context when hotword is found
