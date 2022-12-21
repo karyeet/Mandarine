@@ -49,7 +49,9 @@ function join(message) {
 	const connection = joinVoiceChannel({
 		channelId: voice.channelId,
 		guildId: voice.channel.guildId,
-		adapterCreator: voice.channel.guild.voiceAdapterCreator });
+		adapterCreator: voice.channel.guild.voiceAdapterCreator,
+		selfDeaf: false,
+	});
 	// and create audioPlayer
 	const audioPlayer = createAudioPlayer({
 		behaviors: {
@@ -75,6 +77,24 @@ function join(message) {
 
 	// voiceConnection will play from this audioPlayer
 	connection.subscribe(audioPlayer);
+
+	/* const audioStream = connection.receiver.subscribe("257438782654119937",
+		{
+			"autoDestroy":false,
+			"objectMode": true,
+		});
+	require("../voice/keywordProcessing").listenToOpus(audioStream);
+	*/
+
+	// initalize voice commands
+	try {
+		require("../voice/voiceProcessing").initializeVoiceCommands(message, connection);
+	}
+	catch (err) {
+		console.warn("Error while processing voice commands");
+		console.warn(err);
+	}
+
 	message.react(reactions.positive);
 	return { connection, audioPlayer };
 
