@@ -1,5 +1,6 @@
 {
 	"token":"abcdefgh"
-	"deemixHost": "192.168.1.2"
-	"deemixPort": "6595"
+	"picoAccessKey":"abcdefghijklmnopqrstuvwxyz=",
+	"rhinoFileName": "yourRhinoFileInsideModelsFolder.rhn",
+	"porcupineFileName": "yourPorcupineFileInsideModelsFolder.ppn"
 }
