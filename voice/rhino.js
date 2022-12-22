@@ -2,10 +2,10 @@ const { Rhino } = require("@picovoice/rhino-node");
 
 const path = require("path");
 
-const { picoAccessKey } = require("../config.json");
+const { picoAccessKey, rhinoFileName } = require("../config.json");
 const accessKey = picoAccessKey;
 
-const contextPath = path.join(__dirname, "musicbot_en_windows_v2_1_0.rhn");
+const contextPath = path.join(path.join(__dirname, "models"), rhinoFileName);
 
 // const rhino = new Rhino(accessKey, contextPath);
 

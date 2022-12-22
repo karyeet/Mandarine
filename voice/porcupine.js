@@ -1,15 +1,17 @@
-const config = require("../config.json");
+const { picoAccessKey, porcupineFileName } = require("../config.json");
+
+const path = require("path");
 
 const userListeners = {};
 
 const {
 	Porcupine,
-	BuiltinKeyword,
 } = require("@picovoice/porcupine-node");
 
-const accessKey = config.picoAccessKey;
+const accessKey = picoAccessKey;
 const hotwordDetectors = {};
 
+const keywordPath = path.join(path.join(__dirname, "models"), porcupineFileName);
 
 /* const porcupine = new Porcupine(
 	accessKey,
@@ -35,22 +37,16 @@ function listenToPCM(PCMprovider, userid, voiceChannel) {
 		if (!hotwordDetectors[userid]) {
 			hotwordDetectors[userid] = new Porcupine(
 				accessKey,
-				[BuiltinKeyword.GRASSHOPPER, BuiltinKeyword.BUMBLEBEE],
-				[0.5, 0.65],
+				[keywordPath],
+				[0.5],
 			);
 		}
 		const keywordIndex = hotwordDetectors[userid].process(audioFrame);
 		if (keywordIndex === 0) {
-			console.log("1.GRASSHOPPER");
+			console.log("hotword");
 			// emit when found, along with context payload
-			emitHotword("GRASSHOPPER", userid, voiceChannel, PCMprovider);
-			return "GRASSHOPPER";
-		}
-		else if (keywordIndex === 1) {
-			console.log("1.BUMBLEBEE");
-			// emit when found, along with context payload
-			emitHotword("BUMBLEBEE", userid, voiceChannel, PCMprovider);
-			return "BUMBLEBEE";
+			emitHotword("hotword", userid, voiceChannel, PCMprovider);
+			return "hotword";
 		}
 		return 0;
 	}
