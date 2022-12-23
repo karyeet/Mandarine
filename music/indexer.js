@@ -78,7 +78,7 @@ async function addFile(fileName) {
 				localLibrary[fileName] = {
 					"title": tags.title,
 					"artist": tags.artist,
-					"search": fileName.replace(/\.mp3$/, ""),
+					"search": tags.artist + " " + tags.title,
 				};
 				return true;
 			});
