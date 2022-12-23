@@ -26,6 +26,7 @@ const pathToFiles = path.join(homedir, "/mandarineFiles/");
 
 */
 
+
 async function requestTrack(query) {
 	// get array of files and create new fuse object, only use search key
 	const fuse = new Fuse(Object.values(localLibrary),
@@ -42,7 +43,7 @@ async function requestTrack(query) {
 	if (fuseResult[0]) {
 		console.log("fuse found");
 		console.log(fuseResult);
-		const fusefilepath = path.join(pathToFiles, fuseResult[0].item.search + ".mp3");
+		const fusefilepath = path.join(pathToFiles, Object.keys(localLibrary)[fuseResult[0].refIndex]);
 		return {
 			"path":fusefilepath,
 			"metadata": await read(fusefilepath),
