@@ -91,13 +91,24 @@ function addDZdataToQueue(message, data) {
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
 	// send embed and delete after 60 seconds
-	message.reply(
-		{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
-			files:[{ "name":"thumb.jpg", "attachment":data.metadata.image.imageBuffer }],
-		})
-		.then(msg => {
-			setTimeout(() => msg.delete(), 60000);
-		});
+	if (data.metadata.image) {
+		message.reply(
+			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
+				files:[{ "name":"thumb.jpg", "attachment":data.metadata.image.imageBuffer }],
+			})
+			.then(msg => {
+				setTimeout(() => msg.delete(), 60000);
+			});
+	}
+	else {
+		message.reply(
+			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
+			})
+			.then(msg => {
+				setTimeout(() => msg.delete(), 60000);
+			});
+	}
+
 }
 
 async function play(message, args, command) {
