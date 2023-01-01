@@ -3,7 +3,9 @@ const { EventEmitter } = require("events");
 
 const outputEvents = {};
 
-const PCMSilenceFrame = new Buffer.alloc(512, 0x10);
+// 16 bits of noise
+const PCMEndpointFrame = new Buffer.alloc(512, 0xFFFF);
+
 
 /* const fs = require("fs");
 const path = require("path");
@@ -70,10 +72,10 @@ function processOpusStream(userid, stream, outputFrameLength) {
 		userVoiceFrames.push(data);
 	});
 
-	// only send maximum of 1.2 seconds of silence after an audio frame
+	// only send maximum of 1 second of silence after an audio frame
 	let silenceTimer = 0;
-	const timeToGive = 1.25;
-	// decrease silencetimer by 0.25sec every 125ms because interval runs at double 16khz
+	const timeToGive = 1;
+	// decrease silencetimer by 0.25sec every 125ms because interval runs at double 16khz, so this interval must run at half 250ms
 	setInterval(() => {
 		silenceTimer -= 0.25;
 	}, 125);
@@ -90,7 +92,7 @@ function processOpusStream(userid, stream, outputFrameLength) {
 		}
 		else if (silenceTimer > 0) {
 			// if silenceTimer, send silent frames
-			const data = PCMSilenceFrame;
+			const data = PCMEndpointFrame;
 			processFrames(data, userid, outputFrameLength);
 		}
 	}, 1_000 / 32);
