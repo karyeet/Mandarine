@@ -1,4 +1,5 @@
 const { processOpusStream } = require("./convert");
+
 const { listenToPCM } = require("./porcupine");
 
 const { processRhinoVoiceData } = require("./rhino.js");
@@ -8,6 +9,8 @@ const { guildsMeta, reactions } = require("../general.js");
 const { getVoiceConnection } = require("@discordjs/voice");
 
 const DIY_COMMANDO = require("../diy_commando.js");
+
+// const { voiceCommands } = require("../config.json");
 
 /*
 audioReceivers = {
@@ -75,6 +78,7 @@ function receiveMember(member, voiceConnection, voiceChannel) {
 }
 
 async function initializeVoiceCommands(message, voiceConnection) {
+
 	guildsMeta[message.guildId].notifyRecording = await message.channel.send(reactions.speaking + "Voice commands are enabled.");
 	const voiceChannel = message.member.voice.channel;
 	const members = voiceChannel.members;

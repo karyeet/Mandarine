@@ -1,14 +1,5 @@
 const { voiceCommands } = require("../config.json");
 
-// dont start if not enabled
-if (!voiceCommands || !voiceCommands.enabled) {
-	return false;
-}
-// if config is incorrect, throw error
-if (!voiceCommands.picoAccessKey || !voiceCommands.porcupineFileName || !voiceCommands.rhinoFileName) {
-	throw "porcupine.js: picoAccessKey, porcupineFileName, or rhinoFileName is not set correctly.";
-}
-
 const { porcupineFileName, picoAccessKey } = voiceCommands;
 
 

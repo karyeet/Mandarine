@@ -91,13 +91,18 @@ function join(message) {
 
 	// initalize voice commands
 	try {
-		const vp = require("../voice/voiceProcessing");
-		vp.initializeVoiceCommands(message, connection);
+		// dont start if not enabled
+		const start = require("../voice/correctVoiceConfig")();
+		if (start == 0) {
+			require("../voice/voiceProcessing").initializeVoiceCommands(message, connection);
+		}
+		else if (start == 1) {
+			throw "voiceCommands.picoAccessKey, voiceCommands.porcupineFileName, or voiceCommands.rhinoFileName is not set correctly in config.json";
+		}
 	}
 	catch (error) {
-		console.warn("Error while processing or initializing voice commands");
-		console.warn(error);
-		message.reply("```voiceProcessing.js initialization from join.js: " + error + "```");
+		console.warn("Error while processing or initializing voice commands: " + error);
+		message.reply("```join.js: " + error + "```");
 	}
 
 	message.react(reactions.positive);
