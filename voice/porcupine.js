@@ -1,14 +1,24 @@
-const { picoAccessKey, porcupineFileName } = require("../config.json");
+const { voiceCommands } = require("../config.json");
+
+// dont start if not enabled
+if (!voiceCommands || !voiceCommands.enabled) {
+	return false;
+}
+// if config is incorrect, throw error
+if (!voiceCommands.picoAccessKey || !voiceCommands.porcupineFileName || !voiceCommands.rhinoFileName) {
+	throw "porcupine.js: picoAccessKey, porcupineFileName, or rhinoFileName is not set correctly.";
+}
+
+const { porcupineFileName, picoAccessKey } = voiceCommands;
+
 
 const path = require("path");
-
-const userListeners = {};
 
 const {
 	Porcupine,
 } = require("@picovoice/porcupine-node");
 
-const accessKey = picoAccessKey;
+const userListeners = {};
 const hotwordDetectors = {};
 
 const keywordPath = path.join(path.join(__dirname, "models"), porcupineFileName);
@@ -36,7 +46,7 @@ function listenToPCM(PCMprovider, userid, voiceChannel) {
 	function processVoiceData(audioFrame) {
 		if (!hotwordDetectors[userid]) {
 			hotwordDetectors[userid] = new Porcupine(
-				accessKey,
+				picoAccessKey,
 				[keywordPath],
 				[0.5],
 			);

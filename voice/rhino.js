@@ -1,9 +1,19 @@
+const { voiceCommands } = require("../config.json");
+
+// dont start if not enabled
+if (!voiceCommands || !voiceCommands.enabled) {
+	return false;
+}
+// if config is incorrect, throw error
+if (!voiceCommands.picoAccessKey || !voiceCommands.porcupineFileName || !voiceCommands.rhinoFileName) {
+	throw "rhino.js: picoAccessKey, porcupineFileName, or rhinoFileName is not set correctly.";
+}
+
 const { Rhino } = require("@picovoice/rhino-node");
 
 const path = require("path");
 
-const { picoAccessKey, rhinoFileName } = require("../config.json");
-const accessKey = picoAccessKey;
+const { picoAccessKey, rhinoFileName } = voiceCommands;
 
 const contextPath = path.join(path.join(__dirname, "models"), rhinoFileName);
 
@@ -16,7 +26,7 @@ intentDetectors = {channelid : rhino}
 
 function processRhinoVoiceData(PCMprovider) {
 	return new Promise((resolve) => {
-		const rhino = new Rhino(accessKey, contextPath, 0.5, 0.5, false);
+		const rhino = new Rhino(picoAccessKey, contextPath, 0.5, 0.5, false);
 		let isFinalized;
 		PCMprovider.on("frame", function feedFrame(frame) {
 			// if rhino already finalized dont run
