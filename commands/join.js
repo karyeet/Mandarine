@@ -9,6 +9,8 @@ If so then join members current voice channel
 
 */
 
+const { voiceCommands } = require("../config.json");
+
 const { audioPlayers, queue, playNext, reactions, guildsMeta } = require("../general.js");
 
 const {
@@ -46,11 +48,12 @@ function join(message) {
 	}*/
 
 	// Otherwise join users channel
+	// if voiceCommands are enabled, selfDeaf is disabled
 	const connection = joinVoiceChannel({
 		channelId: voice.channelId,
 		guildId: voice.channel.guildId,
 		adapterCreator: voice.channel.guild.voiceAdapterCreator,
-		selfDeaf: false,
+		selfDeaf: !voiceCommands.enabled,
 	});
 	// and create audioPlayer
 	const audioPlayer = createAudioPlayer({
@@ -88,11 +91,13 @@ function join(message) {
 
 	// initalize voice commands
 	try {
-		require("../voice/voiceProcessing").initializeVoiceCommands(message, connection);
+		const vp = require("../voice/voiceProcessing");
+		vp.initializeVoiceCommands(message, connection);
 	}
-	catch (err) {
-		console.warn("Error while processing voice commands");
-		console.warn(err);
+	catch (error) {
+		console.warn("Error while processing or initializing voice commands");
+		console.warn(error);
+		message.reply("```voiceProcessing.js initialization from join.js: " + error + "```");
 	}
 
 	message.react(reactions.positive);
