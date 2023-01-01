@@ -16,7 +16,7 @@ intentDetectors = {channelid : rhino}
 
 function processRhinoVoiceData(PCMprovider) {
 	return new Promise((resolve) => {
-		const rhino = new Rhino(accessKey, contextPath, 0.5, undefined, false);
+		const rhino = new Rhino(accessKey, contextPath, 0.5, 0.5, false);
 		let isFinalized;
 		PCMprovider.on("frame", function feedFrame(frame) {
 			// if rhino already finalized dont run
