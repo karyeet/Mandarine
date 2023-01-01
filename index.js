@@ -73,6 +73,8 @@ client.on("messageCreate", (message) => {
 
 });
 
-client.on("voiceStateUpdate", (oldState, newState) => {
-	require("./voice/voiceProcessing").trackVCMembers(oldState, newState, client.id);
-});
+if (require("./voice/correctVoiceConfig")() == 0) {
+	client.on("voiceStateUpdate", (oldState, newState) => {
+		require("./voice/voiceProcessing").trackVCMembers(oldState, newState, client.id);
+	});
+}
