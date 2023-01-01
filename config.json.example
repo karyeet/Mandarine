@@ -1,6 +1,9 @@
 {
-	"token":"abcdefgh"
-	"picoAccessKey":"abcdefghijklmnopqrstuvwxyz=",
-	"rhinoFileName": "yourRhinoFileInsideModelsFolder.rhn",
-	"porcupineFileName": "yourPorcupineFileInsideModelsFolder.ppn"
+	"token":"abcdefghfdfdgsgfsgsdgds"
+	"voiceCommands": {
+		"enabled": true
+		"picoAccessKey": "abcdefghijklmnopqrstuvwxyz=",
+		"rhinoFileName": "yourRhinoFileInsideModelsFolder.rhn",
+		"porcupineFileName": "yourPorcupineFileInsideModelsFolder.ppn"
+		}
 }
