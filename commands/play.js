@@ -78,10 +78,10 @@ function addYTdataToQueue(message, data, isPlayList) {
 function addDZdataToQueue(message, data) {
 	// console.log(data);
 	const queueData = {
-		"title":		data.metadata.title,
+		"title":		data.metadata.common.title,
 		"url": 			null,
-		"author": 		data.metadata.artist,
-		"durationInSec":(data.metadata.length / 1000),
+		"author": 		data.metadata.common.artist,
+		"durationInSec":(data.metadata.format.duration),
 		"thumbURL": 	"attachment://thumb.jpg",
 		"type": 		"dz_track",
 		"requester":	message.author,
@@ -94,7 +94,7 @@ function addDZdataToQueue(message, data) {
 	if (data.metadata.image) {
 		message.reply(
 			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
-				files:[{ "name":"thumb.jpg", "attachment":data.metadata.image.imageBuffer }],
+				files:[{ "name":"thumb.jpg", "attachment":data.metadata.common.picture ? data.metadata.common.picture[0].data : undefined }],
 			})
 			.then(msg => {
 				setTimeout(() => msg.delete(), 60000);

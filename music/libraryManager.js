@@ -8,7 +8,8 @@ const fs = require("fs");
 const localLibrary = require("./localLibrary.json");
 const Fuse = require("fuse.js");
 const homedir = require("os").homedir();
-const { read } = require("node-id3");
+let parseFile;
+import('music-metadata').then((mmModule)=>{parseFile = mmModule.parseFile});
 const meezer = require("./meezer.js");
 const path = require("path");
 
@@ -46,7 +47,7 @@ async function requestTrack(query) {
 		const fusefilepath = path.join(pathToFiles, Object.keys(localLibrary)[fuseResult[0].refIndex]);
 		return {
 			"path":fusefilepath,
-			"metadata": await read(fusefilepath),
+			"metadata": await parseFile(fusefilepath),
 		};
 	}
 	// otherwise perform deezer track fetch (no explicit else)
@@ -60,7 +61,7 @@ async function requestTrack(query) {
 	if (trackExists) {
 		console.log("track exist");
 		return {
-			"metadata": await read(trackExists),
+			"metadata": await parseFile(trackExists),
 			"path": trackExists,
 		};
 	}
@@ -72,7 +73,7 @@ async function requestTrack(query) {
 		console.log("trackdl");
 		addToLibrary(result.artist.name, result.title, trackDL.fileName);
 		return {
-			"metadata":await read(trackDL.path),
+			"metadata":await parseFile(trackDL.path),
 			"path": trackDL.path,
 		};
 	}
@@ -111,6 +112,6 @@ console.log(pathToFiles);
 	console.log(await requestTrack("metro boomin superhero"));
 }*/
 // test();
-// console.log(read(path.join(pathToFiles, "Metro Boomin - Superhero (Heroes & Villains).mp3")));
+// console.log(parseFile(path.join(pathToFiles, "Metro Boomin - Superhero (Heroes & Villains).mp3")));
 
 module.exports = { requestTrack };
