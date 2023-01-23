@@ -10,7 +10,7 @@
     "libsodium-wrappers": "^0.7.10",
     "node-id3": "^0.2.5",
     "play-dl": "^1.9.6",
-    "utf-8-validate": "^5.0.10",
+    "utf-8-validate": "^6.0.1",
     "ytdl-core": "^4.11.2",
     "zlib-sync": "^0.1.7"
   },
