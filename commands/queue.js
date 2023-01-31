@@ -41,7 +41,7 @@ function pageCheck(guildid, page) {
 	return page;
 }
 
-function queueFunc(message, args) {
+async function queueFunc(message, args) {
 	// if the queue doesnt exist or is empty, dont do anything
 	if (!queue[message.guild.id] || queue[message.guild.id].length < 1) {
 		message.react(reactions.negative);
@@ -61,7 +61,7 @@ function queueFunc(message, args) {
 	if (CalcQueuePages(queue[message.guild.id].length) > 1) {
 
 		// message, auto delete after 60 seconds, and setup interaction responses
-		message.reply({ components: [buttonGen(message.guild.id, page)], embeds:[queueGen(message.member.user, page, queue[message.guild.id], guildsMeta[message.guild.id])] })
+		message.reply(await replyOptions(true, queue[message.guild.id][0], message, page))
 			.then(msg => {
 				// setTimeout(() => msg.delete(), 20000); not needed if we can delete message on interaction end
 				const filter = (interaction) => interaction.customId == "next" || interaction.customId == "back";
@@ -95,12 +95,27 @@ function queueFunc(message, args) {
 	}
 	else {
 		// otherwise send the queue without buttons and delete after 60 seconds
-		message.reply({ embeds:[queueGen(message.member.user, page, queue[message.guild.id], guildsMeta[message.guild.id])] })
+		message.reply(await replyOptions(false, queue[message.guild.id][0], message, page))
 			.then(msg => {
 				setTimeout(() => msg.delete(), 30000);
 			});
 	}
 
+}
+ 
+async function replyOptions(buttons, firstEntry, message, page){
+	const options = {  embeds:[queueGen(message.member.user, page, queue[message.guild.id], guildsMeta[message.guild.id])] }
+
+	//attachment://thumb.jpg
+	if(buttons){
+		options.components = [buttonGen(message.guild.id, page)]
+}
+
+	if(firstEntry && firstEntry.thumbURL === "attachment://thumb.jpg" && firstEntry.thumbData){
+		options.files = [{ "name":"thumb.jpg", "attachment":firstEntry.thumbData}]
+	}
+
+	return options;
 }
 
 module.exports = queueFunc;
