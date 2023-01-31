@@ -77,12 +77,14 @@ function addYTdataToQueue(message, data, isPlayList) {
 
 function addDZdataToQueue(message, data) {
 	// console.log(data);
+	const imageExists = data.metadata.common.picture && data.metadata.common.picture[0]
 	const queueData = {
 		"title":		data.metadata.common.title,
 		"url": 			null,
 		"author": 		data.metadata.common.artist,
 		"durationInSec":(data.metadata.format.duration),
 		"thumbURL": 	"attachment://thumb.jpg",
+		"thumbData":	imageExists ? data.metadata.common.picture[0].data : false,
 		"type": 		"dz_track",
 		"requester":	message.author,
 		"channel": 		message.channel,
@@ -91,7 +93,7 @@ function addDZdataToQueue(message, data) {
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
 	// send embed and delete after 60 seconds
-	if (data.metadata.common.picture && data.metadata.common.picture[0]) {
+	if (imageExists) {
 		message.reply(
 			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
 				files:[{ "name":"thumb.jpg", "attachment":data.metadata.common.picture[0].data}],
