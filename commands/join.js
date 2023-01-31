@@ -9,6 +9,8 @@ If so then join members current voice channel
 
 */
 
+const { voiceCommands } = require("../config.json");
+
 const { audioPlayers, queue, playNext, reactions, guildsMeta } = require("../general.js");
 
 const {
@@ -46,10 +48,13 @@ function join(message) {
 	}*/
 
 	// Otherwise join users channel
+	// if voiceCommands are enabled, selfDeaf is disabled
 	const connection = joinVoiceChannel({
 		channelId: voice.channelId,
 		guildId: voice.channel.guildId,
-		adapterCreator: voice.channel.guild.voiceAdapterCreator });
+		adapterCreator: voice.channel.guild.voiceAdapterCreator,
+		selfDeaf: !voiceCommands.enabled,
+	});
 	// and create audioPlayer
 	const audioPlayer = createAudioPlayer({
 		behaviors: {
@@ -75,6 +80,31 @@ function join(message) {
 
 	// voiceConnection will play from this audioPlayer
 	connection.subscribe(audioPlayer);
+
+	/* const audioStream = connection.receiver.subscribe("257438782654119937",
+		{
+			"autoDestroy":false,
+			"objectMode": true,
+		});
+	require("../voice/keywordProcessing").listenToOpus(audioStream);
+	*/
+
+	// initalize voice commands
+	try {
+		// dont start if not enabled
+		const start = require("../voice/correctVoiceConfig")();
+		if (start == 0) {
+			require("../voice/voiceProcessing").initializeVoiceCommands(message, connection);
+		}
+		else if (start == 1) {
+			throw "voiceCommands.picoAccessKey, voiceCommands.porcupineFileName, or voiceCommands.rhinoFileName is not set correctly in config.json";
+		}
+	}
+	catch (error) {
+		console.warn("Error while processing or initializing voice commands: " + error);
+		message.reply("```join.js: " + error + "```");
+	}
+
 	message.react(reactions.positive);
 	return { connection, audioPlayer };
 

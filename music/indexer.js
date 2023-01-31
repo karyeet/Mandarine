@@ -7,54 +7,21 @@
 
 const fs = require("fs");
 const localLibrary = require("./localLibrary.json");
-const { read } = require("node-id3");
 
 const homedir = require("os").homedir();
 const pathToFiles = homedir + "/mandarineFiles/";
 
 const path = require("path");
 
-/*
-
-{
-	"filename":{
-		"artist":"artistName"
-		"title:":"songTitle"
-	}
-}
-
-*/
-
-/* fs.readdir(pathToFiles, async function(err, files) {
-	if (err) throw err;
-	console.log(files);
-	for (let i = 0; i < files.length; i++) {
-		const fileName = files[i];
-		console.log(fileName);
-		// only support mp3
-		if (fileName.endsWith(".mp3")) {
-			if (!localLibrary[fileName]) {
-				read(path.join(pathToFiles, fileName), function(err, tags) {
-					if (err) throw err;
-					console.log("tags");
-					localLibrary[fileName] = {
-						"title": tags.title,
-						"artist": tags.artist,
-						"search": fileName.replace(/\.mp3$/, ""),
-					};
-					if (i == files.length - 1) {
-						write();
-					}
-				});
-			}
-		}
-
-	}
-});*/
+let parseFile;
+// import('music-metadata').then((mmModule)=>{console.log("mm: " + mmModule); parseFile = mmModule.parseFile});
 
 fs.readdir(pathToFiles, async function(err, files) {
+
 	if (err) throw err;
 	console.log(files);
+	let musicmetadata = await import("music-metadata");
+	parseFile = musicmetadata.parseFile
 	for (let i = 0; i < files.length; i++) {
 		const fileName = files[i];
 		console.log(fileName);
@@ -72,16 +39,15 @@ fs.readdir(pathToFiles, async function(err, files) {
 async function addFile(fileName) {
 	if (fileName.endsWith(".mp3")) {
 		if (!localLibrary[fileName]) {
-			read(path.join(pathToFiles, fileName), function(err, tags) {
-				if (err) throw err;
-				// console.log("tags");
-				localLibrary[fileName] = {
-					"title": tags.title,
-					"artist": tags.artist,
-					"search": fileName.replace(/\.mp3$/, ""),
-				};
-				return true;
-			});
+			const metadata = await parseFile(path.join(pathToFiles, fileName));
+			console.log("metadata:" + JSON.stringify(metadata.common.title))
+			localLibrary[fileName] = {
+				"title": metadata.common.title,
+				"artist": metadata.common.artist,
+				"search": metadata.common.title + " " + metadata.common.artist,
+			};
+
+
 		}
 	}
 }

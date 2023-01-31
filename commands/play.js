@@ -77,12 +77,14 @@ function addYTdataToQueue(message, data, isPlayList) {
 
 function addDZdataToQueue(message, data) {
 	// console.log(data);
+	const imageExists = data.metadata.common.picture && data.metadata.common.picture[0]
 	const queueData = {
-		"title":		data.metadata.title,
+		"title":		data.metadata.common.title,
 		"url": 			null,
-		"author": 		data.metadata.artist,
-		"durationInSec":(data.metadata.length / 1000),
+		"author": 		data.metadata.common.artist,
+		"durationInSec":(data.metadata.format.duration),
 		"thumbURL": 	"attachment://thumb.jpg",
+		"thumbData":	imageExists ? data.metadata.common.picture[0].data : false,
 		"type": 		"dz_track",
 		"requester":	message.author,
 		"channel": 		message.channel,
@@ -91,13 +93,24 @@ function addDZdataToQueue(message, data) {
 	queue[message.guild.id].push(queueData);
 	message.react(reactions.positive);
 	// send embed and delete after 60 seconds
-	message.reply(
-		{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
-			files:[{ "name":"thumb.jpg", "attachment":data.metadata.image.imageBuffer }],
-		})
-		.then(msg => {
-			setTimeout(() => msg.delete(), 60000);
-		});
+	if (imageExists) {
+		message.reply(
+			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
+				files:[{ "name":"thumb.jpg", "attachment":data.metadata.common.picture[0].data}],
+			})
+			.then(msg => {
+				setTimeout(() => msg.delete(), 60000);
+			});
+	}
+	else {
+		message.reply(
+			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
+			})
+			.then(msg => {
+				setTimeout(() => msg.delete(), 60000);
+			});
+	}
+
 }
 
 async function play(message, args, command) {

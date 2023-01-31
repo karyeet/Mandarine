@@ -5,7 +5,7 @@ one off script to perform fuse.js configuration tests
 */
 
 const Fuse = require("fuse.js");
-const localLibrary = require("./localLibrary.json");
+const localLibrary = require("../music/localLibrary.json");
 
 const query = "metro suphero";
 

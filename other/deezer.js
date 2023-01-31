@@ -2,7 +2,7 @@
 
 Communicate with a deemix-web server to download files
 
-This file is available as an example if anyone decides to complete the 
+This file is available as an example if anyone decides to complete the
 implementation or wants to use it in a personal project.
 
 */

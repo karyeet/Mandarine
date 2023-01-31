@@ -3,7 +3,7 @@
 const playdl = require("play-dl");
 const { createAudioResource, StreamType } = require("@discordjs/voice");
 const { createReadStream } = require("fs");
-const ytdl = require("ytdl-core");
+// const ytdl = require("ytdl-core");
 
 const reactions = {
 	"positive":"🍊",
@@ -12,6 +12,7 @@ const reactions = {
 	"warning":"⚠️",
 	"repeat":"🔂",
 	"next_track":"⏭️",
+	"speaking":"🗣️",
 };
 
 /* "guilid": [{
@@ -30,6 +31,7 @@ const queue = {};
 "looping": false,
 "volume": 1,
 "spotify": false, // when spotify is set, it will be the userid
+"summonMessage":message
 */
 const guildsMeta = {};
 
@@ -68,12 +70,21 @@ async function playNext(message) {
 			audioResource = createAudioResource(audioStream, { inputType: StreamType.Arbitrary });
 		}
 		else if (streamType == "yt_video" || streamType == "yt_track") {
-			const audioStream = ytdl(queue[message.guild.id][0].stream_url, {
+			/* const audioStream = ytdl(queue[message.guild.id][0].stream_url, {
 				quality:"highestaudio",
 				filter: "audioonly",
 				highWaterMark: 1 << 25,
+			});*/
+
+			const audioStream = await playdl.stream(queue[message.guild.id][0].stream_url, {
+				"quality:": 2,
 			});
-			audioResource = createAudioResource(audioStream, { inputType: StreamType.Arbitrary });
+			// attach listeners to playdl for "proper  functionality"
+			playdl.attachListeners(audioPlayers[message.guildId], audioStream);
+			console.log("attached listeners");
+			// create audio resource
+			audioResource = createAudioResource(audioStream.stream, { inputType: audioStream.type });
+
 		}
 
 		// play the audio resource for the current playdl stream // need to check docs for play-dl and input type

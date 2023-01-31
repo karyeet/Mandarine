@@ -75,5 +75,11 @@ typings/
 # FuseBox cache
 .fusebox/
 
+#custom
 .data
 config.json
+
+#picovoice
+*.rhn
+*.ppn
+picopatch.js
