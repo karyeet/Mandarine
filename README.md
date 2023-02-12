@@ -16,6 +16,7 @@ Mandarine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
 - [x] Support deezer as a source
 - [x] Local file support
 - [x] Youtube playlist support
+- [x] Partial support for voice commands
 
 #### Planned Features:
 - [ ] Spotify/Deezer Playlist support
@@ -24,6 +25,7 @@ Mandarine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
 - [ ] Prefix command & other customizations
 - [ ] Volume
 - [ ] Preload next song for seamless playing
+- [ ] Voice recognition for play command
 
 ## Deployment
 Before anything, install [Node v16 LTS](https://nodejs.org/en/) 
@@ -39,7 +41,7 @@ then
 
 1. Download the Zip Archive
 2. Unzip archive to a directory of your choosing
-3. Create a file called config.json in the directory and write `{token="yourBotToken"}` to the file
+3. Create a file called config.json in the directory and copy the config example to the file, then configure as necessary. (token is required)
     1. Get your bot token from the discord developer dashboard
 4. Open command prompt or terminal in the chosen directory
 5. Run `npm install`
