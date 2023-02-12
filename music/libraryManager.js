@@ -6,7 +6,9 @@
 
 const fs = require("fs");
 const localLibrary = require("./localLibrary.json");
-const Fuse = require("fuse.js");
+
+const FuzzySet = require('fuzzyset')
+
 const homedir = require("os").homedir();
 let parseFile;
 import('music-metadata').then((mmModule)=>{parseFile = mmModule.parseFile});
@@ -27,28 +29,39 @@ const pathToFiles = path.join(homedir, "/mandarineFiles/");
 
 */
 
+function createFuzzySetArr(){
+	const fzpromise = new Promise((resolve, reject)=>{
+		const arr = [];
+		for (const key in localLibrary){
+			const searchTerm = localLibrary[key].search;
+			arr.push(searchTerm)
+		}
+		resolve(arr);
+	})
+	return fzpromise;
+}
 
 async function requestTrack(query) {
-	// get array of files and create new fuse object, only use search key
-	const fuse = new Fuse(Object.values(localLibrary),
-		{
-			"keys": ["search", "title"],
-			includeScore: true,
-			threshold: 0.4,
-		});
-	// perform search
+	// get array of files and create new fuzzy object, only use search key
+	const fuzzyArr = await createFuzzySetArr();
+	const fuzzySet = new FuzzySet(fuzzyArr);
 
-	const fuseResult = fuse.search(query);
+	// perform search
+	const fuzzyResult = fuzzySet.get(query);
 	// if valid match, return filename
-	// console.log(fuseResult);
-	if (fuseResult[0]) {
-		console.log("fuse found");
-		console.log(fuseResult);
-		const fusefilepath = path.join(pathToFiles, Object.keys(localLibrary)[fuseResult[0].refIndex]);
-		return {
-			"path":fusefilepath,
-			"metadata": await parseFile(fusefilepath),
-		};
+	if (fuzzyResult && fuzzyResult[0]) {
+		console.log("fuzzy found");
+		console.log(fuzzyResult);
+		for (const index in fuzzyArr){
+			if(fuzzyArr[index] == fuzzyResult[0][1]){
+				const fuzzyfilepath = path.join(pathToFiles, Object.keys(localLibrary)[index]);
+				return {
+					"path":fuzzyfilepath,
+					"metadata": await parseFile(fuzzyfilepath),
+				};
+			}
+		}
+
 	}
 	// otherwise perform deezer track fetch (no explicit else)
 	const result = await meezer.searchTrack(query);
