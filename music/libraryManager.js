@@ -115,7 +115,7 @@ function addToLibrary(artist, title, fileName) {
 	localLibrary[fileName] = {
 		"title": title,
 		"artist": artist,
-		"search": fileName.replace(/\.mp3$/, ""),
+		"search": (title + " " + artist).replace(".","").replace("'","").replace("-",""),
 	};
 	fs.writeFileSync(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
 }
