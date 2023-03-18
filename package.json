@@ -1,10 +1,13 @@
 {
   "dependencies": {
+    "@discordjs/builders": "^1.5.0",
     "@discordjs/opus": "^0.9.0",
+    "@discordjs/rest": "^1.6.0",
     "@discordjs/voice": "^0.15.0",
     "@picovoice/porcupine-node": "^2.1.7",
     "@picovoice/rhino-node": "^2.1.10",
     "bufferutil": "^4.0.7",
+    "discord-api-types": "^0.37.36",
     "discord.js": "^13.12.0",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^5.1.0",
