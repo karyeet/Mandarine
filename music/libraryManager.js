@@ -56,7 +56,7 @@ async function requestTrack(query) {
 	const fuzzyResult = fuzzySet.get(query);
 
 	// if valid match, return filename
-	if (fuzzyResult && fuzzyResult[0]) {
+	if (fuzzyResult && fuzzyResult[0] && (console.log(fuzzyResult[0][0]) || true) && fuzzyResult[0][0]>0.60) {
 		console.log("fuzzy found");
 		console.log(fuzzyResult);
 		for (const key in localLibrary){
@@ -76,6 +76,7 @@ async function requestTrack(query) {
 	const result = await meezer.searchTrack(query);
 	// track not found then return false
 	if (!result || !result.link) {
+		console.log("Track not found");
 		return false;
 	}
 	// see if track exists and fuse missed it
@@ -88,7 +89,7 @@ async function requestTrack(query) {
 		};
 	}
 	// at this point track does not exist, start download!
-	const trackDL = false//await meezer.DownloadTrack(result.link);
+	const trackDL = await meezer.DownloadTrack(result.link);
 
 	if (trackDL) {
 		// successfull download so add to library and return filename
@@ -125,9 +126,10 @@ function addToLibrary(artist, title, fileName) {
 		"title": title,
 		"artist": artist,
 		"search": [
-			(title + " " + artist).replace(".","").replace("'","").replace("-",""),
-			(artist + " " + title).replace(".","").replace("'","").replace("-",""),
-			(title).replace(".","").replace("'","").replace("-","")
+			(title + " " + artist).replace(/\.|'|-/g, "") //.replace(".","").replace("'","").replace("-",""),
+			(artist + " " + title).replace(/\.|'|-/g, "") //.replace(".","").replace("'","").replace("-",""),
+			(title).replace(/\.|'|-/g, "")//.replace(".","").replace("'","").replace("-",""),
+			(title).replace(/\(.*\)|\.|'|-/g, "")//replace(".","").replace("'","").replace("-","").replace(/\(.*\)/g, ""),
 		],
 	};
 	fs.writeFileSync(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
@@ -140,7 +142,7 @@ console.log(pathToFiles);
 // test();
 // console.log(parseFile(path.join(pathToFiles, "Metro Boomin - Superhero (Heroes & Villains).mp3")));
 /*setTimeout(()=>{
-	requestTrack("i cant save you metro boomin")
-}, 4_000)*/
-
+	requestTrack("metro spider")
+}, 1_000)
+*/
 module.exports = { requestTrack };
