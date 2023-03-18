@@ -126,10 +126,10 @@ function addToLibrary(artist, title, fileName) {
 		"title": title,
 		"artist": artist,
 		"search": [
-			(title + " " + artist).replace(/\.|'|-/g, "") //.replace(".","").replace("'","").replace("-",""),
-			(artist + " " + title).replace(/\.|'|-/g, "") //.replace(".","").replace("'","").replace("-",""),
-			(title).replace(/\.|'|-/g, "")//.replace(".","").replace("'","").replace("-",""),
-			(title).replace(/\(.*\)|\.|'|-/g, "")//replace(".","").replace("'","").replace("-","").replace(/\(.*\)/g, ""),
+			(title + " " + artist).replace(/\.|'|-/g, ""), //.replace(".","").replace("'","").replace("-",""),
+			(artist + " " + title).replace(/\.|'|-/g, ""), //.replace(".","").replace("'","").replace("-",""),
+			(title).replace(/\.|'|-/g, ""),//.replace(".","").replace("'","").replace("-",""),
+			(title).replace(/\(.*\)|\.|'|-/g, ""),//replace(".","").replace("'","").replace("-","").replace(/\(.*\)/g, ""),
 		],
 	};
 	fs.writeFileSync(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
@@ -145,4 +145,7 @@ console.log(pathToFiles);
 	requestTrack("metro spider")
 }, 1_000)
 */
+
+addToLibrary("foo", "bar", "foobar.mp3")
+
 module.exports = { requestTrack };

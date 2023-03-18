@@ -47,10 +47,10 @@ async function addFile(fileName) {
 				"title": title,
 				"artist": artist,
 				"search": [
-					(title + " " + artist).replace(/\.|'|-/g, "") //.replace(".","").replace("'","").replace("-",""),
-					(artist + " " + title).replace(/\.|'|-/g, "") //.replace(".","").replace("'","").replace("-",""),
-					(title).replace(/\.|'|-/g, "")//.replace(".","").replace("'","").replace("-",""),
-					(title).replace(/\(.*\)|\.|'|-/g, "")//replace(".","").replace("'","").replace("-","").replace(/\(.*\)/g, ""),
+					(title + " " + artist).replace(/\.|'|-/g, ""), //.replace(".","").replace("'","").replace("-",""),
+					(artist + " " + title).replace(/\.|'|-/g, ""), //.replace(".","").replace("'","").replace("-",""),
+					(title).replace(/\.|'|-/g, ""),//.replace(".","").replace("'","").replace("-",""),
+					(title).replace(/\(.*\)|\.|'|-/g, ""),//replace(".","").replace("'","").replace("-","").replace(/\(.*\)/g, ""),
 				],
 			};
 
