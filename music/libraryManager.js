@@ -102,6 +102,7 @@ async function requestTrack(query) {
 	}
 	else {
 		// trackdl returned a nontrue value
+		console.log("track not found")
 		return false;
 	}
 
