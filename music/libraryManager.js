@@ -7,11 +7,14 @@
 const fs = require("fs");
 const localLibrary = require("./localLibrary.json");
 
-const FuzzySet = require('fuzzyset')
+const FuzzySet = require('fuzzyset');
 
 const homedir = require("os").homedir();
 let parseFile;
-import('music-metadata').then((mmModule)=>{parseFile = mmModule.parseFile});
+import('music-metadata').then((mmModule)=>{
+	parseFile = mmModule.parseFile;
+});
+
 const meezer = require("./meezer.js");
 const path = require("path");
 
@@ -36,7 +39,7 @@ function createFuzzySetArr(){
 			for(const index in localLibrary[key].search){
 				const searchTerm = localLibrary[key].search[index];
 				arr.push(searchTerm)
-				console.log("search term "+searchTerm)
+				//console.log("search term "+searchTerm)
 			}
 		}
 		resolve(arr);
@@ -136,5 +139,8 @@ console.log(pathToFiles);
 }*/
 // test();
 // console.log(parseFile(path.join(pathToFiles, "Metro Boomin - Superhero (Heroes & Villains).mp3")));
-requestTrack("scifi ")
+/*setTimeout(()=>{
+	requestTrack("i cant save you metro boomin")
+}, 4_000)*/
+
 module.exports = { requestTrack };
