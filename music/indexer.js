@@ -41,10 +41,16 @@ async function addFile(fileName) {
 		if (!localLibrary[fileName]) {
 			const metadata = await parseFile(path.join(pathToFiles, fileName));
 			console.log("metadata:" + JSON.stringify(metadata.common.title))
+			const title = metadata.common.title;
+			const artist = metadata.common.artist;
 			localLibrary[fileName] = {
-				"title": metadata.common.title,
-				"artist": metadata.common.artist,
-				"search": metadata.common.title + " " + metadata.common.artist,
+				"title": title,
+				"artist": artist,
+				"search": [
+					(title + " " + artist).replace(".","").replace("'","").replace("-",""),
+					(artist + " " + title).replace(".","").replace("'","").replace("-",""),
+					(title).replace(".","").replace("'","").replace("-","")
+				],
 			};
 
 

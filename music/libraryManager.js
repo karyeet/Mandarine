@@ -33,8 +33,11 @@ function createFuzzySetArr(){
 	const fzpromise = new Promise((resolve, reject)=>{
 		const arr = [];
 		for (const key in localLibrary){
-			const searchTerm = localLibrary[key].search;
-			arr.push(searchTerm)
+			for(const index in localLibrary[key].search){
+				const searchTerm = localLibrary[key].search[index];
+				arr.push(searchTerm)
+				console.log("search term "+searchTerm)
+			}
 		}
 		resolve(arr);
 	})
@@ -48,13 +51,15 @@ async function requestTrack(query) {
 
 	// perform search
 	const fuzzyResult = fuzzySet.get(query);
+
 	// if valid match, return filename
 	if (fuzzyResult && fuzzyResult[0]) {
 		console.log("fuzzy found");
 		console.log(fuzzyResult);
-		for (const index in fuzzyArr){
-			if(fuzzyArr[index] == fuzzyResult[0][1]){
-				const fuzzyfilepath = path.join(pathToFiles, Object.keys(localLibrary)[index]);
+		for (const key in localLibrary){
+			if(localLibrary[key].search.find(pattern=> pattern == fuzzyResult[0][1])){
+				const fuzzyfilepath = path.join(pathToFiles, key);
+				console.log(fuzzyfilepath)
 				return {
 					"path":fuzzyfilepath,
 					"metadata": await parseFile(fuzzyfilepath),
@@ -64,6 +69,7 @@ async function requestTrack(query) {
 
 	}
 	// otherwise perform deezer track fetch (no explicit else)
+	console.log("fuzzy fail")
 	const result = await meezer.searchTrack(query);
 	// track not found then return false
 	if (!result || !result.link) {
@@ -79,7 +85,7 @@ async function requestTrack(query) {
 		};
 	}
 	// at this point track does not exist, start download!
-	const trackDL = await meezer.DownloadTrack(result.link);
+	const trackDL = false//await meezer.DownloadTrack(result.link);
 
 	if (trackDL) {
 		// successfull download so add to library and return filename
@@ -115,7 +121,11 @@ function addToLibrary(artist, title, fileName) {
 	localLibrary[fileName] = {
 		"title": title,
 		"artist": artist,
-		"search": (title + " " + artist).replace(".","").replace("'","").replace("-",""),
+		"search": [
+			(title + " " + artist).replace(".","").replace("'","").replace("-",""),
+			(artist + " " + title).replace(".","").replace("'","").replace("-",""),
+			(title).replace(".","").replace("'","").replace("-","")
+		],
 	};
 	fs.writeFileSync(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
 }
@@ -126,5 +136,5 @@ console.log(pathToFiles);
 }*/
 // test();
 // console.log(parseFile(path.join(pathToFiles, "Metro Boomin - Superhero (Heroes & Villains).mp3")));
-
+requestTrack("scifi ")
 module.exports = { requestTrack };
