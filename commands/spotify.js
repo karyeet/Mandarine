@@ -38,21 +38,36 @@ async function spotify(message, args) {
 	}
 	// if we are already following someone in spotify
 	else if (guildsMeta[message.guild.id] && guildsMeta[message.guild.id].spotify) {
+		console.log("Already listening along.")
 		message.react(reactions.negative);
+		return false;
 	}
 
-	if (message.mentions && message.mentions.members && message.mentions.members.first()) {
+	//console.log(message.options);
+	//console.log(message.options.getMember("user"));
+
+
+	if ( (message.options && message.options.getMember("user")) || (message.mentions && message.mentions.members && message.mentions.members.first())) {
 
 		// look for spotify activity
-		const targetMember = message.mentions.members.first();
+		let targetMember 
+		// interaction or message compatability
+		if(message.options && message.options.getMember("user")){
+			targetMember = message.options.getMember("user");
+		}else{
+			targetMember = message.mentions.members.first();
+		}
+
 		console.log(targetMember.presence);
 		let spotifyTrack = getTrack(targetMember.presence.activities);
 		if (!spotifyTrack) {
 			// they are not listening to spotify
+			console.log("Member not listening on spotify.")
 			message.react(reactions.negative);
 			return false;
 		}
 		// else
+		console.log("reply listening along")
 		const scapeGoatMessage = await message.reply("Listening along!");
 		// join in case we haven't
 		await join(message);
@@ -60,7 +75,11 @@ async function spotify(message, args) {
 		skip(scapeGoatMessage);
 		console.log("listening along");
 		queue[message.guild.id] = [];
-		play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name}`, "music");
+		const deezerPlay = await play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name}`, "music");
+		if(!deezerPlay){
+			// play youtube
+			await play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name} lyrics`);
+		}
 		message.react(reactions.positive);
 		guildsMeta[message.guild.id].spotify = targetMember.id;
 
@@ -81,7 +100,11 @@ async function spotify(message, args) {
 						spotifyTrack = newTrack;
 						// play
 						console.log("playing new spotify song");
-						await play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name}`, "music");
+						const deezerPlay = await play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name}`, "music");
+						if(!deezerPlay){
+							// play youtube
+							await play(scapeGoatMessage, `${spotifyTrack.artist} - ${spotifyTrack.name} lyrics`);
+						}
 						skip(scapeGoatMessage);
 					}
 				}
@@ -103,6 +126,7 @@ async function spotify(message, args) {
 	}
 	else {
 		// no member specified
+		console.log("no member specified")
 		message.react(reactions.negative);
 		return false;
 	}
