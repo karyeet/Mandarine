@@ -146,6 +146,6 @@ console.log(pathToFiles);
 }, 1_000)
 */
 
-addToLibrary("foo", "bar", "foobar.mp3")
+/*addToLibrary("foo", "bar", "foobar.mp3")*/
 
 module.exports = { requestTrack };
