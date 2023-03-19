@@ -86,7 +86,11 @@ async function queueFunc(message, args) {
 				});
 
 				collector.on("end", () => {
-					msg.delete();
+					try{
+						msg.delete()
+					}catch(err){
+						console.log("failed to delete message")
+					}
 				});
 
 			});
@@ -97,7 +101,13 @@ async function queueFunc(message, args) {
 		// otherwise send the queue without buttons and delete after 60 seconds
 		message.reply(await replyOptions(false, queue[message.guild.id][0], message, page))
 			.then(msg => {
-				setTimeout(() => msg.delete(), 30000);
+				setTimeout(() =>{
+					try{
+						msg.delete()
+					}catch(err){
+						console.log("failed to delete message")
+					}
+				}, 30000);
 			});
 	}
 

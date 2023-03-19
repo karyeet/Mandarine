@@ -45,7 +45,15 @@ function AddSCdataToQueue(message, data) {
 	// send embed and delete after 60 seconds
 	message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 		.then(msg => {
-			setTimeout(() => msg.delete(), 60000);
+			
+			setTimeout(() =>{
+				try{
+				 	msg.delete()
+				}catch(err){
+					console.log("failed to delete message");
+				}
+				}, 60000);
+
 		});
 }
 
@@ -68,7 +76,13 @@ function addYTdataToQueue(message, data, isPlayList) {
 	if (!isPlayList) {
 		message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 			.then(msg => {
-				setTimeout(() => msg.delete(), 60000);
+				setTimeout(() =>{
+					try{
+						msg.delete()
+					}catch(err){
+						console.log("failed to delete message")
+					}
+					}, 60000);
 			});
 	}
 
@@ -99,7 +113,13 @@ function addDZdataToQueue(message, data) {
 				files:[{ "name":"thumb.jpg", "attachment":data.metadata.common.picture[0].data}],
 			})
 			.then(msg => {
-				setTimeout(() => msg.delete(), 60000);
+				setTimeout(() =>{
+					try{
+						msg.delete()
+					}catch(err){
+						console.log("failed to delete message")
+					}
+				}, 60000);
 			});
 	}
 	else {
@@ -107,7 +127,13 @@ function addDZdataToQueue(message, data) {
 			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
 			})
 			.then(msg => {
-				setTimeout(() => msg.delete(), 60000);
+				setTimeout(() => {
+					try{
+						msg.delete()
+					}catch(err){
+						console.log("failed to delete message")
+					}
+				}, 60000);
 			});
 	}
 
@@ -253,7 +279,12 @@ async function play(message, args, command) {
 						};
 						message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 							.then(msg => {
-								setTimeout(() => msg.delete(), 60000);
+								setTimeout(() =>{					
+									try{
+										msg.delete()
+									}catch(err){
+										console.log("failed to delete message")
+									}} , 60000);
 							});
 						// end of mock
 					}

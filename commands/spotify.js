@@ -118,7 +118,11 @@ async function spotify(message, args) {
 				console.log("no longer listening along");
 				guildsMeta[message.guild.id].spotify = false;
 				clearInterval(checkSpotify);
-				scapeGoatMessage.delete();
+				try{
+					scapeGoatMessage.delete()
+				}catch(err){
+					console.log("failed to delete message")
+				}
 			}
 
 		}, 1000);
