@@ -17,7 +17,7 @@
     "prism-media": "github:karyeet/prism-media",
     "sodium-native": "^4.0.1",
     "utf-8-validate": "^5.0.10",
-    "ytdl-core": "^4.11.2",
+    "ytdl-core": "^4.11.4",
     "zlib-sync": "^0.1.7"
   },
   "name": "mandarine",
