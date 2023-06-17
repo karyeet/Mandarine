@@ -108,6 +108,7 @@ async function playNext(message) {
 // set SC client id every start so it doesnt expire
 let SC_clientId;
 async function setScClientId() {
+	console.log("Refreshing soundcloud token");
 	SC_clientId = await playdl.getFreeClientID();
 
 	playdl.setToken({
@@ -118,8 +119,18 @@ async function setScClientId() {
 	// console.log("SC ID: " + SC_clientId);
 }
 
+async function refreshSpotifyToken() {
+	console.log("Refreshing spotify token");
+	if (playdl.is_expired()) {
+		await playdl.refreshToken();
+	}
+}
+
 setScClientId();
+refreshSpotifyToken();
 // set sc id every 10 minutes
 setInterval(setScClientId, 10 * 60 * 1000);
+// refresh spotify token every 55 minutes
+setInterval(refreshSpotifyToken, 55 * 60 * 1000);
 
 module.exports = { queue, audioPlayers, playNext, reactions, guildsMeta };
