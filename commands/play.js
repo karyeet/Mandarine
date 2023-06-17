@@ -46,12 +46,8 @@ function AddSCdataToQueue(message, data) {
 		.then(msg => {
 
 			setTimeout(() => {
-				try {
-					msg.delete();
-				}
-				catch (err) {
-					console.log("failed to delete message");
-				}
+				msg.delete()
+					.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
 			}, 60000);
 
 		});
@@ -77,12 +73,8 @@ function addYTdataToQueue(message, data, isPlayList) {
 		message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 			.then(msg => {
 				setTimeout(() => {
-					try {
-						msg.delete();
-					}
-					catch (err) {
-						console.log("failed to delete message");
-					}
+					msg.delete()
+						.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
 				}, 60000);
 			});
 	}
@@ -115,12 +107,8 @@ function addDZdataToQueue(message, data) {
 			})
 			.then(msg => {
 				setTimeout(() => {
-					try {
-						msg.delete();
-					}
-					catch (err) {
-						console.log("failed to delete message");
-					}
+					msg.delete()
+						.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
 				}, 60000);
 			});
 	}
@@ -130,12 +118,8 @@ function addDZdataToQueue(message, data) {
 			})
 			.then(msg => {
 				setTimeout(() => {
-					try {
-						msg.delete();
-					}
-					catch (err) {
-						console.log("failed to delete message");
-					}
+					msg.delete()
+						.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
 				}, 60000);
 			});
 	}
@@ -283,12 +267,8 @@ async function play(message, args, command) {
 						message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 							.then(msg => {
 								setTimeout(() => {
-									try {
-										msg.delete();
-									}
-									catch (err) {
-										console.log("failed to delete message");
-									}
+									msg.delete()
+										.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
 								}, 60000);
 							});
 						// end of mock

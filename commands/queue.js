@@ -86,12 +86,8 @@ async function queueFunc(message, args) {
 				});
 
 				collector.on("end", () => {
-					try {
-						msg.delete();
-					}
-					catch (err) {
-						console.log("failed to delete message");
-					}
+					msg.delete()
+						.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
 				});
 
 			});
@@ -103,12 +99,8 @@ async function queueFunc(message, args) {
 		message.reply(await replyOptions(false, queue[message.guild.id][0], message, page))
 			.then(msg => {
 				setTimeout(() => {
-					try {
-						msg.delete();
-					}
-					catch (err) {
-						console.log("failed to delete message");
-					}
+					msg.delete()
+						.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
 				}, 30000);
 			});
 	}
