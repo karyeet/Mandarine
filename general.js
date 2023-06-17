@@ -3,7 +3,6 @@
 const playdl = require("play-dl");
 const { createAudioResource, StreamType } = require("@discordjs/voice");
 const { createReadStream } = require("fs");
-// const ytdl = require("ytdl-core");
 
 const reactions = {
 	"positive":"🍊",
