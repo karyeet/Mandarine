@@ -57,47 +57,47 @@ client.on("messageCreate", (message) => {
 	// Check the command against the command table, and then run it
 	// We pass the command arg to the command function for different functionalities, ex. if ">music" is used instead of ">play" we use soundcloud exclusively
 
-	processCommand(command,args, message);
+	processCommand(command, args, message);
 
 });
 
-client.on('interactionCreate', async interaction => {
+client.on("interactionCreate", async interaction => {
 	if (!interaction.isCommand()) return;
 
-	//console.log(interaction.commandName);
-	//console.log(interaction.options.data);
+	// console.log(interaction.commandName);
+	// console.log(interaction.options.data);
 
 	const command = interaction.commandName;
-	let argsArray = [];
+	const argsArray = [];
 
-	for(option of interaction.options.data){
+	for (const option of interaction.options.data) {
 		argsArray.push(option.value);
 	}
-	//console.log(argsArray);
-	const args = argsArray.join(" ")
+	// console.log(argsArray);
+	const args = argsArray.join(" ");
 
 
-	interaction.react = async (reaction)=>{
+	interaction.react = async (reaction) => {
 		return interaction.editReply({ content: reaction, fetchReply: true, ephemeral: true });
-	}
-	await interaction.deferReply({ephemeral: true, fetchReply: true});
+	};
+	await interaction.deferReply({ ephemeral: true, fetchReply: true });
 	interaction.author = interaction.member.user;
-	//console.log(interaction.member.displayName)
-	//console.log(interaction.author)
+	// console.log(interaction.member.displayName)
+	// console.log(interaction.author)
 
 	// follow up for addtoqueue message
-	interaction.reply = (args)=>{
-		args.ephemeral = false;
-		args.fetchReply = true;
-		return interaction.followUp(args);
-	}
+	interaction.reply = (replyArgs) => {
+		replyArgs.ephemeral = false;
+		replyArgs.fetchReply = true;
+		return interaction.followUp(replyArgs);
+	};
 
 	interaction.delete = interaction.deleteReply;
 
 	processCommand(command, args, interaction);
 });
 
-function processCommand(command, args, message){
+function processCommand(command, args, message) {
 	if (DIY_COMMANDO[command]) {
 		try {
 			DIY_COMMANDO[command](message, args, command);
