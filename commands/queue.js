@@ -86,10 +86,11 @@ async function queueFunc(message, args) {
 				});
 
 				collector.on("end", () => {
-					try{
-						msg.delete()
-					}catch(err){
-						console.log("failed to delete message")
+					try {
+						msg.delete();
+					}
+					catch (err) {
+						console.log("failed to delete message");
 					}
 				});
 
@@ -101,28 +102,29 @@ async function queueFunc(message, args) {
 		// otherwise send the queue without buttons and delete after 60 seconds
 		message.reply(await replyOptions(false, queue[message.guild.id][0], message, page))
 			.then(msg => {
-				setTimeout(() =>{
-					try{
-						msg.delete()
-					}catch(err){
-						console.log("failed to delete message")
+				setTimeout(() => {
+					try {
+						msg.delete();
+					}
+					catch (err) {
+						console.log("failed to delete message");
 					}
 				}, 30000);
 			});
 	}
 
 }
- 
-async function replyOptions(buttons, firstEntry, message, page){
-	const options = {  embeds:[queueGen(message.member.user, page, queue[message.guild.id], guildsMeta[message.guild.id])] }
 
-	//attachment://thumb.jpg
-	if(buttons){
-		options.components = [buttonGen(message.guild.id, page)]
-}
+async function replyOptions(buttons, firstEntry, message, page) {
+	const options = { embeds:[queueGen(message.member.user, page, queue[message.guild.id], guildsMeta[message.guild.id])] };
 
-	if(firstEntry && firstEntry.thumbURL === "attachment://thumb.jpg" && firstEntry.thumbData){
-		options.files = [{ "name":"thumb.jpg", "attachment":firstEntry.thumbData}]
+	// attachment://thumb.jpg
+	if (buttons) {
+		options.components = [buttonGen(message.guild.id, page)];
+	}
+
+	if (firstEntry && firstEntry.thumbURL === "attachment://thumb.jpg" && firstEntry.thumbData) {
+		options.files = [{ "name":"thumb.jpg", "attachment":firstEntry.thumbData }];
 	}
 
 	return options;

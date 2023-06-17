@@ -39,9 +39,10 @@ function join(message) {
 		message.reply("You are not in a voice chanel")
 			.then((msg) => {
 				setTimeout(() => {
-					try{
+					try {
 						msg.delete();
-					}catch(err){
+					}
+					catch (err) {
 						console.log("failed to delete message");
 					}
 				}, 10_000);
