@@ -20,7 +20,6 @@ const libmanger = require("../music/libraryManager.js");
 
 const join = require("./join.js");
 const unpause = require("./unpause.js");
-const ytdl = require("ytdl-core");
 // eslint-disable-next-line
 // const ytRegex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
 
@@ -45,14 +44,15 @@ function AddSCdataToQueue(message, data) {
 	// send embed and delete after 60 seconds
 	message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 		.then(msg => {
-			
-			setTimeout(() =>{
-				try{
-				 	msg.delete()
-				}catch(err){
+
+			setTimeout(() => {
+				try {
+					msg.delete();
+				}
+				catch (err) {
 					console.log("failed to delete message");
 				}
-				}, 60000);
+			}, 60000);
 
 		});
 }
@@ -61,7 +61,7 @@ function addYTdataToQueue(message, data, isPlayList) {
 	const queueData = {
 		"title":		data.title,
 		"url": 			(data.video_url || data.url),
-		"author": 		(data.author ? data.author.name : data.channel.name),
+		"author": 		((data.author && data.author.name) ? data.author.name : data.channel.name),
 		"durationInSec": (data.lengthSeconds || data.durationInSec),
 		"thumbURL": 	data.thumbnails[data.thumbnails.length - 1].url,
 		"type": 		"yt_track",
@@ -76,13 +76,14 @@ function addYTdataToQueue(message, data, isPlayList) {
 	if (!isPlayList) {
 		message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 			.then(msg => {
-				setTimeout(() =>{
-					try{
-						msg.delete()
-					}catch(err){
-						console.log("failed to delete message")
+				setTimeout(() => {
+					try {
+						msg.delete();
 					}
-					}, 60000);
+					catch (err) {
+						console.log("failed to delete message");
+					}
+				}, 60000);
 			});
 	}
 
@@ -91,7 +92,7 @@ function addYTdataToQueue(message, data, isPlayList) {
 
 function addDZdataToQueue(message, data) {
 	// console.log(data);
-	const imageExists = data.metadata.common.picture && data.metadata.common.picture[0]
+	const imageExists = data.metadata.common.picture && data.metadata.common.picture[0];
 	const queueData = {
 		"title":		data.metadata.common.title,
 		"url": 			null,
@@ -110,14 +111,15 @@ function addDZdataToQueue(message, data) {
 	if (imageExists) {
 		message.reply(
 			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
-				files:[{ "name":"thumb.jpg", "attachment":data.metadata.common.picture[0].data}],
+				files:[{ "name":"thumb.jpg", "attachment":data.metadata.common.picture[0].data }],
 			})
 			.then(msg => {
-				setTimeout(() =>{
-					try{
-						msg.delete()
-					}catch(err){
-						console.log("failed to delete message")
+				setTimeout(() => {
+					try {
+						msg.delete();
+					}
+					catch (err) {
+						console.log("failed to delete message");
 					}
 				}, 60000);
 			});
@@ -128,10 +130,11 @@ function addDZdataToQueue(message, data) {
 			})
 			.then(msg => {
 				setTimeout(() => {
-					try{
-						msg.delete()
-					}catch(err){
-						console.log("failed to delete message")
+					try {
+						msg.delete();
+					}
+					catch (err) {
+						console.log("failed to delete message");
 					}
 				}, 60000);
 			});
@@ -240,10 +243,10 @@ async function play(message, args, command) {
 			}
 			else if (validate == "yt_video") {
 			// get youtube video info
-				const data = await ytdl.getBasicInfo(args);
+				const data = await playdl.video_info(args);
 				// add result to queue if data
-				if (data && data.videoDetails) {
-					addYTdataToQueue(message, data.videoDetails);
+				if (data && data.video_details) {
+					addYTdataToQueue(message, data.video_details);
 				}
 				else {
 					message.react(reactions.warning);
@@ -279,12 +282,14 @@ async function play(message, args, command) {
 						};
 						message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 							.then(msg => {
-								setTimeout(() =>{					
-									try{
-										msg.delete()
-									}catch(err){
-										console.log("failed to delete message")
-									}} , 60000);
+								setTimeout(() => {
+									try {
+										msg.delete();
+									}
+									catch (err) {
+										console.log("failed to delete message");
+									}
+								}, 60000);
 							});
 						// end of mock
 					}
