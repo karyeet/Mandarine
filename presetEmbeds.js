@@ -81,7 +81,13 @@ function CalcQueuePages(queueLength) {
 
 function queueGen(user, page, guildQueue, guildMeta) {
 	const queueEmbed = new mEmbeds(user);
-	queueEmbed.setTitle("Queue, Page: " + page + "/" + CalcQueuePages(guildQueue.length));
+
+	let totalDurationInSec = 0;
+	for (const track of guildQueue) {
+		totalDurationInSec += track.durationInSec;
+	}
+
+	queueEmbed.setTitle("Queue | Duration: " + secondsToTime(totalDurationInSec) + " | Page: " + page + "/" + CalcQueuePages(guildQueue.length));
 
 	if (guildQueue[0].url) {
 		queueEmbed.setDesc("**Currently Playing**: [" + guildQueue[0].title + "](" + guildQueue[0].url + ")");
@@ -121,4 +127,26 @@ function queueGen(user, page, guildQueue, guildMeta) {
 	return queueEmbed.embed.embed;
 }
 
-module.exports = { songAdded, nowPlaying, queueGen, CalcQueuePages };
+function helpGen(user, prefix = ">") {
+	const helpEmbed = new mEmbeds(user);
+
+	helpEmbed.setTitle("Commands");
+	helpEmbed.setDesc(`Replace brackets & stuff inside brackets with what they're describing.
+	Ex: ">play [search]" would be ">play my favorite song"`);
+
+	helpEmbed.addField(prefix + "join", "Make bot join VC.", false);
+	helpEmbed.addField(prefix + "disconnect or >leave", "Make bot leave VC.", false);
+	helpEmbed.addField(prefix + "play [link] or >play [search]", "Play audio using a link from spotify, soundcloud, or youtube OR search and play from youtube.", false);
+	helpEmbed.addField(prefix + "music [search]", "Play a song from a library of high quality songs. Some songs may be fetched on request & may take a couple seconds to play.", false);
+	helpEmbed.addField(prefix + "pause or " + prefix + "stop", "Pause audio playback.", false);
+	helpEmbed.addField(prefix + "resume or " + prefix + "unpause", "Resume audio playback. >play will also work.", false);
+	helpEmbed.addField(prefix + "skip", "Skip the currently playing track.", false);
+	helpEmbed.addField(prefix + "queue", "Show tracks in the queue.", false);
+	helpEmbed.addField(prefix + "remove [index]", "Remove a track from the queue using the index number shown in the queue command. This number may change everytime you remove a track.", false);
+	helpEmbed.addField(prefix + "loop", "Loop or unloop the current track.", false);
+	helpEmbed.addField(prefix + "spotify [mention]", "Listen along to a user whose spotify is linked and sharing to discord.", false);
+
+	return helpEmbed.embed.embed;
+}
+
+module.exports = { helpGen, songAdded, nowPlaying, queueGen, CalcQueuePages };

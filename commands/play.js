@@ -20,9 +20,23 @@ const libmanger = require("../music/libraryManager.js");
 
 const join = require("./join.js");
 const unpause = require("./unpause.js");
-const ytdl = require("ytdl-core");
 // eslint-disable-next-line
 // const ytRegex = /http(?:s?):\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)([\w\-\_]*)(&(amp;)?‌​[\w\?‌​=]*)?/;
+
+async function convertSPDataToYT(spotifyData) {
+	if (spotifyData && spotifyData.type == "track") {
+		// search youtube
+		const data = await playdl.search(`${spotifyData.artists[0].name} - ${spotifyData.name} topic`, { "limit":1, "source":{ "youtube":"video" } });
+		// if result, return first result
+		if (data && data[0]) {
+			return data[0];
+		}
+		else {
+			return false;
+		}
+	}
+}
+
 
 function AddSCdataToQueue(message, data) {
 	let artist = false;
@@ -45,7 +59,12 @@ function AddSCdataToQueue(message, data) {
 	// send embed and delete after 60 seconds
 	message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 		.then(msg => {
-			setTimeout(() => msg.delete(), 60000);
+
+			setTimeout(() => {
+				msg.delete()
+					.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
+			}, 60000);
+
 		});
 }
 
@@ -53,7 +72,7 @@ function addYTdataToQueue(message, data, isPlayList) {
 	const queueData = {
 		"title":		data.title,
 		"url": 			(data.video_url || data.url),
-		"author": 		(data.author ? data.author.name : data.channel.name),
+		"author": 		((data.author && data.author.name) ? data.author.name : data.channel.name),
 		"durationInSec": (data.lengthSeconds || data.durationInSec),
 		"thumbURL": 	data.thumbnails[data.thumbnails.length - 1].url,
 		"type": 		"yt_track",
@@ -68,7 +87,10 @@ function addYTdataToQueue(message, data, isPlayList) {
 	if (!isPlayList) {
 		message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 			.then(msg => {
-				setTimeout(() => msg.delete(), 60000);
+				setTimeout(() => {
+					msg.delete()
+						.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
+				}, 60000);
 			});
 	}
 
@@ -77,7 +99,7 @@ function addYTdataToQueue(message, data, isPlayList) {
 
 function addDZdataToQueue(message, data) {
 	// console.log(data);
-	const imageExists = data.metadata.common.picture && data.metadata.common.picture[0]
+	const imageExists = data.metadata.common.picture && data.metadata.common.picture[0];
 	const queueData = {
 		"title":		data.metadata.common.title,
 		"url": 			null,
@@ -96,10 +118,13 @@ function addDZdataToQueue(message, data) {
 	if (imageExists) {
 		message.reply(
 			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
-				files:[{ "name":"thumb.jpg", "attachment":data.metadata.common.picture[0].data}],
+				files:[{ "name":"thumb.jpg", "attachment":data.metadata.common.picture[0].data }],
 			})
 			.then(msg => {
-				setTimeout(() => msg.delete(), 60000);
+				setTimeout(() => {
+					msg.delete()
+						.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
+				}, 60000);
 			});
 	}
 	else {
@@ -107,7 +132,10 @@ function addDZdataToQueue(message, data) {
 			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
 			})
 			.then(msg => {
-				setTimeout(() => msg.delete(), 60000);
+				setTimeout(() => {
+					msg.delete()
+						.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
+				}, 60000);
 			});
 	}
 
@@ -177,17 +205,9 @@ async function play(message, args, command) {
 			else if (validate == "sp_track") {
 			// get spotify song data so we can search on soundcloud
 				const spotifyData = await playdl.spotify(args);
-				if (spotifyData && spotifyData.type == "track") {
-					// search youtube
-					const data = await playdl.search(`${spotifyData.artists[0].name} - ${spotifyData.name} topic`, { "limit":1, "source":{ "youtube":"video" } });
-					// if result, add first result to queue
-					if (data && data[0]) {
-						addYTdataToQueue(message, data[0]);
-					}
-					else {
-						message.react(reactions.warning);
-						return false;
-					}
+				const YTData = await convertSPDataToYT(spotifyData);
+				if (YTData) {
+					addYTdataToQueue(message, YTData);
 				}
 				else {
 					message.react(reactions.confused);
@@ -214,10 +234,10 @@ async function play(message, args, command) {
 			}
 			else if (validate == "yt_video") {
 			// get youtube video info
-				const data = await ytdl.getBasicInfo(args);
+				const data = await playdl.video_info(args);
 				// add result to queue if data
-				if (data && data.videoDetails) {
-					addYTdataToQueue(message, data.videoDetails);
+				if (data && data.video_details) {
+					addYTdataToQueue(message, data.video_details);
 				}
 				else {
 					message.react(reactions.warning);
@@ -253,7 +273,59 @@ async function play(message, args, command) {
 						};
 						message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
 							.then(msg => {
-								setTimeout(() => msg.delete(), 60000);
+								setTimeout(() => {
+									msg.delete()
+										.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
+								}, 60000);
+							});
+						// end of mock
+					}
+				}
+				else {
+					message.react(reactions.warning);
+					return false;
+				}
+
+			}
+			else if (validate == "sp_playlist") {
+				// get spotify playlist info
+				const spotifyData = await playdl.spotify(args);
+
+				if (spotifyData && spotifyData.tracksCount > 0) {
+					const tracks = await spotifyData.all_tracks();
+					if (tracks) {
+						// ask user to wait
+						const replyMessage = await message.reply("Adding playlist to queue, this might take a couple seconds!");
+						// add result to queue if data
+						let length = 0;
+						for (const i in tracks) {
+							const track = tracks[i];
+							length += track.durationInSec;
+							const YTData = await convertSPDataToYT(track);
+							addYTdataToQueue(message, YTData, true);
+						}
+						// mock song data to create embed
+						const queueData = {
+							"title":		spotifyData.name,
+							"url": 			spotifyData.url || spotifyData.link,
+							"author": 		spotifyData.owner.name,
+							"durationInSec": length,
+							"thumbURL": 	spotifyData.thumbnail.url,
+							"type": 		"yt_track",
+							"requester":	message.author,
+							"channel": 		message.channel,
+							"stream_url": 	spotifyData.url || spotifyData.link,
+						};
+						// remove original reply
+						replyMessage.delete()
+							.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
+						// reply with added to queue message
+						message.reply({ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)] })
+							.then(msg => {
+								setTimeout(() => {
+									msg.delete()
+										.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
+								}, 60000);
 							});
 						// end of mock
 					}

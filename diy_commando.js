@@ -24,6 +24,8 @@ const DIY_COMMANDO = {
 
 	"spotify": require("./commands/spotify.js"),
 
+	"help":require("./commands/help.js"),
+
 };
 
 module.exports = DIY_COMMANDO;
