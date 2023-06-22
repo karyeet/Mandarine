@@ -5,7 +5,7 @@
     "@discordjs/rest": "^1.6.0",
     "@discordjs/voice": "^0.15.0",
     "@picovoice/porcupine-node": "^2.1.7",
-    "@picovoice/rhino-node": "^2.1.10",
+    "@picovoice/rhino-node": "^2.2.1",
     "bufferutil": "^4.0.7",
     "discord-api-types": "^0.37.36",
     "discord.js": "^13.16.0",
