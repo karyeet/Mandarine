@@ -2,7 +2,7 @@
   "dependencies": {
     "@discordjs/builders": "^1.5.0",
     "@discordjs/opus": "^0.9.0",
-    "@discordjs/rest": "^1.6.0",
+    "@discordjs/rest": "^1.7.1",
     "@discordjs/voice": "^0.15.0",
     "@picovoice/porcupine-node": "^2.1.7",
     "@picovoice/rhino-node": "^2.1.10",
