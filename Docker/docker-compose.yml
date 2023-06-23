@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  mandarine:
+    container_name: mandarine_music_bot
+    image: karyeet/mandarine:latest
+    volumes:
+      - ./config.json:/Mandarine-main/config.json:ro
+      - ./models/:/Mandarine-main/voice/models:ro
+      - ./mandarineFiles:~/mandarineFiles
+    restart: unless-stopped
+
