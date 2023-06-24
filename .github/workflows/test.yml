@@ -9,6 +9,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: run
+      - name: Print Runner Information
         run: |
-              echo $runner.arch
+          echo "Operating System: ${{ runner.os }}"
+          echo "Architecture: ${{ runner.arch }}"
