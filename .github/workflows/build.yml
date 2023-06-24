@@ -7,49 +7,27 @@ on:
     branches:
       - 'main'
       - 'Dockerfile'
-    tags:
-      - 'v*.*.*'
-  pull_request:
-    branches:
-      - 'main'
-      - 'Dockerfile'
 
 jobs:
-  build:
+  build-amd64:
     runs-on: ubuntu-latest
     steps:
       # Get the repository's code
       - name: Checkout
         uses: actions/checkout@v2
-      # https://github.com/docker/setup-qemu-action
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+
       # https://github.com/docker/setup-buildx-action
       - name: Set up Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v1
+
       - name: Login to Docker Hub
         if: github.event_name != 'pull_request'
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Docker meta
-        id: meta 
-        uses: docker/metadata-action@v3
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            karyeet/mandarine
-          # Docker tags based on the following events/attributes 
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
+
       - name: Cache Docker layers
         uses: actions/cache@v2
         with:
@@ -57,11 +35,46 @@ jobs:
           key: ${{ runner.os }}-single-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-single-buildx
+
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
           context: .
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: karyeet/mandarine:amd64-${{ github.base_ref }}
+
+  build-arm64:
+    runs-on: buildjet-2vcpu-ubuntu-2204-arm
+    steps:
+      # Get the repository's code
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # https://github.com/docker/setup-buildx-action
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to Docker Hub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Cache Docker layers
+        uses: buildjet/cache@v3
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-single-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-single-buildx
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          platforms: linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: karyeet/mandarine:arm64-${{ github.base_ref }}
