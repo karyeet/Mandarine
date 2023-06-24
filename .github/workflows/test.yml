@@ -5,11 +5,28 @@ on:
       - 'main'
       - 'Dockerfile'
 
+env:
+  AMD64_RUNNER: ubuntu-latest
+  ARM64_RUNNER: buildjet-2vcpu-ubuntu-2204-arm
+
+
+
 jobs:
-  test:
-    runs-on: ubuntu-latest
+
+  example_matrix:
+    strategy:
+      matrix:
+        os: [buildjet-2vcpu-ubuntu-2204-arm, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Print Runner Information
         run: |
-          echo "Operating System: ${{ runner.os }}"
-          echo "Architecture: ${{ runner.arch }}"
+          if [[ "${{ runner.arch }}" == "x64" ]]; then
+            echo "PLATFORM=amd64" >> $GITHUB_ENV
+          elif [[ "${{ runner.arch }}" == "arm64" ]]; then
+            echo "PLATFORM=arm64" >> $GITHUB_ENV
+          fi
+      - name: matrix test
+        run: |
+            echo ${{ env.PLATFORM }}
+        
