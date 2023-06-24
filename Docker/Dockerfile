@@ -14,7 +14,7 @@ RUN apk add python3\
     && apk del .gyp
 
 RUN mkdir ~/config \
-    && mv /Mandarine-main/deezerConfig.json ~/config/config.json \
+    && mv /Mandarine-main/Docker/deezerConfig.json ~/config/config.json \
     && touch ~/config/.arl
 
 CMD echo $arl >> .arl \
