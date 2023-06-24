@@ -21,10 +21,10 @@ jobs:
     steps:
       - name: Print Runner Information
         run: |
-          if [[ "${{ runner.arch }}" == "x64" ]]; then
+          if [[ "${{ runner.arch }}" == "X64" ]]; then
             echo "Runner is amd64"
             echo "PLATFORM=amd64" >> $GITHUB_ENV
-          elif [[ "${{ runner.arch }}" == "arm64" ]]; then
+          elif [[ "${{ runner.arch }}" == "ARM64" ]]; then
             echo "Runner is arm64"
             echo "PLATFORM=arm64" >> $GITHUB_ENV
           fi
