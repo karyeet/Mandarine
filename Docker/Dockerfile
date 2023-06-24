@@ -8,7 +8,7 @@ RUN apk add python3\
         make \
         g++ \
         py3-pip\        
-    && npm install --prefix /Mandarine \
+    && npm install --prefix Mandarine \
     && python3 -m pip install deemix\
     && apk del .gyp
 
