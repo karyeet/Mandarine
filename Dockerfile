@@ -1,4 +1,5 @@
-FROM node:16-alpine
+FROM --platform=$BUILDPLATFORM node:16-alpine 
+
 LABEL maintainer="https://github.com/karyeet"
 
 COPY . /Mandarine/
