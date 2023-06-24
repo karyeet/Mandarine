@@ -1,0 +1,14 @@
+on:
+  workflow_dispatch:
+#  push:
+#    branches:
+#      - 'main'
+#      - 'Dockerfile'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: run
+        run: |
+              echo $runner.arch
