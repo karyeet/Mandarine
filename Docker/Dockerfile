@@ -13,6 +13,12 @@ RUN apk add python3\
     && python3 -m pip install deemix\
     && apk del .gyp
 
-    
+RUN mkdir ~/config \
+    && mv /Mandarine-main/deezerConfig.json ~/config/config.json \
+    && touch ~/config/.arl
 
-CMD node Mandarine-main/music/indexer.js && npm start --prefix Mandarine-main
+CMD echo $arl >> .arl \
+    && if [ -n "$runIndexerOnStart" ] && [ "$runIndexerOnStart" -eq 1 ]; then \
+        node Mandarine-main/music/indexer.js \
+    fi \
+    && npm start --prefix Mandarine-main
