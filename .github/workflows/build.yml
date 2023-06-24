@@ -89,11 +89,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Create and push multiarch manifest
-        # We need to enable experimental docker features in order to use `docker manifest`
+      - name: Create and push multiarch image
         run: |
-              export DOCKER_CLI_EXPERIMENTAL=enabled;
-              docker manifest create karyeet/mandarine:${GITHUB_REF_NAME} \
-                  --amend karyeet/mandarine:arm64-${GITHUB_REF_NAME} \
-                  --amend karyeet/mandarine:amd64-${GITHUB_REF_NAME};
-              docker manifest push karyeet/mandarine:${GITHUB_REF_NAME}
+              docker buildx imagetools create -t karyeet/mandarine:${GITHUB_REF_NAME} \
+              karyeet/mandarine:arm64-${GITHUB_REF_NAME} \
+              karyeet/mandarine:amd64-${GITHUB_REF_NAME}
