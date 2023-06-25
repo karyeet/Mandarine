@@ -1,3 +1,7 @@
+
+#run authorize() for play-dl
+# sudo docker run -it --rm -v "./playdlData:/.data" karyeet/mandarine:latest /bin/ash -c "node /Mandarine/Docker/authorize.js"
+
 version: "3"
 
 services:
@@ -8,7 +12,7 @@ services:
       - ./config/config.json:/Mandarine/config.json:ro
       - ./config/models/:/Mandarine/voice/models:ro
       - ./mandarineFiles:/root/mandarineFiles
-      - ./playdlData:/Mandarine/.data
+      - ./playdlData:/.data
     environment:
       - "arl=5a2e"
       - "runIndexer=True"
