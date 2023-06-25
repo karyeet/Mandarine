@@ -17,5 +17,5 @@ RUN mkdir ~/config \
     && mv /Mandarine/Docker/deezerConfig.json ~/config/config.json \
     && touch ~/config/.arl
 
-CMD echo $arl >> .arl \
+CMD echo $arl >> ~/config/.arl \
     && npm start --prefix Mandarine
