@@ -3,7 +3,7 @@ version: "3"
 services:
   mandarine:
     container_name: mandarine_music_bot
-    image: mandarine:latest
+    image: karyeet/mandarine:latest
     volumes:
       - ./config/config.json:/Mandarine/config.json:ro
       - ./config/models/:/Mandarine/voice/models:ro
