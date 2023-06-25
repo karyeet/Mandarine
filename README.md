@@ -52,7 +52,7 @@ services:
       - ./config/config.json:/Mandarine/config.json:ro
       - ./config/models/:/Mandarine/voice/models:ro
       - ./mandarineFiles:/root/mandarineFiles
-      - ./playdlData:/.data
+      - ./playdlData:/Mandarine/.data
     environment:
       - "arl=5a2e"
       - "runIndexer=True"
@@ -68,7 +68,7 @@ To use >music, you must provide your deezer arl token to the environment. Replac
 To authorize play-dl with spotify or youtube, run this command while inside the same folder as your docker-compose.yml. Specify that you would like to save to file:
 
 `
-sudo docker run -it --rm -v "./playdlData:/.data" karyeet/mandarine:Dockerfile /bin/ash -c "node /Mandarine/Docker/authorize.js" 
+sudo docker run -it --rm -v "./playdlData:/.data" karyeet/mandarine:latest /bin/ash -c "node /Mandarine/Docker/authorize.js"
 `
 
 
