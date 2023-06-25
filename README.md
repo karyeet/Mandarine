@@ -19,9 +19,10 @@ Mandarine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
 - [x] Spotify playlist support
 - [x] Partial support for voice commands
 - [x] Help command
+- [x] Docker image
 
 #### Planned Features:
-- [ ] Docker image
+
 - [ ] Deezer Playlist support
 - [ ] Multi-threaded streaming
 - [ ] Prefix command & other customizations
@@ -29,7 +30,49 @@ Mandarine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
 - [ ] Preload next song for seamless playing
 - [ ] Voice recognition for play command
 
-## Deployment
+## Docker Deployment (Preferred)
+[Create a discord bot](https://discord.com/developers/applications)
+then [add the bot to your server](https://help.pebblehost.com/en/article/how-to-invite-your-bot-to-a-discord-server-1asdlyg/).
+
+In the discord developer dashboard, toggle on:
+- PRESENCE INTENT
+- SERVER MEMBERS INTENT
+- MESSAGE CONTENT INTENT
+
+Example docker-compose.yml:
+
+```
+version: "3"
+
+services:
+  mandarine:
+    container_name: mandarine_music_bot
+    image: karyeet/mandarine:latest
+    volumes:
+      - ./config/config.json:/Mandarine/config.json:ro
+      - ./config/models/:/Mandarine/voice/models:ro
+      - ./mandarineFiles:/root/mandarineFiles
+      - ./playdlData:/.data
+    environment:
+      - "arl=5a2e"
+      - "runIndexer=True"
+    restart: unless-stopped
+```
+
+Create a folder and create your docker-compose.yml inside it.
+In the same folder create a folder called config, within this folder paste your config.json. An example config can be found in the repository.
+If you want to use the picovoice backed voice commands, paste your models within a folder called models within the config folder.
+
+To use >music, you must provide your deezer arl token to the environment. Replace "5a2e" with your full arl token in the docker-compose.yml file.
+
+To authorize play-dl with spotify or youtube, run this command while inside the same folder as your docker-compose.yml. Specify that you would like to save to file:
+
+`
+sudo docker run -it --rm -v "./playdlData:/.data" karyeet/mandarine:Dockerfile /bin/ash -c "node /Mandarine/Docker/authorize.js" 
+`
+
+
+## Normal Deployment
 Before anything, install [Node v16 LTS](https://nodejs.org/en/) 
 and [create a discord bot](https://discord.com/developers/applications)
 then [add the bot to your server](https://help.pebblehost.com/en/article/how-to-invite-your-bot-to-a-discord-server-1asdlyg/).
@@ -50,6 +93,8 @@ then
 5. To start the bot run `node .` or `npm start`
 
 To make use of the >music command, deemix must be installed via `python3 -m pip install deemix`
+
+To support spotify links, play-dl must have spotify authorization. Check the wiki.
 
 To automatically add local tagged mp3s to the localLibrary.json, add the files to the music folder (`$home$/mandarineFiles`) and run the indexer.js file found in `./music/indexer.js` using node.
 
