@@ -3,10 +3,14 @@ version: "3"
 services:
   mandarine:
     container_name: mandarine_music_bot
-    image: karyeet/mandarine:latest
+    image: mandarine:latest
     volumes:
-      - ./config.json:/Mandarine-main/config.json:ro
-      - ./models/:/Mandarine-main/voice/models:ro
-      - ./mandarineFiles:~/mandarineFiles
+      - ./config/config.json:/Mandarine/config.json:ro
+      - ./config/models/:/Mandarine/voice/models:ro
+      - ./mandarineFiles:/root/mandarineFiles
+      - ./playdlData:/Mandarine/.data
+    environment:
+      - "arl=5a2e"
+      - "runIndexer=True"
     restart: unless-stopped
 
