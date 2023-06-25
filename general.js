@@ -121,7 +121,7 @@ async function setScClientId() {
 }
 
 async function refreshSpotifyToken() {
-	const dataFolderPath = "/.data";
+	const dataFolderPath = path.join(__dirname, ".data");
 	const spotifyFilePath = path.join(dataFolderPath, "spotify.data");
 	if (existsSync(dataFolderPath) && existsSync(spotifyFilePath)) {
 		console.log("Refreshing spotify token");
