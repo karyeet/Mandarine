@@ -2,7 +2,8 @@
 
 const playdl = require("play-dl");
 const { createAudioResource, StreamType } = require("@discordjs/voice");
-const { createReadStream } = require("fs");
+const { createReadStream, existsSync } = require("fs");
+const path = require("path");
 
 const reactions = {
 	"positive":"🍊",
@@ -120,14 +121,24 @@ async function setScClientId() {
 }
 
 async function refreshSpotifyToken() {
-	console.log("Refreshing spotify token");
-	if (playdl.is_expired()) {
-		await playdl.refreshToken();
+	const dataFolderPath = path.join(__dirname, ".data");
+	const spotifyFilePath = path.join(dataFolderPath, "spotify.data");
+	if (existsSync(dataFolderPath) && existsSync(spotifyFilePath)) {
+		console.log("Refreshing spotify token");
+		if (playdl.is_expired()) {
+			await playdl.refreshToken();
+		}
+	}
+	else {
+		console.log("Spotify not yet configured, skipping refresh.");
 	}
 }
 
 setScClientId();
+
+
 refreshSpotifyToken();
+
 // set sc id every 10 minutes
 setInterval(setScClientId, 10 * 60 * 1000);
 // refresh spotify token every 55 minutes
