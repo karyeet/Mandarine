@@ -18,7 +18,4 @@ RUN mkdir ~/config \
     && touch ~/config/.arl
 
 CMD echo $arl >> .arl \
-    && if [ -n "$runIndexerOnStart" ] && [ "$runIndexerOnStart" -eq 1 ]; then \
-        node Mandarine/music/indexer.js \
-    fi \
     && npm start --prefix Mandarine
