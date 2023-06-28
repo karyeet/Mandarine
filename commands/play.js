@@ -9,7 +9,7 @@ create one per stream
 
 
 */
-const { queue, audioPlayers, playNext, reactions } = require("../general.js");
+const { queue, audioPlayers, playNext, reactions, refreshSpotifyToken } = require("../general.js");
 
 const { songAdded } = require("../presetEmbeds.js");
 
@@ -204,6 +204,7 @@ async function play(message, args, command) {
 			}
 			else if (validate == "sp_track") {
 			// get spotify song data so we can search on soundcloud
+				await refreshSpotifyToken();
 				const spotifyData = await playdl.spotify(args);
 				const YTData = await convertSPDataToYT(spotifyData);
 				if (YTData) {
@@ -289,6 +290,7 @@ async function play(message, args, command) {
 			}
 			else if (validate == "sp_playlist") {
 				// get spotify playlist info
+				await refreshSpotifyToken();
 				const spotifyData = await playdl.spotify(args);
 
 				if (spotifyData && spotifyData.tracksCount > 0) {

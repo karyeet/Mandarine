@@ -127,10 +127,12 @@ async function refreshSpotifyToken() {
 		console.log("Refreshing spotify token");
 		if (playdl.is_expired()) {
 			await playdl.refreshToken();
+			return true;
 		}
 	}
 	else {
 		console.log("Spotify not yet configured, skipping refresh.");
+		return false;
 	}
 }
 
@@ -144,4 +146,4 @@ setInterval(setScClientId, 10 * 60 * 1000);
 // refresh spotify token every 55 minutes
 setInterval(refreshSpotifyToken, 55 * 60 * 1000);
 
-module.exports = { queue, audioPlayers, playNext, reactions, guildsMeta };
+module.exports = { queue, audioPlayers, playNext, reactions, guildsMeta, refreshSpotifyToken };
