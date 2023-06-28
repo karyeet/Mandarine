@@ -288,7 +288,7 @@ async function play(message, args, command) {
 				}
 
 			}
-			else if (validate == "sp_playlist") {
+			else if (validate == "sp_playlist" || validate == "sp_album") {
 				// get spotify playlist info
 				await refreshSpotifyToken();
 				const spotifyData = await playdl.spotify(args);
@@ -297,7 +297,7 @@ async function play(message, args, command) {
 					const tracks = await spotifyData.all_tracks();
 					if (tracks) {
 						// ask user to wait
-						const replyMessage = await message.reply("Adding playlist to queue, this might take a couple seconds!");
+						const replyMessage = await message.reply(`Adding ${validate.replace("sp_", "")} to queue, this might take a couple seconds!`);
 						// add result to queue if data
 						let length = 0;
 						for (const i in tracks) {
@@ -307,10 +307,20 @@ async function play(message, args, command) {
 							addYTdataToQueue(message, YTData, true);
 						}
 						// mock song data to create embed
+						let author = "Spotify";
+						if (validate == "sp_playlist") {
+							author = spotifyData.owner.name;
+						}
+						else if (validate == "sp_album") {
+							author = spotifyData.artists[0].name;
+							for (let i = 1; i < spotifyData.artists.length; i++) {
+								author = author + ", " + spotifyData.artists[i].name;
+							}
+						}
 						const queueData = {
 							"title":		spotifyData.name,
 							"url": 			spotifyData.url || spotifyData.link,
-							"author": 		spotifyData.owner.name,
+							"author": 		author,
 							"durationInSec": length,
 							"thumbURL": 	spotifyData.thumbnail.url,
 							"type": 		"yt_track",
