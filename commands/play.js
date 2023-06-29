@@ -112,7 +112,7 @@ function addYTdataToQueue(message, data, isPlayList) {
 }
 
 
-function addDZdataToQueue(message, data) {
+function addDZdataToQueue(message, data, sendEmbed = true) {
 	// console.log(data);
 	const imageExists = data.metadata.common.picture && data.metadata.common.picture[0];
 	const queueData = {
@@ -128,31 +128,34 @@ function addDZdataToQueue(message, data) {
 		"stream_url": 	data.path,
 	};
 	queue[message.guild.id].push(queueData);
-	message.react(reactions.positive);
-	// send embed and delete after 60 seconds
-	if (imageExists) {
-		message.reply(
-			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
-				files:[{ "name":"thumb.jpg", "attachment":data.metadata.common.picture[0].data }],
-			})
-			.then(msg => {
-				setTimeout(() => {
-					msg.delete()
-						.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
-				}, 60000);
-			});
+	if (sendEmbed) {
+		message.react(reactions.positive);
+		// send embed and delete after 60 seconds
+		if (imageExists) {
+			message.reply(
+				{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
+					files:[{ "name":"thumb.jpg", "attachment":data.metadata.common.picture[0].data }],
+				})
+				.then(msg => {
+					setTimeout(() => {
+						msg.delete()
+							.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
+					}, 60000);
+				});
+		}
+		else {
+			message.reply(
+				{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
+				})
+				.then(msg => {
+					setTimeout(() => {
+						msg.delete()
+							.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
+					}, 60000);
+				});
+		}
 	}
-	else {
-		message.reply(
-			{ embeds:[songAdded(queueData, queue[message.guild.id].length - 1)],
-			})
-			.then(msg => {
-				setTimeout(() => {
-					msg.delete()
-						.catch((err) => {console.log("[NONFATAL] Failed to delete message", err);});
-				}, 60000);
-			});
-	}
+
 
 }
 
@@ -185,7 +188,7 @@ async function play(message, args, command) {
 					// if no result then return false
 					if (data && data.path) {
 						// set to existing track or download the track
-						addDZdataToQueue(message, data);
+						addDZdataToQueue(message, data, true);
 					}
 					else {
 						message.react(reactions.warning);
@@ -224,7 +227,7 @@ async function play(message, args, command) {
 				// try to add via deezer
 				const DZData = await convertSPDataToDeezer(track);
 				if (DZData) {
-					addDZdataToQueue(message, DZData);
+					addDZdataToQueue(message, DZData, true);
 				}
 				else {
 					// deezer didnt work try youtube
@@ -330,7 +333,7 @@ async function play(message, args, command) {
 							// try to add via deezer
 							const DZData = await convertSPDataToDeezer(track);
 							if (DZData) {
-								addDZdataToQueue(message, DZData);
+								addDZdataToQueue(message, DZData, false);
 							}
 							else {
 								// deezer didnt work try spotify
