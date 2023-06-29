@@ -37,6 +37,21 @@ async function convertSPDataToYT(spotifyData) {
 	}
 }
 
+async function convertSPDataToDeezer(spotifyData) {
+	if (spotifyData && spotifyData.type == "track") {
+		// search deezer
+		const data = await libmanger.requestTrack(`${spotifyData.artists[0].name} - ${spotifyData.name}`);
+		// if result
+		if (data && data.path) {
+			// return data
+			return data;
+		}
+		else {
+			return false;
+		}
+	}
+}
+
 
 function AddSCdataToQueue(message, data) {
 	let artist = false;
@@ -164,7 +179,7 @@ async function play(message, args, command) {
 			if (validate == "search") {
 				// console.log(command);
 				if (command == "music") {
-				// search library
+				// search library; args == query
 					const data = await libmanger.requestTrack(args);
 					// console.log(data);
 					// if no result then return false
@@ -205,15 +220,24 @@ async function play(message, args, command) {
 			else if (validate == "sp_track") {
 			// get spotify song data so we can search on soundcloud
 				await refreshSpotifyToken();
-				const spotifyData = await playdl.spotify(args);
-				const YTData = await convertSPDataToYT(spotifyData);
-				if (YTData) {
-					addYTdataToQueue(message, YTData);
+				const track = await playdl.spotify(args);
+				// try to add via deezer
+				const DZData = await convertSPDataToDeezer(track);
+				if (DZData) {
+					addDZdataToQueue(message, DZData);
 				}
 				else {
-					message.react(reactions.confused);
-					return false;
+					// deezer didnt work try youtube
+					const YTData = await convertSPDataToYT(track);
+					if (YTData) {
+						addYTdataToQueue(message, YTData);
+					}
+					else {
+						message.react(reactions.confused);
+						return false;
+					}
 				}
+
 			}
 			else if (validate == "dz_track") {
 			// get deezer song data so we can search on soundcloud
@@ -303,8 +327,16 @@ async function play(message, args, command) {
 						for (const i in tracks) {
 							const track = tracks[i];
 							length += track.durationInSec;
-							const YTData = await convertSPDataToYT(track);
-							addYTdataToQueue(message, YTData, true);
+							// try to add via deezer
+							const DZData = await convertSPDataToDeezer(track);
+							if (DZData) {
+								addDZdataToQueue(message, DZData);
+							}
+							else {
+								// deezer didnt work try spotify
+								const YTData = await convertSPDataToYT(track);
+								addYTdataToQueue(message, YTData, true);
+							}
 						}
 						// mock song data to create embed
 						let author = "Spotify";
