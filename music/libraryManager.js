@@ -56,7 +56,7 @@ async function requestTrack(query) {
 	const fuzzyResult = fuzzySet.get(query);
 
 	// if valid match, return filename
-	if (fuzzyResult && fuzzyResult[0] && (console.log(fuzzyResult[0][0]) || true) && fuzzyResult[0][0]>0.60) {
+	if (fuzzyResult && fuzzyResult[0] && (console.log(fuzzyResult[0][0]) || true) && fuzzyResult[0][0]>0.75) {
 		console.log("fuzzy found");
 		console.log(fuzzyResult);
 		for (const key in localLibrary){
