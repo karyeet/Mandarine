@@ -18,18 +18,23 @@ let parseFile;
 
 fs.readdir(pathToFiles, async function(err, files) {
 
+	let filecount = 0;
 	if (err) throw err;
-	console.log(files);
+	// console.log(files);
 	const musicmetadata = await import("music-metadata");
 	parseFile = musicmetadata.parseFile;
 	for (let i = 0; i < files.length; i++) {
 		const fileName = files[i];
-		console.log(fileName);
+		// console.log(fileName);
 		// only support mp3
-		await addFile(fileName);
+		if (fileName.endsWith(".mp3")) {
+			await addFile(fileName);
+			filecount++;
+		}
 		if (i == files.length - 1) {
 			console.log("write");
 			setTimeout(() => {
+				console.log("Indexed " + filecount + " files.");
 				write();
 			}, 3_000);
 		}
@@ -37,29 +42,28 @@ fs.readdir(pathToFiles, async function(err, files) {
 });
 
 async function addFile(fileName) {
-	if (fileName.endsWith(".mp3")) {
-		if (!localLibrary[fileName]) {
-			const metadata = await parseFile(path.join(pathToFiles, fileName));
-			console.log("metadata:" + JSON.stringify(metadata.common.title));
-			const title = metadata.common.title;
-			const artist = metadata.common.artist;
-			localLibrary[fileName] = {
-				"title": title,
-				"artist": artist,
-				"search": [
-					(title + " " + artist).replace(/\.|'|-/g, ""),
-					(artist + " " + title).replace(/\.|'|-/g, ""),
-					(title).replace(/\.|'|-/g, ""),
-					(title).replace(/\(.*\)|\.|'|-/g, ""),
-				],
-			};
+
+	if (!localLibrary[fileName]) {
+		const metadata = await parseFile(path.join(pathToFiles, fileName));
+		// console.log("metadata:" + JSON.stringify(metadata.common.title));
+		const title = metadata.common.title;
+		const artist = metadata.common.artist;
+		localLibrary[fileName] = {
+			"title": title,
+			"artist": artist,
+			"search": [
+				(title + " " + artist).replace(/\.|'|-/g, ""),
+				(artist + " " + title).replace(/\.|'|-/g, ""),
+				(title).replace(/\.|'|-/g, ""),
+				(title).replace(/\(.*\)|\.|'|-/g, ""),
+			],
+		};
 
 
-		}
 	}
 }
 
 function write() {
-	console.log(localLibrary);
+	// console.log(localLibrary);
 	fs.writeFileSync(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
 }
