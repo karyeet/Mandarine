@@ -10,7 +10,7 @@ const pathToFiles = path.join(homedir, "/mandarineFiles/");
 // python3 -m deemix --portable -p ./ https://www.deezer.com/track/2047662387
 
 function DownloadTrack(deezerTrack) {
-	console.log("deemix download " + deezerTrack)
+	console.log("deemix download " + deezerTrack);
 	const dlpromise = new Promise((resolve, reject) => {
 		const deemix = spawn("python3", ["-m", "deemix", "--portable", "-p", pathToFiles, deezerTrack], { "cwd": homedir });
 		let filename;
@@ -75,8 +75,8 @@ function sanitizeFilename(text) {
 }
 
 function trackExists(artist, title) {
-	//console.log(artist);
-	//console.log(title);
+	// console.log(artist);
+	// console.log(title);
 	const filepath = path.join(pathToFiles, sanitizeFilename(artist + " - " + title) + ".mp3");
 	console.log("dzfile guess: " + filepath);
 	if (existsSync(filepath)) {

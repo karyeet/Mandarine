@@ -7,11 +7,11 @@
 const fs = require("fs");
 const localLibrary = require("./localLibrary.json");
 
-const FuzzySet = require('fuzzyset');
+const FuzzySet = require("fuzzyset");
 
 const homedir = require("os").homedir();
 let parseFile;
-import('music-metadata').then((mmModule)=>{
+import("music-metadata").then((mmModule) => {
 	parseFile = mmModule.parseFile;
 });
 
@@ -32,18 +32,18 @@ const pathToFiles = path.join(homedir, "/mandarineFiles/");
 
 */
 
-function createFuzzySetArr(){
-	const fzpromise = new Promise((resolve, reject)=>{
+function createFuzzySetArr() {
+	const fzpromise = new Promise((resolve) => {
 		const arr = [];
-		for (const key in localLibrary){
-			for(const index in localLibrary[key].search){
+		for (const key in localLibrary) {
+			for (const index in localLibrary[key].search) {
 				const searchTerm = localLibrary[key].search[index];
-				arr.push(searchTerm)
-				//console.log("search term "+searchTerm)
+				arr.push(searchTerm);
+				// console.log("search term "+searchTerm)
 			}
 		}
 		resolve(arr);
-	})
+	});
 	return fzpromise;
 }
 
@@ -56,13 +56,13 @@ async function requestTrack(query) {
 	const fuzzyResult = fuzzySet.get(query);
 
 	// if valid match, return filename
-	if (fuzzyResult && fuzzyResult[0] && (console.log(fuzzyResult[0][0]) || true) && fuzzyResult[0][0]>0.75) {
+	if (fuzzyResult && fuzzyResult[0] && (console.log(fuzzyResult[0][0]) || true) && fuzzyResult[0][0] > 0.75) {
 		console.log("fuzzy found");
 		console.log(fuzzyResult);
-		for (const key in localLibrary){
-			if(localLibrary[key].search.find(pattern=> pattern == fuzzyResult[0][1])){
+		for (const key in localLibrary) {
+			if (localLibrary[key].search.find(pattern => pattern == fuzzyResult[0][1])) {
 				const fuzzyfilepath = path.join(pathToFiles, key);
-				console.log(fuzzyfilepath)
+				console.log(fuzzyfilepath);
 				return {
 					"path":fuzzyfilepath,
 					"metadata": await parseFile(fuzzyfilepath),
@@ -72,7 +72,7 @@ async function requestTrack(query) {
 
 	}
 	// otherwise perform deezer track fetch (no explicit else)
-	console.log("fuzzy fail")
+	console.log("fuzzy fail");
 	const result = await meezer.searchTrack(query);
 	// track not found then return false
 	if (!result || !result.link) {
@@ -102,7 +102,7 @@ async function requestTrack(query) {
 	}
 	else {
 		// trackdl returned a nontrue value
-		console.log("track not found")
+		console.log("track not found");
 		return false;
 	}
 
@@ -127,10 +127,10 @@ function addToLibrary(artist, title, fileName) {
 		"title": title,
 		"artist": artist,
 		"search": [
-			(title + " " + artist).replace(/\.|'|-/g, ""), //.replace(".","").replace("'","").replace("-",""),
-			(artist + " " + title).replace(/\.|'|-/g, ""), //.replace(".","").replace("'","").replace("-",""),
-			(title).replace(/\.|'|-/g, ""),//.replace(".","").replace("'","").replace("-",""),
-			(title).replace(/\(.*\)|\.|'|-/g, ""),//replace(".","").replace("'","").replace("-","").replace(/\(.*\)/g, ""),
+			(title + " " + artist).replace(/\.|'|-/g, ""),
+			(artist + " " + title).replace(/\.|'|-/g, ""),
+			(title).replace(/\.|'|-/g, ""),
+			(title).replace(/\(.*\)|\.|'|-/g, ""),
 		],
 	};
 	fs.writeFileSync(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
@@ -142,11 +142,11 @@ console.log(pathToFiles);
 }*/
 // test();
 // console.log(parseFile(path.join(pathToFiles, "Metro Boomin - Superhero (Heroes & Villains).mp3")));
-/*setTimeout(()=>{
+/* setTimeout(()=>{
 	requestTrack("metro spider")
 }, 1_000)
 */
 
-/*addToLibrary("foo", "bar", "foobar.mp3")*/
+/* addToLibrary("foo", "bar", "foobar.mp3")*/
 
 module.exports = { requestTrack };

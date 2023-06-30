@@ -20,8 +20,8 @@ fs.readdir(pathToFiles, async function(err, files) {
 
 	if (err) throw err;
 	console.log(files);
-	let musicmetadata = await import("music-metadata");
-	parseFile = musicmetadata.parseFile
+	const musicmetadata = await import("music-metadata");
+	parseFile = musicmetadata.parseFile;
 	for (let i = 0; i < files.length; i++) {
 		const fileName = files[i];
 		console.log(fileName);
@@ -40,17 +40,17 @@ async function addFile(fileName) {
 	if (fileName.endsWith(".mp3")) {
 		if (!localLibrary[fileName]) {
 			const metadata = await parseFile(path.join(pathToFiles, fileName));
-			console.log("metadata:" + JSON.stringify(metadata.common.title))
+			console.log("metadata:" + JSON.stringify(metadata.common.title));
 			const title = metadata.common.title;
 			const artist = metadata.common.artist;
 			localLibrary[fileName] = {
 				"title": title,
 				"artist": artist,
 				"search": [
-					(title + " " + artist).replace(/\.|'|-/g, ""), //.replace(".","").replace("'","").replace("-",""),
-					(artist + " " + title).replace(/\.|'|-/g, ""), //.replace(".","").replace("'","").replace("-",""),
-					(title).replace(/\.|'|-/g, ""),//.replace(".","").replace("'","").replace("-",""),
-					(title).replace(/\(.*\)|\.|'|-/g, ""),//replace(".","").replace("'","").replace("-","").replace(/\(.*\)/g, ""),
+					(title + " " + artist).replace(/\.|'|-/g, ""),
+					(artist + " " + title).replace(/\.|'|-/g, ""),
+					(title).replace(/\.|'|-/g, ""),
+					(title).replace(/\(.*\)|\.|'|-/g, ""),
 				],
 			};
 
