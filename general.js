@@ -109,15 +109,20 @@ async function playNext(message) {
 // set SC client id every start so it doesnt expire
 let SC_clientId;
 async function setScClientId() {
-	console.log("Refreshing soundcloud token");
-	SC_clientId = await playdl.getFreeClientID();
+	try {
+		console.log("Refreshing soundcloud token");
+		SC_clientId = await playdl.getFreeClientID();
 
-	playdl.setToken({
-		soundcloud : {
-			client_id : SC_clientId,
-		},
-	});
+		playdl.setToken({
+			soundcloud : {
+				client_id : SC_clientId,
+			},
+		});
 	// console.log("SC ID: " + SC_clientId);
+	}
+	catch (err) {
+		console.log("Error while refreshing Soundcloud ID!\n", err);
+	}
 }
 
 async function refreshSpotifyToken() {
@@ -130,7 +135,7 @@ async function refreshSpotifyToken() {
 				await playdl.refreshToken();
 			}
 			catch (err) {
-				console.log("Spotify authentication failed! Please reauthenticate.");
+				console.log("Spotify authentication failed! Please reauthenticate.\n" + err);
 				return false;
 			}
 			return true;
