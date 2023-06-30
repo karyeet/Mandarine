@@ -16,7 +16,7 @@ const client = new Client({ intents });
 const DIY_COMMANDO = require("./diy_commando.js");
 
 client.once("ready", () => {
-	console.log("Ready!");
+	console.log("Ready in " + client.guilds.cache.size + " guild(s).");
 	client.user.setActivity("Prefix: >", { type: "WATCHING" });
 });
 
