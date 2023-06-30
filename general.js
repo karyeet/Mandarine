@@ -126,7 +126,13 @@ async function refreshSpotifyToken() {
 	if (existsSync(dataFolderPath) && existsSync(spotifyFilePath)) {
 		console.log("Refreshing spotify token");
 		if (playdl.is_expired()) {
-			await playdl.refreshToken();
+			try {
+				await playdl.refreshToken();
+			}
+			catch (err) {
+				console.log("Spotify authentication failed! Please reauthenticate.");
+				return false;
+			}
 			return true;
 		}
 	}
