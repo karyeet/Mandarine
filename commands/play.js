@@ -400,6 +400,8 @@ async function play(message, args, command) {
 			playNext(message);
 		}
 
+		return true;
+
 	}
 	catch (error) {
 		message.react(reactions.warning);
