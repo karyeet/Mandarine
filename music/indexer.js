@@ -1,69 +1,100 @@
 /*
-	Only to be run seperatly when importing new music files
+	Only needs to be run seperatly when importing new music files
 	Very basic
 
 */
 
 
-const fs = require("fs");
+const fs = require("fs/promises");
 const localLibrary = require("./localLibrary.json");
 
 const homedir = require("os").homedir();
-const pathToFiles = homedir + "/mandarineFiles/";
-
 const path = require("path");
 
+const pathToDLFiles = path.join(homedir, "mandarineFiles");
+
+const config = require("../config.json");
+
 let parseFile;
+let fileCount = 0;
+let dirCount = 0;
+
 // import('music-metadata').then((mmModule)=>{console.log("mm: " + mmModule); parseFile = mmModule.parseFile});
 
-fs.readdir(pathToFiles, async function(err, files) {
 
-	let filecount = 0;
-	if (err) throw err;
-	// console.log(files);
-	const musicmetadata = await import("music-metadata");
-	parseFile = musicmetadata.parseFile;
-	for (let i = 0; i < files.length; i++) {
-		const fileName = files[i];
-		// console.log(fileName);
-		// only support mp3
-		if (fileName.endsWith(".mp3")) {
-			await addFile(fileName);
-			filecount++;
+async function indexDirectory(directory) {
+	const files = await fs.readdir(directory, { withFileTypes: true });
+	for (const file of files) {
+		if (file.isDirectory()) {
+			await indexDirectory(path.join(directory, file.name));
+			dirCount++;
 		}
-		if (i == files.length - 1) {
-			console.log("write");
-			setTimeout(() => {
-				console.log("Indexed " + filecount + " files.");
-				write();
-			}, 3_000);
+		else if (file.name.endsWith(".mp3")) {
+			await addFile(path.join(directory, file.name));
+			fileCount++;
 		}
 	}
-});
+	return true;
+}
 
-async function addFile(fileName) {
+async function addFile(filePath) {
 
-	if (!localLibrary[fileName]) {
-		const metadata = await parseFile(path.join(pathToFiles, fileName));
+	if (!localLibrary[filePath]) {
+		const metadata = await parseFile(filePath);
 		// console.log("metadata:" + JSON.stringify(metadata.common.title));
 		const title = metadata.common.title;
 		const artist = metadata.common.artist;
-		localLibrary[fileName] = {
+		const search = [
+			(title).replace(/\.|'|-/g, ""),
+		];
+
+		if (artist.split(" ").length > 1) {
+			// if the artist has spaces in their names, chances are people will only add one part of their name
+			for (const artistNameSplit of artist.split(" ")) {
+				search.push((title + " " + artistNameSplit).replace(/\.|'|-/g, ""));
+				search.push((artistNameSplit + " " + title).replace(/\.|'|-/g, ""));
+			}
+		}
+		else {
+			// otherwise just add the artist name normally
+			search.push((title + " " + artist).replace(/\.|'|-/g, ""));
+			search.push((artist + " " + title).replace(/\.|'|-/g, ""));
+		}
+
+		if (search[2] != (title).replace(/\(.*\)|\.|'|-/g, "")) {
+			search.push((title).replace(/\(.*\)|\.|'|-/g, ""));
+		}
+
+		localLibrary[filePath] = {
 			"title": title,
 			"artist": artist,
-			"search": [
-				(title + " " + artist).replace(/\.|'|-/g, ""),
-				(artist + " " + title).replace(/\.|'|-/g, ""),
-				(title).replace(/\.|'|-/g, ""),
-				(title).replace(/\(.*\)|\.|'|-/g, ""),
-			],
+			"search": search,
 		};
-
 
 	}
 }
 
-function write() {
+async function write() {
 	// console.log(localLibrary);
-	fs.writeFileSync(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
+	await fs.writeFile(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
+	return true;
 }
+
+async function index() {
+	const musicmetadata = await import("music-metadata");
+	parseFile = musicmetadata.parseFile;
+
+	if (config.additionalMusicDirs) {
+		for (const dir of config.additionalMusicDirs) {
+			console.log("Indexing " + dir + " and its subdirectories.");
+			await indexDirectory(dir);
+		}
+	}
+	console.log("Indexing " + pathToDLFiles + " and its subdirectories.");
+	await indexDirectory(pathToDLFiles);
+	console.log("write");
+	console.log("Indexed " + fileCount + " files in " + dirCount + " folders.");
+	await write();
+}
+
+index();
