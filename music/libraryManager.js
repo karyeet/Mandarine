@@ -47,10 +47,14 @@ function createFuzzySetArr() {
 	return fzpromise;
 }
 
+// get array of files and create new fuzzy object, only use search key
+let fuzzySet;
+createFuzzySetArr().then((arr) => {
+	fuzzySet = new FuzzySet(arr);
+});
+
+
 async function requestTrack(query) {
-	// get array of files and create new fuzzy object, only use search key
-	const fuzzyArr = await createFuzzySetArr();
-	const fuzzySet = new FuzzySet(fuzzyArr);
 
 	// perform search
 	const fuzzyResult = fuzzySet.get(query);
@@ -149,6 +153,10 @@ function addToLibrary(artist, title, fileName) {
 		"artist": artist,
 		"search": search,
 	};
+	for (const searchItem of search) {
+		fuzzySet.add(searchItem);
+	}
+
 	fs.writeFileSync(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
 }
 
