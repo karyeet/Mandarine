@@ -6,7 +6,7 @@
 
 
 const fs = require("fs/promises");
-const localLibrary = require("./localLibrary.json");
+const localLibrary = {};
 
 const homedir = require("os").homedir();
 const path = require("path");
