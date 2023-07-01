@@ -58,7 +58,7 @@ async function requestTrack(query) {
 
 	// perform search
 	console.log("fuzzy search");
-	const fuzzyResult = fuzzySet.get(query);
+	const fuzzyResult = await fuzzySet.get(query);
 	console.log(fuzzyResult);
 
 	// if valid match, return filename
