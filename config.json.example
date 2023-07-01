@@ -1,5 +1,6 @@
 {
 	"token":"abcdefghfdfdgsgfsgsdgds"
+	"additionalMusicDirs":["H:\\WindowsFolder\\Music","/linux/folder"],
 	"voiceCommands": {
 		"enabled": true
 		"picoAccessKey": "abcdefghijklmnopqrstuvwxyz=",
