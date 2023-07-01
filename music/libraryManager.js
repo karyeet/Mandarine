@@ -57,6 +57,7 @@ createFuzzySetArr().then((arr) => {
 async function requestTrack(query) {
 
 	// perform search
+	console.log("fuzzy search");
 	const fuzzyResult = fuzzySet.get(query);
 	console.log(fuzzyResult);
 
@@ -130,6 +131,8 @@ async function requestTrack(query) {
 function addToLibrary(artist, title, fileName) {
 	const search = [
 		(title).replace(/\.|'|-/g, ""),
+		(artist + " " + title).replace(/\.|'|-/g, ""),
+		(title + " " + artist).replace(/\.|'|-/g, ""),
 	];
 
 	if (artist.split(" ").length > 1) {
@@ -139,20 +142,17 @@ function addToLibrary(artist, title, fileName) {
 			search.push((artistNameSplit + " " + title).replace(/\.|'|-/g, ""));
 		}
 	}
-	else {
-		// otherwise just add the artist name normally
-		search.push((title + " " + artist).replace(/\.|'|-/g, ""));
-		search.push((artist + " " + title).replace(/\.|'|-/g, ""));
-	}
 
 	if (search[2] != (title).replace(/\(.*\)|\.|'|-/g, "")) {
 		search.push((title).replace(/\(.*\)|\.|'|-/g, ""));
 	}
+
 	localLibrary[path.join(pathToDLFiles, fileName)] = {
 		"title": title,
 		"artist": artist,
 		"search": search,
 	};
+	// add to fuzzy set
 	for (const searchItem of search) {
 		fuzzySet.add(searchItem);
 	}

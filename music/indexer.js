@@ -46,6 +46,8 @@ async function addFile(filePath) {
 		const artist = metadata.common.artist;
 		const search = [
 			(title).replace(/\.|'|-/g, ""),
+			(artist + " " + title).replace(/\.|'|-/g, ""),
+			(title + " " + artist).replace(/\.|'|-/g, ""),
 		];
 
 		if (artist.split(" ").length > 1) {
@@ -54,11 +56,6 @@ async function addFile(filePath) {
 				search.push((title + " " + artistNameSplit).replace(/\.|'|-/g, ""));
 				search.push((artistNameSplit + " " + title).replace(/\.|'|-/g, ""));
 			}
-		}
-		else {
-			// otherwise just add the artist name normally
-			search.push((title + " " + artist).replace(/\.|'|-/g, ""));
-			search.push((artist + " " + title).replace(/\.|'|-/g, ""));
 		}
 
 		if (search[2] != (title).replace(/\(.*\)|\.|'|-/g, "")) {
