@@ -1,7 +1,3 @@
-if (process.env.runIndexer === "True") {
-	require("./music/indexer.js");
-}
-
 const { Intents, Client } = require("discord.js");
 
 const { reactions, guildsMeta } = require("./general.js");
@@ -21,6 +17,11 @@ client.once("ready", () => {
 });
 
 const config = require("./config.json");
+
+console.log("runIndexer is set to " + config.runIndexerOnStart);
+if (config.runIndexerOnStart == true) {
+	require("./music/indexer.js");
+}
 
 // Login
 client.login(config.token);
