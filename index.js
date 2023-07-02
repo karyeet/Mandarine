@@ -1,20 +1,14 @@
 const { Intents, Client } = require("discord.js");
 
-const { reactions, guildsMeta } = require("./general.js");
-
 // Intents: Guilds, VoiceStates, GuildMesssages
 const intents = [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.GUILD_PRESENCES];
 
-// Create Client with discord commando
+// Create Client
 const client = new Client({ intents });
 
-// table of command names and their corresponding files/functions
-const DIY_COMMANDO = require("./diy_commando.js");
+let DIY_COMMANDO;
 
-client.once("ready", () => {
-	console.log("Ready in " + client.guilds.cache.size + " guild(s).");
-	client.user.setActivity("Prefix: >", { type: "WATCHING" });
-});
+const { reactions, guildsMeta } = require("./general.js");
 
 const config = require("./config.json");
 
@@ -28,6 +22,15 @@ if (config.runIndexerOnStart == true) {
 else {
 	client.login(config.token);
 }
+
+// table of command names and their corresponding files/functions
+
+client.once("ready", () => {
+	console.log("Ready in " + client.guilds.cache.size + " guild(s).");
+	client.user.setActivity("Prefix: >", { type: "WATCHING" });
+	DIY_COMMANDO = require("./diy_commando.js");
+});
+
 
 // check if prefix is ">", and if so return the command back
 function checkCommand(content) {
