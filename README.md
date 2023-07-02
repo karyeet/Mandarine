@@ -55,7 +55,6 @@ services:
       - ./playdlData:/Mandarine/.data
     environment:
       - "arl=5a2e"
-      - "runIndexer=True"
     restart: unless-stopped
 ```
 
