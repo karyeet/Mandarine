@@ -20,11 +20,16 @@ const config = require("./config.json");
 
 console.log("runIndexer is set to " + config.runIndexerOnStart);
 if (config.runIndexerOnStart == true) {
-	require("./music/indexer.js");
+	require("./music/indexer.js").index().then(()=>{
+		client.login(config.token);
+	});
+}
+else {
+	client.login(config.token);
 }
 
 // Login
-client.login(config.token);
+
 
 // check if prefix is ">", and if so return the command back
 function checkCommand(content) {

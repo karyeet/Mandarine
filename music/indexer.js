@@ -92,6 +92,13 @@ async function index() {
 	console.log("write");
 	console.log("Indexed " + fileCount + " files in " + dirCount + " folders.");
 	await write();
+	return 1;
 }
 
-index();
+
+if (require.main === module) {
+	// called directly
+	index();
+}
+
+module.exports = { index };
