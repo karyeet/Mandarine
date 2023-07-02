@@ -18,18 +18,16 @@ client.once("ready", () => {
 
 const config = require("./config.json");
 
+// Login
 console.log("runIndexer is set to " + config.runIndexerOnStart);
 if (config.runIndexerOnStart == true) {
-	require("./music/indexer.js").index().then(()=>{
+	require("./music/indexer.js").index().then(() => {
 		client.login(config.token);
 	});
 }
 else {
 	client.login(config.token);
 }
-
-// Login
-
 
 // check if prefix is ">", and if so return the command back
 function checkCommand(content) {
