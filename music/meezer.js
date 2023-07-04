@@ -48,24 +48,52 @@ function DownloadTrack(deezerTrack) {
 
 function searchTrack(query) {
 	const trackpromise = new Promise((resolve, reject) => {
-		// we only get 1 result from the api
-		https.get("https://api.deezer.com/search?index=0&limit=1&q=" + encodeURIComponent(query), (res) => {
-			if (res.statusCode != 200) {
-				reject("DZ Search Code " + res.statusCode);
-			}
-			res.on("data", (data) => {
+		// is query an ISRC?
+		const isISRC = query.indexOf(/^[A-Z]{2}-?\w{3}-?\d{2}-?\d{5}$/g);
+		console.log(isISRC);
+		if (isISRC != -1) {
+			console.log("Searching Deezer for ISRC " + query);
+			https.get("https://api.deezer.com/2.0/track/isrc:" + query, (res) => {
+				if (res.statusCode != 200) {
+					reject("DZ Search Code " + res.statusCode);
+				}
+				res.on("data", (data) => {
 				// parse data
-				data = JSON.parse(data.toString());
-				// if there is a first result
-				if (data.data[0]) {
+					data = JSON.parse(data.toString());
+					console.log(data);
+					// if there is a first result
+					if (data && data.id) {
 					// return it
-					resolve(data.data[0]);
-				}
-				else {
-					reject("DZ Search No Results");
-				}
+						resolve(data);
+					}
+					else {
+						reject("DZ Search No Results");
+					}
+				});
 			});
-		});
+		}
+		else {
+		// we only get 1 result from the api
+			console.log("Searching deezer for " + query);
+			https.get("https://api.deezer.com/search?index=0&limit=1&q=" + encodeURIComponent(query), (res) => {
+				if (res.statusCode != 200) {
+					reject("DZ Search Code " + res.statusCode);
+				}
+				res.on("data", (data) => {
+				// parse data
+					data = JSON.parse(data.toString());
+					// if there is a first result
+					if (data.data[0]) {
+					// return it
+						resolve(data.data[0]);
+					}
+					else {
+						reject("DZ Search No Results");
+					}
+				});
+			});
+		}
+
 	});
 	return trackpromise;
 }

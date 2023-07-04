@@ -100,9 +100,14 @@ async function requestTrack(query) {
 	if (trackDL) {
 		// successfull download so add to library and return filename
 		console.log("trackdl");
-		addToLibrary(result.artist.name, result.title, trackDL.fileName);
+		const metadata = await parseFile(trackDL.path);
+		let isrc = false;
+		if (metadata.common.isrc && metadata.common.isrc[0]) {
+			isrc = metadata.common.isrc[0];
+		}
+		addToLibrary(result.artist.name, result.title, isrc, trackDL.fileName);
 		return {
-			"metadata":await parseFile(trackDL.path),
+			"metadata": metadata,
 			"path": trackDL.path,
 		};
 	}
@@ -128,12 +133,16 @@ async function requestTrack(query) {
 		"stream_url": 	data.fileLocation,
 	};*/
 
-function addToLibrary(artist, title, fileName) {
+function addToLibrary(artist, title, isrc, fileName) {
 	const search = [
 		(title).replace(/\.|'|-/g, ""),
 		(artist + " " + title).replace(/\.|'|-/g, ""),
 		(title + " " + artist).replace(/\.|'|-/g, ""),
 	];
+
+	if (isrc) {
+		search.push(isrc);
+	}
 
 	if (artist.split(" ").length > 1) {
 		// if the artist has spaces in their names, chances are people will only add one part of their name
