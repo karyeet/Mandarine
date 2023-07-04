@@ -79,7 +79,13 @@ async function requestTrack(query) {
 	}
 	// otherwise perform deezer track fetch (no explicit else)
 	console.log("fuzzy fail");
-	const result = await meezer.searchTrack(query);
+	let result = false;
+	try {
+		result = await meezer.searchTrack(query);
+	}
+	catch (err) {
+		console.log(err);
+	}
 	// track not found then return false
 	if (!result || !result.link) {
 		console.log("Track not found");
