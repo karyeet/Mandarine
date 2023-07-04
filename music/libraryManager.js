@@ -18,7 +18,7 @@ import("music-metadata").then((mmModule) => {
 const meezer = require("./meezer.js");
 const path = require("path");
 
-const pathToFiles = path.join(homedir, "/mandarineFiles/");
+const pathToDLFiles = path.join(homedir, "/mandarineFiles/");
 
 /*
 
@@ -47,21 +47,27 @@ function createFuzzySetArr() {
 	return fzpromise;
 }
 
+// get array of files and create new fuzzy object, only use search key
+let fuzzySet;
+createFuzzySetArr().then((arr) => {
+	fuzzySet = new FuzzySet(arr);
+});
+
+
 async function requestTrack(query) {
-	// get array of files and create new fuzzy object, only use search key
-	const fuzzyArr = await createFuzzySetArr();
-	const fuzzySet = new FuzzySet(fuzzyArr);
 
 	// perform search
-	const fuzzyResult = fuzzySet.get(query);
+	console.log("fuzzy search");
+	const fuzzyResult = await fuzzySet.get(query);
+	console.log(fuzzyResult);
 
 	// if valid match, return filename
-	if (fuzzyResult && fuzzyResult[0] && (console.log(fuzzyResult[0][0]) || true) && fuzzyResult[0][0] > 0.75) {
+	if (fuzzyResult && fuzzyResult[0] && (console.log(fuzzyResult[0][0]) || true) && fuzzyResult[0][0] > 0.77) {
 		console.log("fuzzy found");
-		console.log(fuzzyResult);
 		for (const key in localLibrary) {
 			if (localLibrary[key].search.find(pattern => pattern == fuzzyResult[0][1])) {
-				const fuzzyfilepath = path.join(pathToFiles, key);
+				// const fuzzyfilepath = path.join(pathToFiles, key);
+				const fuzzyfilepath = path.join(key);
 				console.log(fuzzyfilepath);
 				return {
 					"path":fuzzyfilepath,
@@ -79,7 +85,7 @@ async function requestTrack(query) {
 		console.log("Track not found");
 		return false;
 	}
-	// see if track exists and fuse missed it
+	//  before download, see if track exists and fuzzy missed it
 	const trackExists = meezer.trackExists(result.artist.name, result.title);
 	if (trackExists) {
 		console.log("track exist");
@@ -123,20 +129,38 @@ async function requestTrack(query) {
 	};*/
 
 function addToLibrary(artist, title, fileName) {
-	localLibrary[fileName] = {
+	const search = [
+		(title).replace(/\.|'|-/g, ""),
+		(artist + " " + title).replace(/\.|'|-/g, ""),
+		(title + " " + artist).replace(/\.|'|-/g, ""),
+	];
+
+	if (artist.split(" ").length > 1) {
+		// if the artist has spaces in their names, chances are people will only add one part of their name
+		for (const artistNameSplit of artist.split(" ")) {
+			search.push((title + " " + artistNameSplit).replace(/\.|'|-/g, ""));
+			search.push((artistNameSplit + " " + title).replace(/\.|'|-/g, ""));
+		}
+	}
+
+	if (search[2] != (title).replace(/\(.*\)|\.|'|-/g, "")) {
+		search.push((title).replace(/\(.*\)|\.|'|-/g, ""));
+	}
+
+	localLibrary[path.join(pathToDLFiles, fileName)] = {
 		"title": title,
 		"artist": artist,
-		"search": [
-			(title + " " + artist).replace(/\.|'|-/g, ""),
-			(artist + " " + title).replace(/\.|'|-/g, ""),
-			(title).replace(/\.|'|-/g, ""),
-			(title).replace(/\(.*\)|\.|'|-/g, ""),
-		],
+		"search": search,
 	};
+	// add to fuzzy set
+	for (const searchItem of search) {
+		fuzzySet.add(searchItem);
+	}
+
 	fs.writeFileSync(path.join(__dirname, "localLibrary.json"), JSON.stringify(localLibrary));
 }
 
-console.log(pathToFiles);
+console.log(pathToDLFiles);
 /* async function test() {
 	console.log(await requestTrack("metro boomin superhero"));
 }*/
