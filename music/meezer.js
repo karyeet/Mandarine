@@ -49,9 +49,9 @@ function DownloadTrack(deezerTrack) {
 function searchTrack(query) {
 	const trackpromise = new Promise((resolve, reject) => {
 		// is query an ISRC?
-		const isISRC = query.indexOf(/^[A-Z]{2}-?\w{3}-?\d{2}-?\d{5}$/g);
+		const isISRC = query.match(/^[A-Z]{2}-?\w{3}-?\d{2}-?\d{5}$/);
 		console.log(isISRC);
-		if (isISRC != -1) {
+		if (isISRC != null) {
 			console.log("Searching Deezer for ISRC " + query);
 			https.get("https://api.deezer.com/2.0/track/isrc:" + query, (res) => {
 				if (res.statusCode != 200) {
