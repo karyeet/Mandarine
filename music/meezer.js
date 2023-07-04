@@ -57,19 +57,29 @@ function searchTrack(query) {
 				if (res.statusCode != 200) {
 					reject("DZ Search Code " + res.statusCode);
 				}
-				res.on("data", (data) => {
-				// parse data
-					data = JSON.parse(data.toString());
+				const chunks = [];
+				res.on("data", (chunk) => {
+					chunks.push(chunk);
+				});
+				res.on("end", () => {
+					let data;
+					try {
+						data = JSON.parse(Buffer.concat(chunks).toString());
+					}
+					catch (err) {
+						reject("Error while making parsing deezer response");
+					}
 					console.log(data);
 					// if there is a first result
 					if (data && data.id) {
-					// return it
+						// return it
 						resolve(data);
 					}
 					else {
 						reject("DZ Search No Results");
 					}
 				});
+
 			});
 		}
 		else {
