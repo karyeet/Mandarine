@@ -51,6 +51,11 @@ async function addFile(filePath) {
 			(title + " " + artist).replace(/\.|'|-/g, ""),
 		];
 
+		const featSplitRegex = / feat\.? /;
+		if (title.match(featSplitRegex)) {
+			search.push(title.split(featSplitRegex)[0]);
+		}
+
 		if (metadata.common.isrc && metadata.common.isrc[0]) {
 			search.push(metadata.common.isrc[0]);
 		}

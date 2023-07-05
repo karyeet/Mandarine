@@ -146,6 +146,12 @@ function addToLibrary(artist, title, isrc, fileName) {
 		(title + " " + artist).replace(/\.|'|-/g, ""),
 	];
 
+
+	const featSplitRegex = / feat\.? /;
+	if (title.match(featSplitRegex)) {
+		search.push(title.split(featSplitRegex)[0]);
+	}
+
 	if (isrc) {
 		search.push(isrc);
 	}
