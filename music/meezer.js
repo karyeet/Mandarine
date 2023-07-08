@@ -48,24 +48,62 @@ function DownloadTrack(deezerTrack) {
 
 function searchTrack(query) {
 	const trackpromise = new Promise((resolve, reject) => {
-		// we only get 1 result from the api
-		https.get("https://api.deezer.com/search?index=0&limit=1&q=" + encodeURIComponent(query), (res) => {
-			if (res.statusCode != 200) {
-				reject("DZ Search Code " + res.statusCode);
-			}
-			res.on("data", (data) => {
-				// parse data
-				data = JSON.parse(data.toString());
-				// if there is a first result
-				if (data.data[0]) {
-					// return it
-					resolve(data.data[0]);
+		// is query an ISRC?
+		const isISRC = query.match(/^[A-Z]{2}-?\w{3}-?\d{2}-?\d{5}$/);
+		console.log(isISRC);
+		if (isISRC != null) {
+			console.log("Searching Deezer for ISRC " + query);
+			https.get("https://api.deezer.com/2.0/track/isrc:" + query, (res) => {
+				if (res.statusCode != 200) {
+					reject("DZ Search Code " + res.statusCode);
 				}
-				else {
-					reject("DZ Search No Results");
-				}
+				const chunks = [];
+				res.on("data", (chunk) => {
+					chunks.push(chunk);
+				});
+				res.on("end", () => {
+					let data;
+					try {
+						data = JSON.parse(Buffer.concat(chunks).toString());
+					}
+					catch (err) {
+						reject("Error while making parsing deezer response");
+					}
+					console.log(data);
+					// if there is a first result
+					if (data && data.id) {
+						// return it
+						resolve(data);
+					}
+					else {
+						reject("DZ Search No Results");
+					}
+				});
+
 			});
-		});
+		}
+		else {
+		// we only get 1 result from the api
+			console.log("Searching deezer for " + query);
+			https.get("https://api.deezer.com/search?index=0&limit=1&q=" + encodeURIComponent(query), (res) => {
+				if (res.statusCode != 200) {
+					reject("DZ Search Code " + res.statusCode);
+				}
+				res.on("data", (data) => {
+				// parse data
+					data = JSON.parse(data.toString());
+					// if there is a first result
+					if (data.data[0]) {
+					// return it
+						resolve(data.data[0]);
+					}
+					else {
+						reject("DZ Search No Results");
+					}
+				});
+			});
+		}
+
 	});
 	return trackpromise;
 }

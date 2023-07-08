@@ -44,11 +44,21 @@ async function addFile(filePath) {
 		// console.log("metadata:" + JSON.stringify(metadata.common.title));
 		const title = metadata.common.title;
 		const artist = metadata.common.artist;
+
 		const search = [
 			(title).replace(/\.|'|-/g, ""),
 			(artist + " " + title).replace(/\.|'|-/g, ""),
 			(title + " " + artist).replace(/\.|'|-/g, ""),
 		];
+
+		const featSplitRegex = / feat\.? /;
+		if (title.match(featSplitRegex)) {
+			search.push(title.split(featSplitRegex)[0]);
+		}
+
+		if (metadata.common.isrc && metadata.common.isrc[0]) {
+			search.push(metadata.common.isrc[0]);
+		}
 
 		if (artist.split(" ").length > 1) {
 			// if the artist has spaces in their names, chances are people will only add one part of their name

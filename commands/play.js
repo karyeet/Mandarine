@@ -40,7 +40,21 @@ async function convertSPDataToYT(spotifyData) {
 async function convertSPDataToDeezer(spotifyData) {
 	if (spotifyData && spotifyData.type == "track") {
 		// search deezer
-		const data = await libmanger.requestTrack(`${spotifyData.artists[0].name} - ${spotifyData.name}`);
+		let data = false;
+		try {
+			data = await libmanger.requestTrack(`${spotifyData.isrc}`);
+		}
+		catch (err) {
+			console.log(err);
+		}
+		if (!data) {
+			try {
+				data = await libmanger.requestTrack(`${spotifyData.artists[0].name} - ${spotifyData.name}`);
+			}
+			catch (err) {
+				console.log(err);
+			}
+		}
 		// if result
 		if (data && data.path) {
 			// return data
