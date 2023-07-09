@@ -61,8 +61,15 @@ async function requestTrack(query) {
 	const fuzzyResult = await fuzzySet.get(query);
 	console.log(fuzzyResult);
 
+
+	let threshold = 0.77;
+	const isISRC = query.match(/^[A-Z]{2}-?\w{3}-?\d{2}-?\d{5}$/);
+	if (isISRC) {
+		threshold = 1;
+	}
+
 	// if valid match, return filename
-	if (fuzzyResult && fuzzyResult[0] && (console.log(fuzzyResult[0][0]) || true) && fuzzyResult[0][0] > 0.77) {
+	if (fuzzyResult && fuzzyResult[0] && (console.log(fuzzyResult[0][0]) || true) && fuzzyResult[0][0] > threshold) {
 		console.log("fuzzy found");
 		for (const key in localLibrary) {
 			if (localLibrary[key].search.find(pattern => pattern == fuzzyResult[0][1])) {
