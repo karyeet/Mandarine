@@ -42,7 +42,9 @@ async function convertSPDataToDeezer(spotifyData) {
 		// search deezer
 		let data = false;
 		try {
-			data = await libmanger.requestTrack(`${spotifyData.isrc}`);
+			if (spotifyData.isrc.length > 11) {
+				data = await libmanger.requestTrack(`${spotifyData.isrc}`);
+			}
 		}
 		catch (err) {
 			console.log(err);
