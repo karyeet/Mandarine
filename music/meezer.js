@@ -93,7 +93,7 @@ function searchTrack(query) {
 				// parse data
 					data = JSON.parse(data.toString());
 					// if there is a first result
-					if (data.data[0]) {
+					if (data && data.data && data.data[0]) {
 					// return it
 						resolve(data.data[0]);
 					}
