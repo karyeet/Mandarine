@@ -16,7 +16,7 @@
 	"paddingSize": "0",
 	"illegalCharacterReplacer": "_",
 	"queueConcurrency": 3,
-	"maxBitrate": "1",
+	"maxBitrate": "128",
 	"feelingLucky": false,
 	"fallbackBitrate": true,
 	"fallbackSearch": false,
