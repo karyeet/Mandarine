@@ -8,7 +8,7 @@
     "@picovoice/rhino-node": "^2.1.10",
     "bufferutil": "^4.0.7",
     "discord-api-types": "^0.37.36",
-    "discord.js": "^13.16.0",
+    "discord.js": "^14.12.1",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^5.1.0",
     "fuzzyset": "^1.0.7",
