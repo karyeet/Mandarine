@@ -7,7 +7,7 @@
     "@picovoice/porcupine-node": "^2.1.7",
     "@picovoice/rhino-node": "^2.1.10",
     "bufferutil": "^4.0.7",
-    "discord-api-types": "^0.37.36",
+    "discord-api-types": "^0.37.54",
     "discord.js": "^13.16.0",
     "erlpack": "github:discord/erlpack",
     "ffmpeg-static": "^5.1.0",
