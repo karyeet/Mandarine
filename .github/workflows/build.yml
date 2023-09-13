@@ -8,6 +8,7 @@ on:
       - 'main'
       - 'Dockerfile'
       - 'file-ingest-dev'
+      - 'change-prefix'
   release:
     types:
       - created
