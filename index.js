@@ -27,14 +27,14 @@ else {
 
 client.once("ready", () => {
 	console.log("Ready in " + client.guilds.cache.size + " guild(s).");
-	client.user.setActivity("Prefix: >", { type: "WATCHING" });
+	client.user.setActivity("Prefix: "+config.PREFIX, { type: "WATCHING" });
 	DIY_COMMANDO = require("./diy_commando.js");
 });
 
 
-// check if prefix is ">", and if so return the command back
+// check if prefix is PREFIX, and if so return the command back
 function checkCommand(content) {
-	if (!(content[0] == ">")) {
+	if (!(content[0] == config.PREFIX)) {
 		return false;
 	}
 	const splitContent = content.slice(1).split(" ");
