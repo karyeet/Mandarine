@@ -23,6 +23,8 @@ else {
 	client.login(config.token);
 }
 
+console.log("Prefix "+config.PREFIX)
+
 // table of command names and their corresponding files/functions
 
 client.once("ready", () => {
