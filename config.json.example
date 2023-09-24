@@ -1,5 +1,6 @@
 {
-	"token":"abcdefghfdfdgsgfsgsdgds"
+	"token":"abcdefghfdfdgsgfsgsdgds",
+	"PREFIX":">",
 	"additionalMusicDirs":["H:\\WindowsFolder\\Music","/linux/folder"],
 	"runIndexerOnStart": true,
 	"voiceCommands": {
