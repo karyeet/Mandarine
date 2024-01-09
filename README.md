@@ -22,7 +22,7 @@ Mandarine was created as a personal Music Bot in lieu of Rythm Bot (RIP).
 - [x] Docker image
 
 #### Planned Features:
-
+- [ ] Currently undergoing Typescript rewrite
 - [ ] Deezer Playlist support
 - [ ] Multi-threaded streaming
 - [ ] Prefix command & other customizations
