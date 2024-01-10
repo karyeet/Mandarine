@@ -15,7 +15,7 @@
     "music-metadata": "^8.1.3",
     "play-dl": "github:karyeet/play-dl#build-on-install",
     "prism-media": "github:karyeet/prism-media",
-    "sodium-native": "^4.0.1",
+    "sodium-native": "^4.0.5",
     "utf-8-validate": "^5.0.10",
     "zlib-sync": "^0.1.7"
   },
