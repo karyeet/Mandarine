@@ -1,3 +1,6 @@
+Supersceded by https://github.com/karyeet/Tangerine
+
+
 # Mandarine
 A Node.js Discord music bot made using the latest versions of [Discord.js](https://github.com/discordjs/discord.js/) & [play-dl](https://github.com/play-dl/play-dl)
 
